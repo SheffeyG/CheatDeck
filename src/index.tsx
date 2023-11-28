@@ -10,18 +10,18 @@ import {
   ServerAPI,
   showContextMenu,
   staticClasses,
+  ToggleField,
 } from "decky-frontend-lib";
 import { VFC } from "react";
 import { FaShip } from "react-icons/fa";
-
-import logo from "../assets/logo.png";
+import { validate } from "webpack";
 
 // interface AddMethodArgs {
 //   left: number;
 //   right: number;
 // }
 
-const Content: VFC<{ serverAPI: ServerAPI }> = ({serverAPI}) => {
+const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
   // const [result, setResult] = useState<number | undefined>();
 
   // const onClick = async () => {
@@ -38,29 +38,37 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({serverAPI}) => {
   // };
 
   return (
-    <PanelSection title="Panel Section">
+    <PanelSection title="Panel">
+      <PanelSectionRow>
+        <div>
+          <ToggleField
+            label="Enable plugin"
+            description="Enable for direct Steam downloads"
+            checked={false}
+            onChange={(value: boolean) => {
+            }}
+          >
+          </ToggleField>
+        </div>
+      </PanelSectionRow>
+
       <PanelSectionRow>
         <ButtonItem
           layout="below"
-          onClick={(e) =>
+          onClick={(e: { currentTarget: any; }) =>
             showContextMenu(
-              <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => {}}>
-                <MenuItem onSelected={() => {}}>Item #1</MenuItem>
-                <MenuItem onSelected={() => {}}>Item #2</MenuItem>
-                <MenuItem onSelected={() => {}}>Item #3</MenuItem>
+              <Menu label="Select preferred language"
+                cancelText="CANCEL" onCancel={() => { }}>
+                <MenuItem onSelected={() => { }}>Chinese</MenuItem>
+                <MenuItem onSelected={() => { }}>English</MenuItem>
+                <MenuItem onSelected={() => { }}>Japanese</MenuItem>
               </Menu>,
               e.currentTarget ?? window
             )
           }
         >
-          Server says yolo
+          Language
         </ButtonItem>
-      </PanelSectionRow>
-
-      <PanelSectionRow>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <img src={logo} />
-        </div>
       </PanelSectionRow>
 
       <PanelSectionRow>
@@ -95,7 +103,7 @@ export default definePlugin((serverApi: ServerAPI) => {
   });
 
   return {
-    title: <div className={staticClasses.Title}>Example Plugin</div>,
+    title: <div className={staticClasses.Title}>CheatDeck</div>,
     content: <Content serverAPI={serverApi} />,
     icon: <FaShip />,
     onDismount() {
