@@ -1,5 +1,5 @@
 {
-  "deckip": "12y.0.0.1",
+  "deckip": "192.168.3.35",
   "deckport": "22",
   "deckpass": "123456",
   "deckkey": "-i $HOME/.ssh/id_rsa",
