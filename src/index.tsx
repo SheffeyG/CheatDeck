@@ -2,6 +2,7 @@ import {
   ButtonItem,
   definePlugin,
   DialogButton,
+  Dropdown,
   Menu,
   MenuItem,
   PanelSection,
@@ -12,63 +13,37 @@ import {
   staticClasses,
   ToggleField,
 } from "decky-frontend-lib";
-import { VFC } from "react";
-import { FaShip } from "react-icons/fa";
-import { validate } from "webpack";
+import { useState, VFC } from "react";
+import { FaWrench } from "react-icons/fa";
 
-// interface AddMethodArgs {
-//   left: number;
-//   right: number;
-// }
+const [settings] = useState<Settings>(new Settings(serverAPI))
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
-  // const [result, setResult] = useState<number | undefined>();
-
-  // const onClick = async () => {
-  //   const result = await serverAPI.callPluginMethod<AddMethodArgs, number>(
-  //     "add",
-  //     {
-  //       left: 2,
-  //       right: 2,
-  //     }
-  //   );
-  //   if (result.success) {
-  //     setResult(result.result);
-  //   }
-  // };
 
   return (
-    <PanelSection title="Panel">
+    <PanelSection title="Setting">
       <PanelSectionRow>
-        <div>
-          <ToggleField
-            label="Enable plugin"
-            description="Enable for direct Steam downloads"
-            checked={false}
-            onChange={(value: boolean) => {
-            }}
-          >
-          </ToggleField>
-        </div>
+        <ToggleField
+          label="Enable plugin"
+          description="Enable to activate plugin."
+          checked={false}
+          onChange={() => {
+          }}
+        >
+        </ToggleField>
       </PanelSectionRow>
 
       <PanelSectionRow>
-        <ButtonItem
-          layout="below"
-          onClick={(e: { currentTarget: any; }) =>
-            showContextMenu(
-              <Menu label="Select preferred language"
-                cancelText="CANCEL" onCancel={() => { }}>
-                <MenuItem onSelected={() => { }}>Chinese</MenuItem>
-                <MenuItem onSelected={() => { }}>English</MenuItem>
-                <MenuItem onSelected={() => { }}>Japanese</MenuItem>
-              </Menu>,
-              e.currentTarget ?? window
-            )
-          }
-        >
-          Language
-        </ButtonItem>
+        <Dropdown
+          strDefaultLabel="Select App..."
+          rgOptions={dropdownOptions}
+          selectedOption={selectedLang}
+          onChange={(e: SingleDropdownOption) => {
+            setIsStarred(e.data < settings.get("starredApps").length);
+            setSelectedApp(e.data);
+          }}
+        />
+
       </PanelSectionRow>
 
       <PanelSectionRow>
@@ -88,7 +63,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
 
 const DeckyPluginRouterTest: VFC = () => {
   return (
-    <div style={{ marginTop: "50px", color: "white" }}>
+    <div style={{ margin: "50px", color: "white" }}>
       Hello World!
       <DialogButton onClick={() => Router.NavigateToLibraryTab()}>
         Go to Library
@@ -105,7 +80,7 @@ export default definePlugin((serverApi: ServerAPI) => {
   return {
     title: <div className={staticClasses.Title}>CheatDeck</div>,
     content: <Content serverAPI={serverApi} />,
-    icon: <FaShip />,
+    icon: <FaWrench />,
     onDismount() {
       serverApi.routerHook.removeRoute("/decky-plugin-test");
     },
