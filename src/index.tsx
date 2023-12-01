@@ -2,7 +2,6 @@ import {
   ButtonItem,
   definePlugin,
   DialogButton,
-  Dropdown,
   Menu,
   MenuItem,
   PanelSection,
@@ -11,57 +10,40 @@ import {
   ServerAPI,
   showContextMenu,
   staticClasses,
-  ToggleField,
 } from "decky-frontend-lib";
-import { useState, VFC } from "react";
+import { VFC } from "react";
 import { FaWrench } from "react-icons/fa";
 
-const [settings] = useState<Settings>(new Settings(serverAPI))
+import contextMenuPatch, { LibraryContextMenu } from './contextMenuPatch';
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
 
   return (
     <PanelSection title="Setting">
-      <PanelSectionRow>
-        <ToggleField
-          label="Enable plugin"
-          description="Enable to activate plugin."
-          checked={false}
-          onChange={() => {
-          }}
-        >
-        </ToggleField>
-      </PanelSectionRow>
-
-      <PanelSectionRow>
-        <Dropdown
-          strDefaultLabel="Select App..."
-          rgOptions={dropdownOptions}
-          selectedOption={selectedLang}
-          onChange={(e: SingleDropdownOption) => {
-            setIsStarred(e.data < settings.get("starredApps").length);
-            setSelectedApp(e.data);
-          }}
-        />
-
-      </PanelSectionRow>
 
       <PanelSectionRow>
         <ButtonItem
           layout="below"
-          onClick={() => {
-            Router.CloseSideMenus();
-            Router.Navigate("/decky-plugin-test");
-          }}
+          onClick={(e: { currentTarget: any; }) =>
+            showContextMenu(
+              <Menu label="Menu" cancelText="CAAAANCEL" onCancel={() => { }}>
+                <MenuItem onSelected={() => { }}>Item #1</MenuItem>
+                <MenuItem onSelected={() => { }}>Item #2</MenuItem>
+                <MenuItem onSelected={() => { }}>Item #3</MenuItem>
+              </Menu>,
+              e.currentTarget ?? window
+            )
+          }
         >
-          Router
+          Version 1
         </ButtonItem>
       </PanelSectionRow>
+
     </PanelSection>
   );
 };
 
-const DeckyPluginRouterTest: VFC = () => {
+const CheatSettingRouter: VFC = () => {
   return (
     <div style={{ margin: "50px", color: "white" }}>
       Hello World!
@@ -73,16 +55,19 @@ const DeckyPluginRouterTest: VFC = () => {
 };
 
 export default definePlugin((serverApi: ServerAPI) => {
-  serverApi.routerHook.addRoute("/decky-plugin-test", DeckyPluginRouterTest, {
+  serverApi.routerHook.addRoute("/cheat-settings", CheatSettingRouter, {
     exact: true,
   });
+
+  const menuPatches = contextMenuPatch(LibraryContextMenu);
 
   return {
     title: <div className={staticClasses.Title}>CheatDeck</div>,
     content: <Content serverAPI={serverApi} />,
     icon: <FaWrench />,
     onDismount() {
-      serverApi.routerHook.removeRoute("/decky-plugin-test");
+      serverApi.routerHook.removeRoute("/cheat-settings");
+      menuPatches?.unpatch();
     },
   };
 });
