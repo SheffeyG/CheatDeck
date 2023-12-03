@@ -19,11 +19,10 @@ const spliceArtworkItem = (children: any[], appid: number) => {
     <MenuItem
       key="cheat-deck"
       onSelected={() => {
-        // use ${appid}
-        Navigation.Navigate(`/cheat-settings`);
+        Navigation.Navigate(`/cheat-settings/${appid}`);
       }}
     >
-      Cheat this
+      Cheat setting
     </MenuItem>
   ));
 };

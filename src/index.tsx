@@ -1,25 +1,57 @@
 import {
   ButtonItem,
   definePlugin,
-  DialogButton,
   Menu,
   MenuItem,
   PanelSection,
   PanelSectionRow,
-  Router,
   ServerAPI,
   showContextMenu,
   staticClasses,
+  FilePickerRes,
+  DialogBody
 } from "decky-frontend-lib";
-import { VFC } from "react";
+import { VFC, useState } from "react";
 import { FaWrench } from "react-icons/fa";
 
 import contextMenuPatch, { LibraryContextMenu } from './contextMenuPatch';
+import PageRouter from "./component/PageRouter";
+import openFilePicker from "./openFilePicker";
 
-const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
+const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
+
+  const [filepath, setFilepath] = useState<FilePickerRes>({
+    path: 'initialPath',
+    realpath: 'initialRealpath',
+  });
+
+  const handleBrowse = async () => {
+    const selectedPath = await openFilePicker('/home/deck/Games', true, undefined, {
+      validFileExtensions: ['exe'],
+    }, serverAPI);
+    console.log("Now selectedPath is: " + selectedPath.path)
+    setFilepath(prevState => ({
+      ...prevState,
+      path: selectedPath.path,
+      realpath: selectedPath.realpath
+    }));
+  };
 
   return (
-    <PanelSection title="Setting">
+    <PanelSection title="setting">
+
+      <PanelSectionRow>
+        <ButtonItem
+        layout="below"
+        onClick={handleBrowse}
+        >
+          Select Cheat
+        </ButtonItem>
+        <DialogBody>
+          <p>Path: {filepath.path}</p>
+        </DialogBody>
+
+      </PanelSectionRow>
 
       <PanelSectionRow>
         <ButtonItem
@@ -35,7 +67,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
             )
           }
         >
-          Version 1
+          Menu
         </ButtonItem>
       </PanelSectionRow>
 
@@ -43,19 +75,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ }) => {
   );
 };
 
-const CheatSettingRouter: VFC = () => {
-  return (
-    <div style={{ margin: "50px", color: "white" }}>
-      Hello World!
-      <DialogButton onClick={() => Router.NavigateToLibraryTab()}>
-        Go to Library
-      </DialogButton>
-    </div>
-  );
-};
-
 export default definePlugin((serverApi: ServerAPI) => {
-  serverApi.routerHook.addRoute("/cheat-settings", CheatSettingRouter, {
+
+  serverApi.routerHook.addRoute("/cheat-settings/:appid", PageRouter, {
     exact: true,
   });
 
@@ -66,7 +88,7 @@ export default definePlugin((serverApi: ServerAPI) => {
     content: <Content serverAPI={serverApi} />,
     icon: <FaWrench />,
     onDismount() {
-      serverApi.routerHook.removeRoute("/cheat-settings");
+      serverApi.routerHook.removeRoute("/cheat-settings/:appid");
       menuPatches?.unpatch();
     },
   };
