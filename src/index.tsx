@@ -9,11 +9,12 @@ import {
   showContextMenu,
   staticClasses,
   FilePickerRes,
-  DialogBody
+  DialogBody,
 } from "decky-frontend-lib";
 import { VFC, useState } from "react";
 import { FaWrench } from "react-icons/fa";
 
+import logger from "./utils";
 import contextMenuPatch, { LibraryContextMenu } from './contextMenuPatch';
 import PageRouter from "./component/PageRouter";
 import openFilePicker from "./openFilePicker";
@@ -29,7 +30,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     const selectedPath = await openFilePicker('/home/deck/Games', true, undefined, {
       validFileExtensions: ['exe'],
     }, serverAPI);
-    console.log("Now selectedPath is: " + selectedPath.path)
+    logger.info("Now selectedPath is: " + selectedPath.path); 
     setFilepath(prevState => ({
       ...prevState,
       path: selectedPath.path,
@@ -45,7 +46,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         layout="below"
         onClick={handleBrowse}
         >
-          Select Cheat
+          Select
         </ButtonItem>
         <DialogBody>
           <p>Path: {filepath.path}</p>
@@ -76,6 +77,8 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 };
 
 export default definePlugin((serverApi: ServerAPI) => {
+
+  logger.info("Plugin cheatdeck loaded");
 
   serverApi.routerHook.addRoute("/cheat-settings/:appid", PageRouter, {
     exact: true,

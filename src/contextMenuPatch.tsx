@@ -22,7 +22,7 @@ const spliceArtworkItem = (children: any[], appid: number) => {
         Navigation.Navigate(`/cheat-settings/${appid}`);
       }}
     >
-      Cheat setting
+      Cheat
     </MenuItem>
   ));
 };
