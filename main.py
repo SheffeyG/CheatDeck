@@ -1,41 +1,52 @@
-import os
+#!/usr/bin/env python
+import logging, os
+from settings import SettingsManager # type: ignore
+import decky_plugin # type: ignore
 
-# The decky plugin module is located at decky-loader/plugin
-# For easy intellisense checkout the decky-loader code one directory up
-# or add the `decky-loader/plugin` path to `python.analysis.extraPaths` in `.vscode/settings.json`
-import decky_plugin
+# Setup environment variables
+deckyHomeDir = decky_plugin.DECKY_HOME
+settingsDir = decky_plugin.DECKY_PLUGIN_SETTINGS_DIR
+loggingDir = decky_plugin.DECKY_PLUGIN_LOG_DIR
+logger = decky_plugin.logger
 
+# Setup backend logger
+logger.setLevel(logging.DEBUG) # can be changed to logging.DEBUG for debugging issues
+logger.info('[backend] Settings path: {}'.format(settingsDir))
+settings = SettingsManager(name="settings", settings_directory=settingsDir)
+settings.read()
 
 class Plugin:
-    # A normal method. It can be called from JavaScript using call_plugin_function("method_1", argument1, argument2)
-    async def add(self, left, right):
-        return left + right
+  async def plugin_info(self):
+    # Call plugin_info only once preferably
+    logger.debug('[backend] PluginInfo:\n\tPluginName: {}\n\tPluginVersion: {}\n\tDeckyVersion: {}'.format(
+      decky_plugin.DECKY_PLUGIN_NAME,
+      decky_plugin.DECKY_PLUGIN_VERSION,
+      decky_plugin.DECKY_VERSION
+    ))
+    pluginInfo = {
+      "name": decky_plugin.DECKY_PLUGIN_NAME,
+      "version": decky_plugin.DECKY_PLUGIN_VERSION
+    }
+    return pluginInfo
+  
+  async def logger(self, logLevel:str, msg:str):
+    msg = '[frontend] {}'.format(msg)
+    match logLevel.lower():
+      case 'info':      logger.info(msg)
+      case 'debug':     logger.debug(msg)
+      case 'warning':   logger.warning(msg)
+      case 'error':     logger.error(msg)
+      case 'critical':  logger.critical(msg)
 
-    # Asyncio-compatible long-running code, executed in a task when the plugin is loaded
-    async def _main(self):
-        decky_plugin.logger.info("Hello World!")
-
-    # Function called first during the unload process, utilize this to handle your plugin being removed
-    async def _unload(self):
-        decky_plugin.logger.info("Goodbye World!")
-        pass
-
-    # Migrations that should be performed before entering `_main()`.
-    async def _migration(self):
-        decky_plugin.logger.info("Migrating")
-        # Here's a migration example for logs:
-        # - `~/.config/decky-template/template.log` will be migrated to `decky_plugin.DECKY_PLUGIN_LOG_DIR/template.log`
-        decky_plugin.migrate_logs(os.path.join(decky_plugin.DECKY_USER_HOME,
-                                               ".config", "decky-template", "template.log"))
-        # Here's a migration example for settings:
-        # - `~/homebrew/settings/template.json` is migrated to `decky_plugin.DECKY_PLUGIN_SETTINGS_DIR/template.json`
-        # - `~/.config/decky-template/` all files and directories under this root are migrated to `decky_plugin.DECKY_PLUGIN_SETTINGS_DIR/`
-        decky_plugin.migrate_settings(
-            os.path.join(decky_plugin.DECKY_HOME, "settings", "template.json"),
-            os.path.join(decky_plugin.DECKY_USER_HOME, ".config", "decky-template"))
-        # Here's a migration example for runtime data:
-        # - `~/homebrew/template/` all files and directories under this root are migrated to `decky_plugin.DECKY_PLUGIN_RUNTIME_DIR/`
-        # - `~/.local/share/decky-template/` all files and directories under this root are migrated to `decky_plugin.DECKY_PLUGIN_RUNTIME_DIR/`
-        decky_plugin.migrate_runtime(
-            os.path.join(decky_plugin.DECKY_HOME, "template"),
-            os.path.join(decky_plugin.DECKY_USER_HOME, ".local", "share", "decky-template"))
+  async def settings_read(self):
+    logger.info('[backend] Reading settings')
+    return settings.read()
+  async def settings_commit(self):
+    logger.info('[backend] Saving settings')
+    return settings.commit()
+  async def settings_getSetting(self, key: str, defaults):
+    logger.info('[backend] Get {}'.format(key))
+    return settings.getSetting(key, defaults)
+  async def settings_setSetting(self, key: str, value):
+    logger.info('[backend] Set {}: {}'.format(key, value))
+    return settings.setSetting(key, value)

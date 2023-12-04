@@ -2,7 +2,7 @@ import { ServerAPI, FileSelectionType } from 'decky-frontend-lib';
 
 export type FilePickerFilter = RegExp | ((file: File) => boolean) | undefined;
 
-export default (
+export const openFilePicker = (
   startPath: string,
   includeFiles?: boolean,
   filter?: FilePickerFilter,
@@ -27,3 +27,5 @@ export default (
     ).then(resolve, () => reject('User Canceled'));
   });
 };
+
+export default openFilePicker
