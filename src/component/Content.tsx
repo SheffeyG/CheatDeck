@@ -10,34 +10,34 @@ import {
 } from "decky-frontend-lib";
 import { VFC, useState } from "react";
 
-import openFilePicker from "../utils/filepicker"
 import logger from "../utils/logger";
-import { BackendCtx, SettingsManager } from "../utils/settings";
+import { SettingsManager } from "../utils/settings";
+import { Backend } from "../utils/backend";
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
   var initPath = '/'
-  BackendCtx.initialize(serverAPI)
+  // BackendCtx.initialize(serverAPI)
+  Backend.initialize(serverAPI)
   SettingsManager.loadFromFile().then(
-    (res) => {({initPath} = res)}
+    (res) => { ({ initPath } = res) }
   )
+  
   const [showPath, setShowPath] = useState(initPath);
-
-  // useEffect(() => {
-  //   logger.info("Noticed showpath changes to: " + showPath);
-  // }, [showPath]);
-
   const handleBrowse = async () => {
     logger.info("Original showpath is: " + showPath);
-    const selectedPath = await openFilePicker('/home/deck/Games', true, undefined, {
-      validFileExtensions: ['exe'],
-    }, serverAPI);
+    const selectedPath = await Backend.openFilePicker("/home/deck/Games", ["exe"]);
+
     // let selectedPath = {path: "/home"}
     logger.info("Selected path is: " + selectedPath.path);
     setShowPath(selectedPath.path)
     logger.info("Updated showpath is: " + showPath);
     SettingsManager.saveToFile({ cheatPath: selectedPath.path })
   };
+  
+  // useEffect(() => {
+  //   logger.info("Noticed showpath changes to: " + showPath);
+  // }, [showPath]);
 
   return (
     <PanelSection title="setting">
