@@ -11,7 +11,7 @@ export class Backend {
   
   static async bridge(functionName: string, namedArgs?: any) {
     namedArgs = (namedArgs) ? namedArgs : {}
-    console.debug(`[AutoSuspend] Calling backend function: ${functionName}`)
+    console.debug(`Calling backend function: ${functionName}`)
     let output = await Backend.serverAPI.callPluginMethod(functionName, namedArgs)
     return output.result
   }

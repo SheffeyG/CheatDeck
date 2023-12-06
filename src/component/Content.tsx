@@ -31,8 +31,8 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
     const filePickerResult = await Backend.openFilePicker("/home/deck/Games", ["exe"]);
 
     logger.info("Selected path is: " + filePickerResult.path);
-    setShowPath(filePickerResult.path)
-    await SettingsManager.saveToFile({ cheatPath: filePickerResult.path })
+    setShowPath(filePickerResult.path);
+    await SettingsManager.saveToFile({ cheatPath: filePickerResult.path });
   };
 
   useEffect(() => {
