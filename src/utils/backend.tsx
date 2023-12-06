@@ -5,26 +5,26 @@ export type FilePickerFilter = RegExp | ((file: File) => boolean) | undefined;
 
 export class Backend {
   static initialize(serverApi: ServerAPI) {
-    this.serverAPI = serverApi
+    Backend.serverAPI = serverApi
   }
   static serverAPI: ServerAPI
   
   static async bridge(functionName: string, namedArgs?: any) {
     namedArgs = (namedArgs) ? namedArgs : {}
     console.debug(`[AutoSuspend] Calling backend function: ${functionName}`)
-    let output = await this.serverAPI.callPluginMethod(functionName, namedArgs)
+    let output = await Backend.serverAPI.callPluginMethod(functionName, namedArgs)
     return output.result
   }
   static async getSetting(key: string, defaults: any) {
-    let output = await this.bridge("settings_getSetting", { key, defaults })
+    let output = await Backend.bridge("settings_getSetting", { key, defaults })
     return output
   }
   static async setSetting(key: string, value: any) {
-    let output = await this.bridge("settings_setSetting", { key, value })
+    let output = await Backend.bridge("settings_setSetting", { key, value })
     return output
   }
   static async commitSettings() {
-    let output = await this.bridge("settings_commit")
+    let output = await Backend.bridge("settings_commit")
     return output
   }
 
@@ -36,7 +36,7 @@ export class Backend {
     defaultHidden?: boolean,
   ): Promise<{ path: string; realpath: string }> => {
     return new Promise(async (resolve, reject) => {
-      await this.serverAPI.openFilePickerV2(
+      await Backend.serverAPI.openFilePickerV2(
         FileSelectionType.FILE,
         startPath,
         includeFiles,

@@ -12,13 +12,13 @@ export const defaultSettings: SettingsProps = {
 export class SettingsManager {
 
   static async saveToFile(userSettings: SettingsProps) {
-    let settings = userSettings
-    let promises = Object.keys(settings).map(key => {
+    const settings = userSettings
+    const promises = Object.keys(settings).map(key => {
       return Backend.setSetting(key, settings[key])
     })
-    Promise.all(promises).then(async () => {
-      await Backend.commitSettings()
-    })
+    await Promise.all(promises);
+    await Backend.commitSettings();
+
     logger.info(`Saved user settings:\n${JSON.stringify(settings, null, 2)}`)
   }
 

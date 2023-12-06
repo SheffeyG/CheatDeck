@@ -15,26 +15,26 @@ import { SettingsManager } from "../utils/settings";
 import { Backend } from "../utils/backend";
 
 const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
+  const [showPath, setShowPath] = useState('/');
 
-  Backend.initialize(serverAPI)
-  var initPath = '/'
-  SettingsManager.loadFromFile().then(
-    (res) => { ({ initPath } = res) }
-    )
-  const [showPath, setShowPath] = useState(initPath);
+  useEffect(() => {
+    Backend.initialize(serverAPI);
+
+    (async () => {
+      const settings = await SettingsManager.loadFromFile();
+      setShowPath(settings.cheatPath);
+    })();
+  }, []);
 
   const handleBrowse = async () => {
     logger.info("Original showpath is: " + showPath);
-    await Backend.openFilePicker("/home/deck/Games", ["exe"]).then(
-      (res) => {
-        logger.info("Selected path is: " + res.path);
-        setShowPath(res.path)
-        logger.info("Updated showpath is: " + showPath);
-        SettingsManager.saveToFile({ cheatPath: res.path })
-      }
-    )
+    const filePickerResult = await Backend.openFilePicker("/home/deck/Games", ["exe"]);
+
+    logger.info("Selected path is: " + filePickerResult.path);
+    setShowPath(filePickerResult.path)
+    await SettingsManager.saveToFile({ cheatPath: filePickerResult.path })
   };
-  
+
   useEffect(() => {
     logger.info("Noticed showpath changes to: " + showPath);
   }, [showPath]);
@@ -52,7 +52,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         <DialogBody>
           <p>path: {showPath}</p>
         </DialogBody>
-        {/* <ShowPath path={showPath} /> */}
 
       </PanelSectionRow>
 
@@ -80,4 +79,3 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
 
 
 export default Content
-
