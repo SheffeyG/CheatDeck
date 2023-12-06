@@ -1,3 +1,5 @@
+// From plugin SGDB
+ 
 import {
   afterPatch,
   fakeRenderComponent,
@@ -10,7 +12,7 @@ import {
 
 
 // Always add before "Properties..."
-const spliceArtworkItem = (children: any[], appid: number) => {
+const spliceMenuItem = (children: any[], appid: number) => {
   children.find((x: any) => x?.key === 'properties');
   const propertiesMenuItemIdx = children.findIndex((item) =>
     findInReactTree(item, (x) => x?.onSelected && x.onSelected.toString().includes('AppProperties'))
@@ -56,13 +58,13 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
           if (parentOverview) {
             updatedAppid = parentOverview._owner.pendingProps.overview.appid;
           }
-          spliceArtworkItem(nextProps.children, updatedAppid);
+          spliceMenuItem(nextProps.children, updatedAppid);
         }
 
         return shouldUpdate;
       });
     } else {
-      spliceArtworkItem(component.props.children, appid);
+      spliceMenuItem(component.props.children, appid);
     }
 
     return component;
