@@ -1,4 +1,4 @@
-// From plugin SGDB
+// From plugin SteamGridDB
  
 import {
   afterPatch,
@@ -21,7 +21,7 @@ const spliceMenuItem = (children: any[], appid: number) => {
     <MenuItem
       key="cheat-deck"
       onSelected={() => {
-        Navigation.Navigate(`/cheat-settings/${appid}`);
+        Navigation.Navigate(`/cheatdeck/${appid}`);
       }}
     >
       Cheat

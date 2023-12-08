@@ -1,25 +1,21 @@
 import {
-  ButtonItem,
-  DialogBody,
-  Menu,
-  MenuItem,
+  DialogButton,
+  Field,
   PanelSection,
-  PanelSectionRow,
   ServerAPI,
-  showContextMenu
+  TextField
 } from "decky-frontend-lib";
 import { VFC, useEffect, useState } from "react";
 
 import logger from "../utils/logger";
 import { SettingsManager } from "../utils/settings";
 import { Backend } from "../utils/backend";
+import { FaSatellite } from "react-icons/fa";
 
-const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
+const Content: VFC<{ serverAPI: ServerAPI }> = () => {
   const [showPath, setShowPath] = useState('/');
 
   useEffect(() => {
-    Backend.initialize(serverAPI);
-
     (async () => {
       const settings = await SettingsManager.loadFromFile();
       setShowPath(settings.cheatPath);
@@ -40,18 +36,39 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
   }, [showPath]);
 
   return (
-    <PanelSection title="setting">
+    <PanelSection title="global setting">
 
-      <PanelSectionRow>
+      <Field
+        key={1}
+        label={"Cheat"}
+        icon={<FaSatellite />}
+        bottomSeparator={"none"}
+        padding={"none"}
+      >
+        <TextField
+          style={{
+            // fontSize: "14px",
+            width: "160px"
+          }}
+          value={showPath.match(/\/([^\/]+)$/)?.[1]}
+          disabled={true}
+        />
+      </Field>
+      <DialogButton
+        style={{ marginTop: "4px" }}
+        onClick={handleBrowse}
+      >
+        Change Cheat Path
+      </DialogButton>
+
+      {/* <PanelSectionRow>
+        <p>CHEAT: {showPath.match(/\/([^\/]+)$/)?.[1]}</p>
         <ButtonItem
           layout="below"
           onClick={handleBrowse}
         >
-          Select
+          Change
         </ButtonItem>
-        <DialogBody>
-          <p>path: {showPath}</p>
-        </DialogBody>
 
       </PanelSectionRow>
 
@@ -71,7 +88,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = ({ serverAPI }) => {
         >
           Menu
         </ButtonItem>
-      </PanelSectionRow>
+      </PanelSectionRow> */}
 
     </PanelSection>
   );

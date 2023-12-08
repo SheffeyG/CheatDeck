@@ -8,11 +8,14 @@ import { FaWrench } from "react-icons/fa";
 import Content from "./component/Content";
 import PageRouter from "./component/PageRouter";
 import contextMenuPatch, { LibraryContextMenu } from './utils/patch';
+import { Backend } from "./utils/backend";
 
 
 export default definePlugin((serverApi: ServerAPI) => {
+  
+  Backend.initialize(serverApi);
 
-  serverApi.routerHook.addRoute("/cheat-settings/:appid", PageRouter, {
+  serverApi.routerHook.addRoute("/cheatdeck/:appid", PageRouter, {
     exact: true,
   });
 
@@ -23,7 +26,7 @@ export default definePlugin((serverApi: ServerAPI) => {
     content: <Content serverAPI={serverApi} />,
     icon: <FaWrench />,
     onDismount() {
-      serverApi.routerHook.removeRoute("/cheat-settings/:appid");
+      serverApi.routerHook.removeRoute("/cheatdeck/:appid");
       menuPatches?.unpatch();
     },
   };

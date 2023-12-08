@@ -4,10 +4,11 @@ export type FilePickerFilter = RegExp | ((file: File) => boolean) | undefined;
 
 
 export class Backend {
+  static serverAPI: ServerAPI
+
   static initialize(serverApi: ServerAPI) {
     Backend.serverAPI = serverApi
   }
-  static serverAPI: ServerAPI
   
   static async bridge(functionName: string, namedArgs?: any) {
     namedArgs = (namedArgs) ? namedArgs : {}

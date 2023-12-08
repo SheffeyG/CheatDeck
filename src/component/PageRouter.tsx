@@ -9,7 +9,8 @@ import GameSettings from "./GameSettings"
 
 
 const PageRouter: VFC = () => {
-  const { appid } = useParams<{ appid: number }>();
+  var { appid } = useParams<{ appid: number }>();
+  if (typeof appid === 'string') { appid = parseInt(appid, 10) }
   const pages = [
     {
       title: 'Game Settings',
