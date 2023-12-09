@@ -5,8 +5,8 @@ import {
 } from "decky-frontend-lib";
 import { FaWrench } from "react-icons/fa";
 
-import Content from "./component/Content";
-import PageRouter from "./component/PageRouter";
+import Content from "./views/Content";
+import PageRouter from "./views/PageRouter";
 import contextMenuPatch, { LibraryContextMenu } from './utils/patch';
 import { Backend } from "./utils/backend";
 

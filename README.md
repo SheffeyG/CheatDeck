@@ -8,3 +8,4 @@
 ## Reference
 [decky-loader](https://github.com/SteamDeckHomebrew/decky-loader)  
 [decky-steamgriddb](https://github.com/SteamGridDB/decky-steamgriddb)  
+[decky-autosuspend](https://github.com/jurassicplayer/decky-autosuspend)

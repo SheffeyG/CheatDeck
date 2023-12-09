@@ -1,12 +1,20 @@
 import logger from './logger'
 import { Backend } from './backend'
+import { DropdownOption } from 'decky-frontend-lib';
 
 export interface SettingsProps {
-  cheatPath: string,
+  defaultCheatPath: string,
+  defaultLangCode: DropdownOption,
+  langCodeSet: DropdownOption[]
 }
 
 export const defaultSettings: SettingsProps = {
-  cheatPath: "/home/deck"
+  defaultCheatPath: "/home/deck",
+  defaultLangCode: { label: "简体中文", data: "zh_CN.utf8" },
+  langCodeSet: [
+    { label: "简体中文", data: "zh_CN.utf8" },
+    { label: "繁体中文", data: "zh_TW.utf8" },
+  ]
 }
 
 export class SettingsManager {
@@ -19,11 +27,11 @@ export class SettingsManager {
     await Promise.all(promises);
     await Backend.commitSettings();
 
-    logger.info(`Saved user settings:\n${JSON.stringify(settings, null, 2)}`)
+    logger.info(`Saved user settings:\n${JSON.stringify(userSettings, null, 2)}`)
   }
 
   static async loadFromFile() {
-    let userSettings: {[key:string]: any} = {}
+    let userSettings: SettingsProps = defaultSettings
     let validSettings = defaultSettings
     for (let key in validSettings) {
       userSettings[key] = await Backend.getSetting(key, validSettings[key])

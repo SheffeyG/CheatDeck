@@ -24,8 +24,8 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
     SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
       savedOptions = detail.strLaunchOptions;
       logger.info("saved: " + savedOptions);
-      setEnableCheat(savedOptions.includes("PROTON_REMOTE_DEBUG_CMD="));
-      setEnableLang(savedOptions.includes("LANG="));
+      setEnableCheat(savedOptions.includes("PROTON_REMOTE_DEBUG_CMD"));
+      setEnableLang(savedOptions.includes("LANG"));
       const match = savedOptions.match(/PROTON_REMOTE_DEBUG_CMD="([^"]*)"/);
       setCheatPath(match ? match[1] : '');
       // logger.info(`(${savedOptions}, ${enableCheat}, ${enableLang}, ${cheatPath})`)
@@ -59,6 +59,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="Enable Cheat"
+        description="Don't forget to enable developer mode in steam system settings"
         icon={<FaSatellite />}
         bottomSeparator={"none"}
         checked={enableCheat}
@@ -73,7 +74,6 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
           padding={"none"}
         >
           <Focusable
-            aria-label="Cheat Path:"
             style={{
               marginLeft: "auto",
               boxShadow: "none",
@@ -86,7 +86,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
               style={{
                 padding: "10px",
                 fontSize: "14px",
-                width: "400px"
+                width: "400px",
               }}
               disabled={true}
               value={cheatPath}
@@ -109,7 +109,8 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
         </Field>
         : null}
       <ToggleField
-        label="Enable Lang"
+        label="Language"
+        description="Trying to use the selected language in game mode"
         icon={<FaLanguage />}
         checked={enableLang}
         onChange={(value: boolean) => {
@@ -120,10 +121,12 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
       <DialogButton
         onClick={setOptions}
         style={{
-          marginTop: "10px",
+          alignSelf: "center",
+          marginTop: "20px",
           padding: "10px",
           fontSize: "14px",
-          textAlign: "center"
+          textAlign: "center",
+          width: "80%"
         }}
       >
         Save Settings
