@@ -51,9 +51,11 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
       options += `LANG="${gameSettings.langCode}" `;
     };
     if (gameSettings.enableCheat) {
-      options += `PROTON_REMOTE_DEBUG_CMD="${gameSettings.cheatPath}" PRESSURE_VESSEL_FILESYSTEMS_RW="$STEAM_COMPAT_DATA_PATH/pfx/drive_c:${gameSettings.cheatPath.replace(/\/[^/]+$/, '')}" `;
+      options += `PROTON_REMOTE_DEBUG_CMD="${gameSettings.cheatPath.replace(/ /g, '\\ ')}" `
+      options += `PRESSURE_VESSEL_FILESYSTEMS_RW="$STEAM_COMPAT_DATA_PATH/pfx/drive_c:\
+        ${gameSettings.cheatPath.replace(/\/[^/]+$/, '').replace(/ /g, '\\ ')}" `;
     }
-    if (gameSettings.enableLang || gameSettings.enableCheat) {
+    if (options.length > 0) {
       options += `%command%`;
     }
     SteamClient.Apps.SetAppLaunchOptions(appid, options);
@@ -106,7 +108,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
               width: "400px",
             }}
             disabled={true}
-            value={gameSettings.cheatPath}
+            value={gameSettings.cheatPath.replace(/\\ /g, ' ')}
           />
           <DialogButton
             onClick={handleBrowse}
@@ -155,7 +157,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
               padding: "10px",
               fontSize: "14px",
               width: "200px",
-              marginRight: "2px"
+              marginRight: ".5em"
             }}
             value={gameSettings.langCode}
             onChange={(e) => {
