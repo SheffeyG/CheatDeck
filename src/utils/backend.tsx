@@ -29,6 +29,8 @@ export class Backend {
     return output
   }
 
+  // static sendMsg = Backend.serverAPI.toaster
+
   static openFilePicker = (
     startPath: string,
     validFileExtensions?: string[],

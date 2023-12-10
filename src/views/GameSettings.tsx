@@ -1,9 +1,11 @@
 import {
   AppDetails,
   DialogButton,
+  Dropdown,
   Field,
   Focusable,
   TextField,
+  ToastData,
   ToggleField,
 } from "decky-frontend-lib"
 import { VFC, useEffect, useState } from "react"
@@ -11,46 +13,60 @@ import { FaSatellite, FaLanguage, FaFolder } from "react-icons/fa";
 
 import logger from "../utils/logger"
 import { Backend } from "../utils/backend";
-// import { SettingsManager } from "../utils/settings";
+import { defaultGameSettings, defaultLangCodes } from "../utils/settings";
 
 
 const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
-  const [enableCheat, setEnableCheat] = useState(false);
-  const [enableLang, setEnableLang] = useState(false);
-  const [cheatPath, setCheatPath] = useState('');
+  const [gameSettings, setGameSettings] = useState(defaultGameSettings)
 
   useEffect(() => {
-    let savedOptions = 'test';
+    let savedOptions = '';
     SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
       savedOptions = detail.strLaunchOptions;
-      logger.info("saved: " + savedOptions);
-      setEnableCheat(savedOptions.includes("PROTON_REMOTE_DEBUG_CMD"));
-      setEnableLang(savedOptions.includes("LANG"));
-      const match = savedOptions.match(/PROTON_REMOTE_DEBUG_CMD="([^"]*)"/);
-      setCheatPath(match ? match[1] : '');
-      // logger.info(`(${savedOptions}, ${enableCheat}, ${enableLang}, ${cheatPath})`)
+      const matchCheat = savedOptions.match(/PROTON_REMOTE_DEBUG_CMD="([^"]*)"/);
+      const matchLang = savedOptions.match(/LANG="([^"]*)"/);
+      // logger.info("saved: " + savedOptions);
+      const updatedGameSettings = {
+        ...gameSettings,
+        enableCheat: savedOptions.includes("PROTON_REMOTE_DEBUG_CMD"),
+        enableLang: savedOptions.includes("LANG"),
+        cheatPath: matchCheat ? matchCheat[1] : '',
+        langCode: matchLang ? matchLang[1] : '',
+      }
+      setGameSettings(updatedGameSettings);
     })
   }, []);
 
   const handleBrowse = async () => {
     const filePickerRes = await Backend.openFilePicker("/home/deck", ["exe"]);
-    setCheatPath(filePickerRes.path);
+    const updatedGameSettings = { ...gameSettings };
+    updatedGameSettings.cheatPath = filePickerRes.path;
+    setGameSettings(updatedGameSettings);
   };
 
   const setOptions = () => {
     // build option commands
     let options = ''
-    if (enableLang) {
-      options += 'LANG=zh_CN.utf8 ';
+    if (gameSettings.enableLang) {
+      options += `LANG="${gameSettings.langCode}" `;
     };
-    if (enableCheat) {
-      options += `PROTON_REMOTE_DEBUG_CMD="${cheatPath}" PRESSURE_VESSEL_FILESYSTEMS_RW="$STEAM_COMPAT_DATA_PATH/pfx/drive_c:${cheatPath.replace(/\/[^/]+$/, '')}" `;
+    if (gameSettings.enableCheat) {
+      options += `PROTON_REMOTE_DEBUG_CMD="${gameSettings.cheatPath}" PRESSURE_VESSEL_FILESYSTEMS_RW="$STEAM_COMPAT_DATA_PATH/pfx/drive_c:${gameSettings.cheatPath.replace(/\/[^/]+$/, '')}" `;
     }
-    if (enableLang || enableCheat) {
+    if (gameSettings.enableLang || gameSettings.enableCheat) {
       options += `%command%`;
     }
-    SteamClient.Apps.SetShortcutLaunchOptions(appid, options);
+    SteamClient.Apps.SetAppLaunchOptions(appid, options);
     logger.info(`set app ${appid} options:\n ${options}`);
+
+    const toastData: ToastData = {
+      title: "CheatDeck",
+      body: "Save game settings suscess.",
+      duration: 1500,
+      playSound: true,
+      showToast: true
+    }
+    Backend.serverAPI.toaster.toast(toastData)
   }
 
   return (
@@ -62,61 +78,107 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
         description="Don't forget to enable developer mode in steam system settings"
         icon={<FaSatellite />}
         bottomSeparator={"none"}
-        checked={enableCheat}
+        checked={gameSettings.enableCheat}
         onChange={(value: boolean) => {
-          setEnableCheat(value);
+          const updatedGameSettings = { ...gameSettings };
+          updatedGameSettings.enableCheat = value;
+          setGameSettings(updatedGameSettings);
         }}
       />
-      {enableCheat ?
-        <Field
-          key={1}
-          label={"Cheat path"}
-          padding={"none"}
+      {gameSettings.enableCheat ? <Field
+        key={1}
+        label={"Cheat path"}
+        padding={"none"}
+        bottomSeparator="thick"
+      >
+        <Focusable
+          style={{
+            boxShadow: "none",
+            display: "flex",
+            justifyContent: "right",
+            padding: "10px",
+          }}
         >
-          <Focusable
+          <TextField
             style={{
-              marginLeft: "auto",
-              boxShadow: "none",
+              padding: "10px",
+              fontSize: "14px",
+              width: "400px",
+            }}
+            disabled={true}
+            value={gameSettings.cheatPath}
+          />
+          <DialogButton
+            onClick={handleBrowse}
+            style={{
               display: "flex",
-              justifyContent: "right",
-              padding: "4px",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "10px",
+              maxWidth: "40px",
+              minWidth: "auto",
+              marginLeft: ".5em",
             }}
           >
-            <TextField
-              style={{
-                padding: "10px",
-                fontSize: "14px",
-                width: "400px",
-              }}
-              disabled={true}
-              value={cheatPath}
-            />
-            <DialogButton
-              onClick={handleBrowse}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "10px",
-                maxWidth: "40px",
-                minWidth: "auto",
-                marginLeft: ".5em",
-              }}
-            >
-              <FaFolder />
-            </DialogButton>
-          </Focusable>
-        </Field>
-        : null}
+            <FaFolder />
+          </DialogButton>
+        </Focusable>
+      </Field> : null}
+
       <ToggleField
         label="Language"
-        description="Trying to use the selected language in game mode"
+        description="If the game language is correct then you don't need this"
         icon={<FaLanguage />}
-        checked={enableLang}
+        checked={gameSettings.enableLang}
+        bottomSeparator="none"
         onChange={(value: boolean) => {
-          setEnableLang(value);
+          const updatedGameSettings = { ...gameSettings };
+          updatedGameSettings.enableLang = value;
+          setGameSettings(updatedGameSettings);
         }}
       />
+      {gameSettings.enableLang ? <Field
+        label="Language code"
+        padding="none"
+        bottomSeparator="thick"
+      >
+        <Focusable
+          style={{
+            boxShadow: "none",
+            display: "flex",
+            justifyContent: "right",
+            padding: "10px",
+          }}
+        >
+          <TextField
+            style={{
+              padding: "10px",
+              fontSize: "14px",
+              width: "200px",
+              marginRight: "2px"
+            }}
+            value={gameSettings.langCode}
+            onChange={(e) => {
+              setGameSettings((prevSettings) => ({
+                ...prevSettings,
+                langCode: e.target.value,
+              }));
+            }}
+          />
+          <Dropdown
+            rgOptions={defaultLangCodes}
+            selectedOption={defaultLangCodes[0]}
+            onChange={(v) => {
+              logger.info(`selected: ${JSON.stringify(v)}`);
+              setGameSettings((prevSettings) => ({
+                ...prevSettings,
+                langCode: v.data,
+              }));
+            }}
+            strDefaultLabel="Default"
+          />
+        </Focusable>
+      </Field> : null}
 
       <DialogButton
         onClick={setOptions}

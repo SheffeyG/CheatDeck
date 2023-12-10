@@ -2,6 +2,27 @@ import logger from './logger'
 import { Backend } from './backend'
 import { DropdownOption } from 'decky-frontend-lib';
 
+// Gamesettings
+export interface GameSettingsProps {
+  enableCheat: boolean,
+  enableLang: boolean,
+  cheatPath: string,
+  langCode: string,
+}
+
+export const defaultGameSettings: GameSettingsProps = {
+  enableCheat: false,
+  enableLang: false,
+  cheatPath: "Choose the executable file of your cheat",
+  langCode: "zh_CN.utf8",
+}
+
+export const defaultLangCodes: DropdownOption[] = [
+  { label: "简体中文", data: "zh_CN.utf8" },
+  { label: "繁体中文", data: "zh_TW.utf8" },
+]
+
+// Content
 export interface SettingsProps {
   defaultCheatPath: string,
   defaultLangCode: DropdownOption,

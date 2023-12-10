@@ -76,7 +76,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = () => {
         /> */}
 
         <DropdownItem
-          label={<><FaLanguage />Default Language Code</>}
+          label={<><FaLanguage />Target Language</>}
           // icon={<FaLanguage />}
           // description="Number of times to repeat notification"
           rgOptions={settings.langCodeSet}
