@@ -2,7 +2,9 @@
 [Decky Loader](https://github.com/SteamDeckHomebrew/PluginLoader) Plugin to use cheat or trainer more conveniently, and provide language selection in game mode.
 
 ## Tips
-- Open game details page, you can find `cheat` at context menu.
+- To find the cheat settings, navigate to the game details menu.
+- Please enable developer mode in the steam system settings.
+- If you are unable to click on the selected cheat, please switch to windowed mode in the game settings.
 - You can find some trainer at [Fling](https://flingtrainer.com/).
 
 ## Reference

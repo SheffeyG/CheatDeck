@@ -1,16 +1,9 @@
 import { DialogBodyText,  } from 'decky-frontend-lib';
-import { useEffect, useState } from 'react';
 
-const Information = ({ path }: { path: string }) => {
-  const [currentPath, setCurrentPath] = useState('/');
-
-  useEffect(() => {
-    setCurrentPath(path);
-  }, [path]);
-
+const Information = ({ appid }: { appid: number | string }) => {
   return (
     <DialogBodyText>
-      <p>Path: {currentPath}</p>
+      <p>App ID: {appid}</p>
     </DialogBodyText>
   );
 };

@@ -6,6 +6,7 @@ import { VFC } from "react"
 import { FaCog, FaInfo } from "react-icons/fa"
 
 import GameSettings from "./GameSettings"
+import Information from "./Information"
 
 
 const PageRouter: VFC = () => {
@@ -20,7 +21,7 @@ const PageRouter: VFC = () => {
     },
     {
       title: 'App Info',
-      content: <div>{appid}</div>,
+      content: <Information appid={appid}/>,
       icon: <FaInfo />,
       hideTitle: false
     }
