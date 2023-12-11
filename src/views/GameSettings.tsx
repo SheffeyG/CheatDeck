@@ -21,7 +21,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
 
   useEffect(() => {
     let savedOptions = '';
-    SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
+    const unregister = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
       savedOptions = detail.strLaunchOptions;
       const matchCheat = savedOptions.match(/PROTON_REMOTE_DEBUG_CMD="([^"]*)"/);
       const matchLang = savedOptions.match(/LANG="([^"]*)"/);
@@ -35,6 +35,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
       }
       setGameSettings(updatedGameSettings);
     })
+    setTimeout(() => { unregister() }, 1000);
   }, []);
 
   const handleBrowse = async () => {
