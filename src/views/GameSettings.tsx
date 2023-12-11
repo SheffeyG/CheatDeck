@@ -21,7 +21,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
 
   useEffect(() => {
     let savedOptions = '';
-    SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
+    const unregister = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
       savedOptions = detail.strLaunchOptions;
       const matchCheat = savedOptions.match(/PROTON_REMOTE_DEBUG_CMD="([^"]*)"/);
       const matchLang = savedOptions.match(/LANG="([^"]*)"/);
@@ -35,6 +35,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
       }
       setGameSettings(updatedGameSettings);
     })
+    setTimeout(() => { unregister() }, 1000);
   }, []);
 
   const handleBrowse = async () => {
@@ -77,7 +78,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="Enable Cheat"
-        description="Don't forget to enable developer mode in steam system settings"
+        description="Please make sure file and folder names do not contain / or \"
         icon={<FaSatellite />}
         bottomSeparator={"none"}
         checked={gameSettings.enableCheat}
@@ -129,7 +130,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="Language"
-        description="If the game language is correct then you don't need this"
+        description="Try to specify the game language"
         icon={<FaLanguage />}
         checked={gameSettings.enableLang}
         bottomSeparator="none"
