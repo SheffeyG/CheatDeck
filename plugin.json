@@ -1,10 +1,10 @@
 {
   "name": "CheatDeck",
   "author": "Sheffey",
-  "flags": ["debug", "_root"],
+  "flags": ["debug"],
   "publish": {
-    "tags": ["cheats", "trainer"],
-    "description": "Lunch your cheats while gaming.",
-    "image": "https://opengraph.githubassets.com/1/SteamDeckHomebrew/PluginLoader"
+    "tags": ["cheat", "trainer"],
+    "description": "Lunch games with cheat in steamdeck",
+    "image": "https://opengraph.githubassets.com/1/sheffeyg/cheatdeck"
   }
 }

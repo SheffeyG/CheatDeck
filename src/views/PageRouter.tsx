@@ -20,7 +20,7 @@ const PageRouter: VFC = () => {
       hideTitle: false
     },
     {
-      title: 'App Info',
+      title: 'Information',
       content: <Information appid={appid}/>,
       icon: <FaInfo />,
       hideTitle: false
