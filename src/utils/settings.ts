@@ -2,7 +2,7 @@ import logger from './logger'
 import { Backend } from './backend'
 import { DropdownOption } from 'decky-frontend-lib';
 
-// Gamesettings
+// GameSettings
 export interface GameSettingsProps {
   enableCheat: boolean,
   enableLang: boolean,

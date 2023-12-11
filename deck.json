@@ -1,7 +1,7 @@
 {
-  "deckip": "192.168.3.35",
+  "deckip": "0.0.0.0",
   "deckport": "22",
-  "deckpass": "123456",
+  "deckpass": "ssap",
   "deckkey": "-i $HOME/.ssh/id_rsa",
   "deckdir": "/home/deck"
 }

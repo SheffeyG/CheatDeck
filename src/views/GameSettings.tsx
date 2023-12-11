@@ -21,7 +21,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
 
   useEffect(() => {
     let savedOptions = '';
-    const unregister = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
+    SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
       savedOptions = detail.strLaunchOptions;
       const matchCheat = savedOptions.match(/PROTON_REMOTE_DEBUG_CMD="([^"]*)"/);
       const matchLang = savedOptions.match(/LANG="([^"]*)"/);
@@ -30,12 +30,11 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
         ...gameSettings,
         enableCheat: savedOptions.includes("PROTON_REMOTE_DEBUG_CMD"),
         enableLang: savedOptions.includes("LANG"),
-        cheatPath: matchCheat ? matchCheat[1] : '',
+        cheatPath: matchCheat ? matchCheat[1].replace(/\\ /g, ' ') : '',
         langCode: matchLang ? matchLang[1] : '',
       }
       setGameSettings(updatedGameSettings);
     })
-    setTimeout(() => { unregister() }, 1000);
   }, []);
 
   const handleBrowse = async () => {
@@ -109,7 +108,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
               width: "400px",
             }}
             disabled={true}
-            value={gameSettings.cheatPath.replace(/\\ /g, ' ')}
+            value={gameSettings.cheatPath}
           />
           <DialogButton
             onClick={handleBrowse}
