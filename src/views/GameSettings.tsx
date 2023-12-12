@@ -9,7 +9,7 @@ import {
   ToggleField,
 } from "decky-frontend-lib"
 import { VFC, useEffect, useState } from "react"
-import { FaSatellite, FaLanguage, FaFolder } from "react-icons/fa";
+import { FaSatellite, FaLanguage, FaFolderOpen } from "react-icons/fa";
 
 import logger from "../utils/logger"
 import { Backend } from "../utils/backend";
@@ -78,7 +78,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="Enable Cheat"
-        description="Please make sure file and folder names do not contain / or \"
+        description='Please Make sure the file or folder name does not contain slashes or double quotes'
         icon={<FaSatellite />}
         bottomSeparator={"none"}
         checked={gameSettings.enableCheat}
@@ -99,7 +99,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
             boxShadow: "none",
             display: "flex",
             justifyContent: "right",
-            padding: "10px",
+            padding: "10px 0",
           }}
         >
           <TextField
@@ -123,7 +123,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
               marginLeft: ".5em",
             }}
           >
-            <FaFolder />
+            <FaFolderOpen />
           </DialogButton>
         </Focusable>
       </Field> : null}
@@ -150,7 +150,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
             boxShadow: "none",
             display: "flex",
             justifyContent: "right",
-            padding: "10px",
+            padding: "10px 0",
           }}
         >
           <TextField

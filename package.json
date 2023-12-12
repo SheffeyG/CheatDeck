@@ -1,6 +1,6 @@
 {
   "name": "cheatdeck",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Lunch games with cheat in steamdeck",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
