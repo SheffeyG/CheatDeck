@@ -6,6 +6,7 @@ import { DropdownOption } from 'decky-frontend-lib';
 export interface GameSettingsProps {
   enableCheat: boolean,
   enableLang: boolean,
+  enableDxvk: boolean,
   cheatPath: string,
   langCode: string,
 }
@@ -13,6 +14,7 @@ export interface GameSettingsProps {
 export const defaultGameSettings: GameSettingsProps = {
   enableCheat: false,
   enableLang: false,
+  enableDxvk: false,
   cheatPath: "Choose the executable file of your cheat",
   langCode: "zh_CN.utf8",
 }

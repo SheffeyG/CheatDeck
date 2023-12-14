@@ -9,7 +9,7 @@ import {
   ToggleField,
 } from "decky-frontend-lib"
 import { VFC, useEffect, useState } from "react"
-import { FaSatellite, FaLanguage, FaFolderOpen } from "react-icons/fa";
+import { FaSatellite, FaLanguage, FaFolderOpen, FaRocket } from "react-icons/fa";
 
 import logger from "../utils/logger"
 import { Backend } from "../utils/backend";
@@ -30,6 +30,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
         ...gameSettings,
         enableCheat: savedOptions.includes("PROTON_REMOTE_DEBUG_CMD"),
         enableLang: savedOptions.includes("LANG"),
+        enableDxvk: savedOptions.includes("DXVK_ASYNC=1"),
         cheatPath: matchCheat ? matchCheat[1].replace(/\\ /g, ' ') : '',
         langCode: matchLang ? matchLang[1] : '',
       }
@@ -50,6 +51,9 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
     let options = ''
     if (gameSettings.enableLang) {
       options += `LANG="${gameSettings.langCode}" `;
+    };
+    if (gameSettings.enableDxvk) {
+      options += `DXVK_ASYNC=1 `;
     };
     if (gameSettings.enableCheat) {
       options += `PROTON_REMOTE_DEBUG_CMD="${gameSettings.cheatPath.replace(/ /g, '\\ ')}" `
@@ -183,6 +187,19 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
           />
         </Focusable>
       </Field> : null}
+
+      <ToggleField
+        label="DXVK-ASYNC"
+        description='Enable shaders pre-calculate for non-steam games using ProtonGE'
+        icon={<FaRocket />}
+        bottomSeparator={"none"}
+        checked={gameSettings.enableDxvk}
+        onChange={(value: boolean) => {
+          const updatedGameSettings = { ...gameSettings };
+          updatedGameSettings.enableDxvk = value;
+          setGameSettings(updatedGameSettings);
+        }}
+      />
 
       <DialogButton
         onClick={setOptions}
