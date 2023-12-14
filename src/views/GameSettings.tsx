@@ -21,7 +21,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
 
   useEffect(() => {
     let savedOptions = '';
-    const unregister = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
+    const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
       savedOptions = detail.strLaunchOptions;
       const matchCheat = savedOptions.match(/PROTON_REMOTE_DEBUG_CMD="([^"]*)"/);
       const matchLang = savedOptions.match(/LANG="([^"]*)"/);
@@ -78,7 +78,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="Enable Cheat"
-        description='Please Make sure the file or folder name does not contain slashes or double quotes'
+        description='Please make sure the file or folder name does not contain slashes or double quotes'
         icon={<FaSatellite />}
         bottomSeparator={"none"}
         checked={gameSettings.enableCheat}
@@ -162,6 +162,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
             }}
             value={gameSettings.langCode}
             onChange={(e) => {
+              e.persist();
               setGameSettings((prevSettings) => ({
                 ...prevSettings,
                 langCode: e.target.value,
