@@ -4,7 +4,7 @@
   "flags": ["debug"],
   "publish": {
     "tags": ["cheat", "trainer"],
-    "description": "Lunch games with cheat in steamdeck",
+    "description": "Launch games with cheat or trainer and other settings in steamdeck",
     "image": "https://opengraph.githubassets.com/1/sheffeyg/cheatdeck"
   }
 }

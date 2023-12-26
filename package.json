@@ -1,7 +1,7 @@
 {
   "name": "cheatdeck",
   "version": "0.1.2",
-  "description": "Lunch games with cheat in steamdeck",
+  "description": "Launch games with cheat or trainer and other settings in steamdeck",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
     "watch": "rollup -c -w",
