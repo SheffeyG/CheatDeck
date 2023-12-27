@@ -5,6 +5,6 @@
   "publish": {
     "tags": ["cheat", "trainer"],
     "description": "Launch games with cheat or trainer and other settings in steamdeck",
-    "image": "https://opengraph.githubassets.com/1/sheffeyg/cheatdeck"
+    "image": "https://github.com/SheffeyG/CheatDeck/raw/main/doc/settings.jpg"
   }
 }
