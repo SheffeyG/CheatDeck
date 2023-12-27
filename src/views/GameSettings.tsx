@@ -30,7 +30,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
         ...gameSettings,
         enableCheat: savedOptions.includes("PROTON_REMOTE_DEBUG_CMD"),
         enableLang: savedOptions.includes("LANG"),
-        enableDxvk: savedOptions.includes("DXVK_ASYNC=1"),
+        enableDxvk: savedOptions.includes("DXVK_ASYNC=1 RADV_PERFTEST=gpl"),
         cheatPath: matchCheat ? matchCheat[1].replace(/\\ /g, ' ') : '',
         langCode: matchLang ? matchLang[1] : '',
       }
@@ -53,12 +53,11 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
       options += `LANG="${gameSettings.langCode}" `;
     };
     if (gameSettings.enableDxvk) {
-      options += `DXVK_ASYNC=1 `;
+      options += `DXVK_ASYNC=1 RADV_PERFTEST=gpl `;
     };
     if (gameSettings.enableCheat) {
       options += `PROTON_REMOTE_DEBUG_CMD="${gameSettings.cheatPath.replace(/ /g, '\\ ')}" `
-      options += `PRESSURE_VESSEL_FILESYSTEMS_RW="$STEAM_COMPAT_DATA_PATH/pfx/drive_c:\
-        ${gameSettings.cheatPath.replace(/\/[^/]+$/, '').replace(/ /g, '\\ ')}" `;
+      options += `PRESSURE_VESSEL_FILESYSTEMS_RW="$STEAM_COMPAT_DATA_PATH/pfx/drive_c:${gameSettings.cheatPath.replace(/\/[^/]+$/, '').replace(/ /g, '\\ ')}" `;
     }
     if (options.length > 0) {
       options += `%command%`;

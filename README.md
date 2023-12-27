@@ -15,7 +15,7 @@
 - You can find some trainer at [Fling](https://flingtrainer.com/).
 - If you are unable to click on the selected cheat, please switch to windowed mode in the game settings.
 - Use the language setting if your game or cheat language  not correct (most on non-steam games).
-- DXVK ASYNC is a hack to skip shader compilation stutter by not waiting for shaders to compile, which could avoids the stutter (Maybe GPL?).
+- DXVK ASYNC is a ProtonGE hack to skip shader compilation stutter by not waiting for shaders to compile, which could avoids the stutter (Maybe GPL?).
 
 ## Reference
 - [decky-loader](https://github.com/SteamDeckHomebrew/decky-loader)  
