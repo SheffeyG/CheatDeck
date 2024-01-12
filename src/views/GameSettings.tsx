@@ -63,6 +63,11 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
         checked={showCheat}
         onChange={(enable: boolean) => {
           setShowChat(enable);
+          if (!enable) {
+            const updatedOptions = new Options(options.getOptionsString());
+            updatedOptions.setOptionValue('PROTON_REMOTE_DEBUG_CMD', '');
+            setOptions(updatedOptions);
+          }
         }}
       />
       {showCheat && (<Field
@@ -113,6 +118,11 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
         bottomSeparator="none"
         onChange={(enable: boolean) => {
           setShowLang(enable);
+          if (!enable) {
+            const updatedOptions = new Options(options.getOptionsString());
+            updatedOptions.setOptionValue('LANG', '');
+            setOptions(updatedOptions);
+          }
         }}
       />
       {showLang && (<Field
