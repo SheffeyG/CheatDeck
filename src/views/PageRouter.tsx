@@ -3,9 +3,10 @@ import {
   useParams
 } from "decky-frontend-lib"
 import { VFC } from "react"
-import { FaCog, FaInfo } from "react-icons/fa"
+import { FaCog, FaInfo, FaBolt } from "react-icons/fa"
 
-import GameSettings from "./GameSettings"
+import Normal from "./Normal"
+import Advanced from "./Advanced"
 import Information from "./Information"
 
 
@@ -14,9 +15,15 @@ const PageRouter: VFC = () => {
   if (typeof appid === 'string') { appid = parseInt(appid, 10) }
   const pages = [
     {
-      title: 'Game Settings',
-      content: <GameSettings appid={appid}/>,
+      title: 'Normal',
+      content: <Normal appid={appid}/>,
       icon: <FaCog />,
+      hideTitle: false
+    },
+    {
+      title: 'Advanced',
+      content: <Advanced appid={appid}/>,
+      icon: <FaBolt />,
       hideTitle: false
     },
     {

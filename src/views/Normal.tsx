@@ -9,14 +9,14 @@ import {
   ToggleField,
 } from "decky-frontend-lib"
 import { VFC, useEffect, useState } from "react"
-import { FaSatellite, FaLanguage, FaFolderOpen, FaRocket } from "react-icons/fa";
+import { FaGamepad, FaLanguage, FaFolderOpen } from "react-icons/fa";
 
 // import logger from "../utils/logger"
 import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
 import { defaultLangCodes } from "../utils/default";
 
-const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
+const Normal: VFC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(''));
   const [showCheat, setShowChat] = useState(false);
   const [showLang, setShowLang] = useState(false);
@@ -58,7 +58,7 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
       <ToggleField
         label="Enable Cheat"
         description='Please make sure the file or folder name does not contain slashes or double quotes'
-        icon={<FaSatellite />}
+        icon={<FaGamepad />}
         bottomSeparator={"none"}
         checked={showCheat}
         onChange={(enable: boolean) => {
@@ -167,21 +167,6 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
         </Focusable>
       </Field>)}
 
-      <ToggleField
-        label="RADV_PERFTEST"
-        description='Enable shaders pre-calculate for non-steam games using ProtonGE'
-        icon={<FaRocket />}
-        bottomSeparator={"none"}
-        checked={options.hasOption('RADV_PERFTEST')}
-        onChange={(enable: boolean) => {
-          setOptions((prevOptions) => {
-            const dxvk = enable ? 'gpl' : '';
-            prevOptions.setOptionValue('RADV_PERFTEST', dxvk);
-            return prevOptions;
-          });
-        }}
-      />
-
       <DialogButton
         onClick={saveOptions}
         style={{
@@ -199,4 +184,4 @@ const GameSettings: VFC<{ appid: number }> = ({ appid }) => {
   )
 }
 
-export default GameSettings
+export default Normal
