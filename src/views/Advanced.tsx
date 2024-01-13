@@ -11,7 +11,7 @@ import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
 
 const Advanced: VFC<{ appid: number }> = ({ appid }) => {
-  const [options, setOptions] = useState(new Options(''));
+  const [options, setOptions] = useState(new Options(""));
   const [isSteam, setIsSteam] = useState(true);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
       const optionsString = detail.strLaunchOptions;
       const savedOptions = new Options(optionsString);
       setOptions(savedOptions);
-      if (optionsString.match('heroicgameslauncher') || optionsString.match('Emulation')) {
+      if (optionsString.match("heroicgameslauncher") || optionsString.match("Emulation")) {
         setIsSteam(false);
       }
     })
@@ -29,7 +29,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
   const saveOptions = () => {
     if (isSteam) {
       SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
-      Backend.sendNotice("Normal settings saved.");
+      Backend.sendNotice("Advanced settings saved.");
     } else {
       // heroic games luncher not implemented
       Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
@@ -41,30 +41,26 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
 
       <ToggleField
-        label="DXVK-ASYNC"
-        description='Enable shaders pre-calculate for non-steam games using ProtonGE'
+        label="DXVK_ASYNC"
+        description="Enable shaders pre-calculate for games using ProtonGE"
         bottomSeparator={"standard"}
-        checked={options.hasOption('DXVK_ASYNC')}
+        checked={options.hasOption("DXVK_ASYNC")}
         onChange={(enable: boolean) => {
-          setOptions((prevOptions) => {
-            const value = enable ? '1' : '';
-            prevOptions.setOptionValue('DXVK_ASYNC', value);
-            return prevOptions;
-          });
+          const updatedOptions = new Options(options.getOptionsString());
+          updatedOptions.setOptionValue('DXVK_ASYNC', enable ? '1' : '');
+          setOptions(updatedOptions);
         }}
       />
 
       <ToggleField
-        label="RADV-PERFTEST"
-        description='Enable RADV_PERFTEST to gpl for non-steam games using ProtonGE'
+        label="RADV_PERFTEST"
+        description="Enable RADV_PERFTEST to gpl for games using ProtonGE"
         bottomSeparator={"standard"}
-        checked={options.hasOption('RADV_PERFTEST')}
+        checked={options.hasOption("RADV_PERFTEST")}
         onChange={(enable: boolean) => {
-          setOptions((prevOptions) => {
-            const value = enable ? 'gpl' : '';
-            prevOptions.setOptionValue('RADV_PERFTEST', `"${value}"`);
-            return prevOptions;
-          });
+          const updatedOptions = new Options(options.getOptionsString());
+          updatedOptions.setOptionValue('RADV_PERFTEST', enable ? 'gpl' : '');
+          setOptions(updatedOptions);
         }}
       />
 

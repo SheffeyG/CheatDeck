@@ -54,7 +54,7 @@ export class Backend {
     const toastData: ToastData = {
       title: "CheatDeck",
       body: msg,
-      duration: 1500,
+      duration: 2000,
       playSound: true,
       showToast: true
     }

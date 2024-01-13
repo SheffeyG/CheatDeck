@@ -32,7 +32,7 @@ export class Options {
   getOptionsString(): string {
     let optionsString = '';
     for (const key in this.options) {
-      if (this.options.hasOwnProperty(key) && this.options[key]) {
+      if (this.options[key]) {
         const value = this.options[key];
         optionsString += `${key}=${value} `;
       }
