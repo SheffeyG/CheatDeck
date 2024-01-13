@@ -19,13 +19,18 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(''));
   const [showCheat, setShowChat] = useState(false);
   const [showLang, setShowLang] = useState(false);
+  const [isSteam, setIsSteam] = useState(true);
 
   useEffect(() => {
     const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
-      const savedOptions = new Options(detail.strLaunchOptions);
+      const optionsString = detail.strLaunchOptions;
+      const savedOptions = new Options(optionsString);
       setOptions(savedOptions);
       setShowChat(savedOptions.hasOption('PROTON_REMOTE_DEBUG_CMD'));
       setShowLang(savedOptions.hasOption('LANG'));
+      if (optionsString.match('heroicgameslauncher') || optionsString.match('Emulation')) {
+        setIsSteam(false);
+      }
     })
     setTimeout(() => { unregister() }, 1000);
   }, [])
@@ -39,8 +44,13 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
   };
 
   const saveOptions = () => {
-    SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
-    Backend.sendNotice("Normal settings saved.");
+    if (isSteam) {
+      SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
+      Backend.sendNotice("Normal settings saved.");
+    } else {
+      // heroic games luncher not implemented
+      Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
+    }
   }
 
 
