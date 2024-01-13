@@ -5,7 +5,6 @@ import {
   Field,
   Focusable,
   TextField,
-  ToastData,
   ToggleField,
 } from "decky-frontend-lib"
 import { VFC, useEffect, useState } from "react"
@@ -32,23 +31,16 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
   }, [])
 
   const handleBrowse = async () => {
-    const filePickerRes = await Backend.openFilePicker("/home/deck", ["exe"]);
+    const filePickerRes = await Backend.openFilePicker("/home/deck", ["exe", "EXE"]);
     const cheatPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
-    newOptions.setOptionValue('PROTON_REMOTE_DEBUG_CMD', cheatPath);
+    newOptions.setOptionValue('PROTON_REMOTE_DEBUG_CMD', `"${cheatPath}"`);
     setOptions(newOptions);
   };
 
   const saveOptions = () => {
     SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
-    const toastData: ToastData = {
-      title: "CheatDeck",
-      body: "Save game settings suscess.",
-      duration: 1500,
-      playSound: true,
-      showToast: true
-    }
-    Backend.serverAPI.toaster.toast(toastData);
+    Backend.sendNotice("Normal settings saved.");
   }
 
 
@@ -149,7 +141,7 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
             onChange={(e) => {
               e.persist();
               const updatedOptions = new Options(options.getOptionsString());
-              updatedOptions.setOptionValue('LANG', e.target.value);
+              updatedOptions.setOptionValue('LANG', `"${e.target.value}"`);
               setOptions(updatedOptions);
             }}
           />
@@ -159,7 +151,7 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
             onChange={(v) => {
               // logger.info(`selected: ${JSON.stringify(v)}`);
               const updatedOptions = new Options(options.getOptionsString());
-              updatedOptions.setOptionValue('LANG', v.data);
+              updatedOptions.setOptionValue('LANG', `"${v.data}"`);
               setOptions(updatedOptions);
             }}
             strDefaultLabel="Default"

@@ -2,7 +2,6 @@ import {
   AppDetails,
   DialogButton,
   Focusable,
-  ToastData,
   ToggleField,
 } from "decky-frontend-lib"
 import { VFC, useEffect, useState } from "react"
@@ -24,14 +23,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
 
   const saveOptions = () => {
     SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
-    const toastData: ToastData = {
-      title: "CheatDeck",
-      body: "Save game settings suscess.",
-      duration: 1500,
-      playSound: true,
-      showToast: true
-    }
-    Backend.serverAPI.toaster.toast(toastData);
+    Backend.sendNotice("Advanced settings saved.");
   }
 
 
@@ -60,7 +52,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
         onChange={(enable: boolean) => {
           setOptions((prevOptions) => {
             const value = enable ? 'gpl' : '';
-            prevOptions.setOptionValue('RADV_PERFTEST', value);
+            prevOptions.setOptionValue('RADV_PERFTEST', `"${value}"`);
             return prevOptions;
           });
         }}

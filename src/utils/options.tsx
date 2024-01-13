@@ -34,7 +34,7 @@ export class Options {
     for (const key in this.options) {
       if (this.options.hasOwnProperty(key) && this.options[key]) {
         const value = this.options[key];
-        optionsString += `${key}="${value.replace(/^"(.*)"$/, '\$1')}" `;
+        optionsString += `${key}=${value} `;
       }
     }
     if (optionsString) optionsString += '%command%'

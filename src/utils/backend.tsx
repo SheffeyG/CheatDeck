@@ -1,4 +1,4 @@
-import { FileSelectionType, ServerAPI } from "decky-frontend-lib"
+import { FileSelectionType, ServerAPI, ToastData } from "decky-frontend-lib"
 
 export type FilePickerFilter = RegExp | ((file: File) => boolean) | undefined;
 
@@ -49,4 +49,15 @@ export class Backend {
       ).then(resolve, () => reject('User Canceled'));
     });
   };
+
+  static sendNotice = (msg: string) => {
+    const toastData: ToastData = {
+      title: "CheatDeck",
+      body: msg,
+      duration: 1500,
+      playSound: true,
+      showToast: true
+    }
+    Backend.serverAPI.toaster.toast(toastData);
+  }
 }
