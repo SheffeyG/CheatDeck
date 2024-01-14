@@ -1,6 +1,6 @@
 {
   "name": "cheatdeck",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Launch games with cheat or trainer and other settings in steamdeck",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
