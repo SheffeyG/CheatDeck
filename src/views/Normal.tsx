@@ -36,10 +36,13 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
   }, [])
 
   const handleBrowse = async () => {
-    const filePickerRes = await Backend.openFilePicker("/home/deck", ["exe", "EXE"]);
+    const cheatDir = options.getOptionValue('PRESSURE_VESSEL_FILESYSTEMS_RW');
+    const defaultDir = cheatDir ? cheatDir : "/home/deck";
+    const filePickerRes = await Backend.openFilePicker(defaultDir, ["exe", "EXE"]);
     const cheatPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
     newOptions.setOptionValue('PROTON_REMOTE_DEBUG_CMD', `"${cheatPath}"`);
+    newOptions.setOptionValue('PRESSURE_VESSEL_FILESYSTEMS_RW', `"${cheatPath.replace(/\/[^/]+$/, '')}"`);
     setOptions(newOptions);
   };
 
@@ -68,6 +71,7 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
             updatedOptions.setOptionValue('PROTON_REMOTE_DEBUG_CMD', '');
+            updatedOptions.setOptionValue('PRESSURE_VESSEL_FILESYSTEMS_RW', '');
             setOptions(updatedOptions);
           }
         }}
