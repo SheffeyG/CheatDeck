@@ -4,7 +4,7 @@
   "flags": ["debug"],
   "publish": {
     "tags": ["cheat", "trainer"],
-    "description": "Launch games with cheat or trainer and other settings in steamdeck",
+    "description": "Launch games with cheat or trainer and other launch options.",
     "image": "https://github.com/SheffeyG/CheatDeck/raw/main/doc/settings.jpg"
   }
 }

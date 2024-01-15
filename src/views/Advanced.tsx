@@ -31,7 +31,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
       SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
       Backend.sendNotice("Advanced settings saved.");
     } else {
-      // heroic games luncher not implemented
+      // non steam games is not implemented
       Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
     }
   }

@@ -1,7 +1,7 @@
 # CheatDeck
-[Decky Loader](https://github.com/SteamDeckHomebrew/PluginLoader) plugin to use cheat or trainer more conveniently, also provide  some other settings like language change in game mode.
+CheatDeck is a [Decky Loader](https://github.com/SteamDeckHomebrew/PluginLoader) plugin to make it more conveniently to use cheat or trainer, also provide some other launch options like language for games in game mode.
 
-## How to use it
+## How to use
 1. Enable the developer mode at steam system settings.
 2. Download the cheat or trainer you need in your steamdeck.
 3. Navigate to the game details menu, and find the `CheatDeck` item.
@@ -12,10 +12,9 @@
 ![](doc/trainer.jpg)
 
 ## Tips
-- You can find some trainer at [Fling](https://flingtrainer.com/).
+- Please make sure the file or folder name does not contain slashes or quotes.
 - If you are unable to click on the selected cheat, please switch to windowed mode in the game settings.
 - Use the language code setting if your game or cheat language not correct (most on non-steam games).
-- DXVK ASYNC(Maybe GPL?) is a ProtonGE hack to skip shader compilation stutter by not waiting for shaders to compile, which could avoids the stutter.
 
 ## Reference
 - [decky-loader](https://github.com/SteamDeckHomebrew/decky-loader)  

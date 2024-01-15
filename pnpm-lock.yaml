@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   decky-frontend-lib:
-    specifier: ^3.24.0
-    version: 3.24.0
+    specifier: ^3.24.1
+    version: 3.24.1
   qrcode.react:
     specifier: ^3.1.0
     version: 3.1.0
@@ -437,8 +437,8 @@ packages:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
     dev: true
 
-  /decky-frontend-lib@3.24.0:
-    resolution: {integrity: sha512-Bi6On7w48PDKRarVMiyHpd9UruCb8BPr153sYXSI8UEQiF4cdE6pG+5HZpSnHQd7bLa/Dgh8hCIsETLtJsKS5Q==}
+  /decky-frontend-lib@3.24.1:
+    resolution: {integrity: sha512-VGxLTPetxx/pQVC+t8odTHrwQAh7uy4bO2Od2gGWSTfmUUoxtAcEtiXGyE9mKsoD6t7QNHrGvgXn78sf2i/IeQ==}
     dev: false
 
   /deepmerge@4.3.1:

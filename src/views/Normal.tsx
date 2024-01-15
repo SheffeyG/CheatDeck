@@ -48,7 +48,7 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
       SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
       Backend.sendNotice("Normal settings saved.");
     } else {
-      // heroic games luncher not implemented
+      // non steam games is not implemented
       Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
     }
   }
@@ -59,7 +59,7 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="Enable Cheat"
-        description='Please make sure the file or folder name does not contain slashes or double quotes'
+        description='Select the cheat or trainer exe file from storage'
         icon={<FaGamepad />}
         bottomSeparator={"none"}
         checked={showCheat}

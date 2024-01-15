@@ -17,10 +17,12 @@ const Content: VFC<{ serverAPI: ServerAPI }> = () => {
   return (
     <PanelSection title="informatin">
       <DialogBodyText>
-        <p><b>CheatDeck is NOT for emulators.</b> Please do Not use it on emulator games to avoid damage!</p>
-        <p>You can find the cheat settings in the game details menu.</p>
+        <p><b>CheatDeck is NOT for emulators.</b></p>
+        <p>CheatDeck only support the normal game launcher for now.</p>
+        <li>You can find the cheat settings in the game details menu.</li>
         <li>Please enable developer mode in the steam system settings.</li>
-        <li>If you are unable to click on the selected cheat, please switch to windowed mode in the game settings.</li>
+        <li>If you are unable to click the selected cheat panel, please turn the game to window mode.</li>
+        <p>For more information, check the GitHub page blow. If you wanna add more launch options for CheatDeck, feel free to open an issue or pr, or just star the project to support it.</p>
       </DialogBodyText>
 
       <PanelSectionRow>
@@ -55,7 +57,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = () => {
                 fontSize: '14px',
               }}
             >
-              Docs and Issue
+              GitHub
             </DialogButton>
             <DialogButton
               onOKActionDescription='Show Link QR'
