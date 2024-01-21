@@ -1,9 +1,16 @@
 export class Options {
   private options: { [key: string]: string };
+  private others: string;
 
   constructor(input: string) {
     this.options = {};
-    const keyValuePairs = input.split(/(?<!\\) /g);
+    const match = input.match(/(.*)%command%(.*)/);
+    // no normal options
+    if (!match) { this.others = input; return }
+
+    const optionsPart = match[1].trim();
+    this.others = match[2].trim();
+    const keyValuePairs = optionsPart.split(/(?<!\\) /g); // only when real space
     for (const pair of keyValuePairs) {
       const [key, value] = pair.split(/=(.*)/s);
       if (key && value) {
@@ -25,7 +32,7 @@ export class Options {
 
   setOptionValue(key: string, value: string): string {
     const oldValue = this.options[key];
-    this.options[key] = value.trim().replace(/ /g, '\\ ');
+    this.options[key] = value.trim().replace(/ /g, '\\ '); // escape the space
     return oldValue;
   }
 
@@ -37,7 +44,8 @@ export class Options {
         optionsString += `${key}=${value} `;
       }
     }
-    if (optionsString) optionsString += '%command%'
+    if (optionsString) optionsString += '%command%';
+    if (this.others) optionsString += ' ' + this.others;
     return optionsString.trim();
   }
 
