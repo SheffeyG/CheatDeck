@@ -5,7 +5,7 @@ export class Options {
     this.options = {};
     const keyValuePairs = input.split(/(?<!\\) /g);
     for (const pair of keyValuePairs) {
-      const [key, value] = pair.split('=');
+      const [key, value] = pair.split(/=(.*)/s);
       if (key && value) {
         this.options[key.trim()] = value.trim();
       }
