@@ -1,4 +1,9 @@
-import { FileSelectionType, ServerAPI, ToastData } from "decky-frontend-lib"
+import { 
+  FileSelectionType, 
+  FilePickerRes,
+  ServerAPI, 
+  ToastData,
+} from "decky-frontend-lib"
 
 export type FilePickerFilter = RegExp | ((file: File) => boolean) | undefined;
 
@@ -9,7 +14,7 @@ export class Backend {
   static initialize(serverApi: ServerAPI) {
     Backend.serverAPI = serverApi
   }
-  
+
   static async bridge(functionName: string, namedArgs?: any) {
     namedArgs = (namedArgs) ? namedArgs : {}
     console.debug(`Calling backend function: ${functionName}`)
@@ -31,11 +36,11 @@ export class Backend {
 
   static openFilePicker = (
     startPath: string,
-    validFileExtensions?: string[],
     includeFiles?: boolean,
+    validFileExtensions?: string[],
     filter?: FilePickerFilter,
     defaultHidden?: boolean,
-  ): Promise<{ path: string; realpath: string }> => {
+  ): Promise<FilePickerRes> => {
     return new Promise(async (resolve, reject) => {
       await Backend.serverAPI.openFilePickerV2(
         FileSelectionType.FILE,

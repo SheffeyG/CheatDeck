@@ -1,5 +1,5 @@
 # CheatDeck
-CheatDeck is a [Decky Loader](https://github.com/SteamDeckHomebrew/PluginLoader) plugin to make it more conveniently to use cheat or trainer, also provide some other launch options like language for games in game mode.
+CheatDeck is a [Decky Loader](https://github.com/SteamDeckHomebrew/PluginLoader) plugin to make it more conveniently to use cheat or trainer and manage your launch options.
 
 ## How to use
 1. Enable the developer mode at steam system settings.

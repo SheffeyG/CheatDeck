@@ -1,7 +1,7 @@
 {
   "name": "cheatdeck",
   "version": "0.2.1",
-  "description": "Launch games with cheat or trainer and other launch options.",
+  "description": "Launch games with cheat or trainer and manage your launch options.",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
     "watch": "rollup -c -w",

@@ -34,7 +34,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
   const handleBrowse = async () => {
     const prefixDir = options.getOptionValue('STEAM_COMPAT_DATA_PATH');
     const defaultDir = prefixDir ? prefixDir : "/home/deck";
-    const filePickerRes = await Backend.openFilePicker(defaultDir);
+    const filePickerRes = await Backend.openFilePicker(defaultDir, false);
     const prefixPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
     newOptions.setOptionValue('STEAM_COMPAT_DATA_PATH', `"${prefixPath}"`);
@@ -57,7 +57,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="DXVK_ASYNC"
-        description="Enable shaders pre-calculate for games using ProtonGE"
+        description="Enable shaders pre-calculate for ProtonGE below 7-45"
         bottomSeparator={"standard"}
         checked={options.hasOption("DXVK_ASYNC")}
         onChange={(enable: boolean) => {
@@ -69,7 +69,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="RADV_PERFTEST"
-        description="Enable RADV_PERFTEST to gpl for games using ProtonGE"
+        description="Enable shaders pre-calculate for ProtonGE above 7-45"
         bottomSeparator={"standard"}
         checked={options.hasOption("RADV_PERFTEST")}
         onChange={(enable: boolean) => {
@@ -81,7 +81,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="Shared Prefix"
-        description='Specify prefix for the game (include saved game)'
+        description='Specify a folder as the prefix for the game (include saved game)'
         bottomSeparator={"none"}
         checked={showPrefix}
         onChange={(enable: boolean) => {

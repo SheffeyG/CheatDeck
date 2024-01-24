@@ -38,7 +38,7 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
   const handleBrowse = async () => {
     const cheatDir = options.getOptionValue('PRESSURE_VESSEL_FILESYSTEMS_RW');
     const defaultDir = cheatDir ? cheatDir : "/home/deck";
-    const filePickerRes = await Backend.openFilePicker(defaultDir, ["exe", "EXE"]);
+    const filePickerRes = await Backend.openFilePicker(defaultDir, true, ["exe", "EXE"]);
     const cheatPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
     newOptions.setOptionValue('PROTON_REMOTE_DEBUG_CMD', `"${cheatPath}"`);
