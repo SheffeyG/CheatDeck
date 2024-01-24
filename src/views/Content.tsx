@@ -16,14 +16,24 @@ import { showQrModal, navLink } from "../utils/utils";
 const Content: VFC<{ serverAPI: ServerAPI }> = () => {
   return (
     <PanelSection title="informatin">
-      <DialogBodyText>
-        <p><b>CheatDeck is NOT for emulators.</b></p>
-        <p>CheatDeck only support the normal game launcher for now.</p>
-        <li>You can find the cheat settings in the game details menu.</li>
-        <li>Please enable developer mode in the steam system settings.</li>
-        <li>If you are unable to click the selected cheat panel, please turn the game to window mode.</li>
-        <p>For more information, check the GitHub page blow. If you wanna add more launch options for CheatDeck, feel free to open an issue or pr, or just star the project to support it.</p>
-      </DialogBodyText>
+      <Focusable
+        focusWithinClassName="gpfocuswithin"
+        onActivate={() => {}}
+        style={{
+          width: "100%",
+          margin: 0,
+          padding: 0,
+        }}
+      >
+        <DialogBodyText>
+          <p><b>CheatDeck is NOT for emulators.</b></p>
+          <p>CheatDeck only support the normal game launcher for now.</p>
+          <li>You can find the cheat settings in the game details menu.</li>
+          <li>Please enable developer mode in the steam system settings.</li>
+          <li>If you are unable to click the selected cheat panel, please turn the game to window mode.</li>
+          <p>For more information, check the GitHub page blow. If you wanna add more launch options for CheatDeck, feel free to open an issue or pr, or just star the project to support it.</p>
+        </DialogBodyText>
+      </Focusable>
 
       <PanelSectionRow>
         <Field
