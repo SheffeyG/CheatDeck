@@ -9,8 +9,8 @@ import {
 import { VFC, useEffect, useState } from "react"
 
 // import logger from "../utils/logger"
-import { Backend } from "../utils/backend";
-import { Options } from "../utils/options";
+import { Backend } from "../utils/Backend";
+import { Options } from "../utils/Options";
 import { FaFolderOpen } from "react-icons/fa";
 
 const Advanced: VFC<{ appid: number }> = ({ appid }) => {

@@ -11,7 +11,7 @@ import { VFC } from "react";
 import { HiQrCode } from 'react-icons/hi2';
 import { SiGithub } from 'react-icons/si';
 
-import { showQrModal, navLink } from "../utils/utils";
+import { showQrModal, navLink } from "../utils/Utils";
 
 const Content: VFC<{ serverAPI: ServerAPI }> = () => {
   return (

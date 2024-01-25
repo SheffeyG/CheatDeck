@@ -7,8 +7,8 @@ import { FaWrench } from "react-icons/fa";
 
 import Content from "./views/Content";
 import PageRouter from "./views/PageRouter";
-import contextMenuPatch, { LibraryContextMenu } from './utils/patch';
-import { Backend } from "./utils/backend";
+import contextMenuPatch, { LibraryContextMenu } from './utils/Patch';
+import { Backend } from "./utils/Backend";
 
 
 export default definePlugin((serverApi: ServerAPI) => {

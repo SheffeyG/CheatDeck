@@ -11,9 +11,9 @@ import { VFC, useEffect, useState } from "react"
 import { FaGamepad, FaLanguage, FaFolderOpen } from "react-icons/fa";
 
 // import logger from "../utils/logger"
-import { Backend } from "../utils/backend";
-import { Options } from "../utils/options";
-import { defaultLangCodes } from "../utils/default";
+import { Backend } from "../utils/Backend";
+import { Options } from "../utils/Options";
+import { defaultLangCodes } from "../utils/Default";
 
 const Normal: VFC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(''));

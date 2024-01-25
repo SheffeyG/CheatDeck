@@ -1,5 +1,5 @@
-import logger from './logger'
-import { Backend } from './backend'
+import logger from './Logger'
+import { Backend } from './Backend'
 import { DropdownOption } from 'decky-frontend-lib';
 
 // GameSettings
