@@ -19,18 +19,18 @@ export class Options {
     }
   }
 
-  hasOption(key: string): boolean {
+  hasField(key: string): boolean {
     return key in this.options;
   }
 
-  getOptionValue(key: string): string {
+  getFieldValue(key: string): string {
     if (key in this.options) {
       return this.options[key].replace(/^"(.*)"$/, '\$1').replace(/\\ /g, ' ');
     }
     return '';
   }
 
-  setOptionValue(key: string, value: string): string {
+  setFieldValue(key: string, value: string): string {
     const oldValue = this.options[key];
     this.options[key] = value.trim().replace(/ /g, '\\ '); // escape the space
     return oldValue;

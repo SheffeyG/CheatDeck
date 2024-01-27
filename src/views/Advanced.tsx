@@ -22,7 +22,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
     const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
       const optionsString = detail.strLaunchOptions;
       const savedOptions = new Options(optionsString);
-      setShowPrefix(savedOptions.hasOption('STEAM_COMPAT_DATA_PATH'));
+      setShowPrefix(savedOptions.hasField('STEAM_COMPAT_DATA_PATH'));
       setOptions(savedOptions);
       if (optionsString.match("heroicgameslauncher") || optionsString.match("Emulation")) {
         setIsSteam(false);
@@ -32,12 +32,12 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
   }, [])
 
   const handleBrowse = async () => {
-    const prefixDir = options.getOptionValue('STEAM_COMPAT_DATA_PATH');
+    const prefixDir = options.getFieldValue('STEAM_COMPAT_DATA_PATH');
     const defaultDir = prefixDir ? prefixDir : "/home/deck";
     const filePickerRes = await Backend.openFilePicker(defaultDir, false);
     const prefixPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
-    newOptions.setOptionValue('STEAM_COMPAT_DATA_PATH', `"${prefixPath}"`);
+    newOptions.setFieldValue('STEAM_COMPAT_DATA_PATH', `"${prefixPath}"`);
     setOptions(newOptions);
   };
 
@@ -59,10 +59,10 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
         label="DXVK_ASYNC"
         description="Enable shaders pre-calculate for ProtonGE below 7-45"
         bottomSeparator={"standard"}
-        checked={options.hasOption("DXVK_ASYNC")}
+        checked={options.hasField("DXVK_ASYNC")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
-          updatedOptions.setOptionValue('DXVK_ASYNC', enable ? '1' : '');
+          updatedOptions.setFieldValue('DXVK_ASYNC', enable ? '1' : '');
           setOptions(updatedOptions);
         }}
       />
@@ -71,10 +71,10 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
         label="RADV_PERFTEST"
         description="Enable shaders pre-calculate for ProtonGE above 7-45"
         bottomSeparator={"standard"}
-        checked={options.hasOption("RADV_PERFTEST")}
+        checked={options.hasField("RADV_PERFTEST")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
-          updatedOptions.setOptionValue('RADV_PERFTEST', enable ? 'gpl' : '');
+          updatedOptions.setFieldValue('RADV_PERFTEST', enable ? 'gpl' : '');
           setOptions(updatedOptions);
         }}
       />
@@ -88,14 +88,14 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
           setShowPrefix(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.setOptionValue('STEAM_COMPAT_DATA_PATH', '');
+            updatedOptions.setFieldValue('STEAM_COMPAT_DATA_PATH', '');
             setOptions(updatedOptions);
           }
         }}
       />
       {showPrefix && (<Field
         key={1}
-        label={"Prefix path"}
+        label={"Prefix folder"}
         padding={"none"}
         bottomSeparator="thick"
       >
@@ -114,7 +114,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
               width: "400px",
             }}
             disabled={true}
-            value={options.getOptionValue('STEAM_COMPAT_DATA_PATH')}
+            value={options.getFieldValue('STEAM_COMPAT_DATA_PATH')}
           />
           <DialogButton
             onClick={handleBrowse}

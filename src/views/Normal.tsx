@@ -26,8 +26,8 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
       const optionsString = detail.strLaunchOptions;
       const savedOptions = new Options(optionsString);
       setOptions(savedOptions);
-      setShowChat(savedOptions.hasOption('PROTON_REMOTE_DEBUG_CMD'));
-      setShowLang(savedOptions.hasOption('LANG'));
+      setShowChat(savedOptions.hasField('PROTON_REMOTE_DEBUG_CMD'));
+      setShowLang(savedOptions.hasField('LANG'));
       if (optionsString.match('heroicgameslauncher') || optionsString.match('Emulation')) {
         setIsSteam(false);
       }
@@ -36,13 +36,13 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
   }, [])
 
   const handleBrowse = async () => {
-    const cheatDir = options.getOptionValue('PRESSURE_VESSEL_FILESYSTEMS_RW');
+    const cheatDir = options.getFieldValue('PRESSURE_VESSEL_FILESYSTEMS_RW');
     const defaultDir = cheatDir ? cheatDir : "/home/deck";
     const filePickerRes = await Backend.openFilePicker(defaultDir, true, ["exe", "EXE"]);
     const cheatPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
-    newOptions.setOptionValue('PROTON_REMOTE_DEBUG_CMD', `"${cheatPath}"`);
-    newOptions.setOptionValue('PRESSURE_VESSEL_FILESYSTEMS_RW', `"${cheatPath.replace(/\/[^/]+$/, '')}"`);
+    newOptions.setFieldValue('PROTON_REMOTE_DEBUG_CMD', `"${cheatPath}"`);
+    newOptions.setFieldValue('PRESSURE_VESSEL_FILESYSTEMS_RW', `"${cheatPath.replace(/\/[^/]+$/, '')}"`);
     setOptions(newOptions);
   };
 
@@ -70,8 +70,8 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
           setShowChat(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.setOptionValue('PROTON_REMOTE_DEBUG_CMD', '');
-            updatedOptions.setOptionValue('PRESSURE_VESSEL_FILESYSTEMS_RW', '');
+            updatedOptions.setFieldValue('PROTON_REMOTE_DEBUG_CMD', '');
+            updatedOptions.setFieldValue('PRESSURE_VESSEL_FILESYSTEMS_RW', '');
             setOptions(updatedOptions);
           }
         }}
@@ -97,7 +97,7 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
               width: "400px",
             }}
             disabled={true}
-            value={options.getOptionValue('PROTON_REMOTE_DEBUG_CMD')}
+            value={options.getFieldValue('PROTON_REMOTE_DEBUG_CMD')}
           />
           <DialogButton
             onClick={handleBrowse}
@@ -126,7 +126,7 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
           setShowLang(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.setOptionValue('LANG', '');
+            updatedOptions.setFieldValue('LANG', '');
             setOptions(updatedOptions);
           }
         }}
@@ -151,11 +151,11 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
               width: "200px",
               marginRight: ".5em"
             }}
-            value={options.getOptionValue('LANG')}
+            value={options.getFieldValue('LANG')}
             onChange={(e) => {
               e.persist();
               const updatedOptions = new Options(options.getOptionsString());
-              updatedOptions.setOptionValue('LANG', `"${e.target.value}"`);
+              updatedOptions.setFieldValue('LANG', `"${e.target.value}"`);
               setOptions(updatedOptions);
             }}
           />
@@ -165,7 +165,7 @@ const Normal: VFC<{ appid: number }> = ({ appid }) => {
             onChange={(v) => {
               // logger.info(`selected: ${JSON.stringify(v)}`);
               const updatedOptions = new Options(options.getOptionsString());
-              updatedOptions.setOptionValue('LANG', `"${v.data}"`);
+              updatedOptions.setFieldValue('LANG', `"${v.data}"`);
               setOptions(updatedOptions);
             }}
             strDefaultLabel="Default"

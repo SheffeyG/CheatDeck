@@ -7,7 +7,8 @@ import { FaCog, FaInfo, FaBolt } from "react-icons/fa"
 
 import Normal from "./Normal"
 import Advanced from "./Advanced"
-import Information from "./Information"
+import Custom from "./Custom"
+import CustomManager from "./CustomManager"
 
 
 const PageRouter: VFC = () => {
@@ -27,8 +28,14 @@ const PageRouter: VFC = () => {
       hideTitle: false
     },
     {
-      title: 'Information',
-      content: <Information appid={appid}/>,
+      title: 'Custom',
+      content: <Custom appid={appid}/>,
+      icon: <FaInfo />,
+      hideTitle: false
+    },
+    {
+      title: 'CustomM',
+      content: <CustomManager/>,
       icon: <FaInfo />,
       hideTitle: false
     }
