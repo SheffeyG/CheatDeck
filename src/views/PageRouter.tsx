@@ -1,5 +1,5 @@
 import {
-  SidebarNavigation, 
+  SidebarNavigation,
   useParams
 } from "decky-frontend-lib"
 import { VFC } from "react"
@@ -8,7 +8,7 @@ import { FaCog, FaInfo, FaBolt } from "react-icons/fa"
 import Normal from "./Normal"
 import Advanced from "./Advanced"
 import Custom from "./Custom"
-import CustomManager from "./CustomManager"
+import CustomManager from "./Custom/setting"
 
 
 const PageRouter: VFC = () => {
@@ -17,25 +17,25 @@ const PageRouter: VFC = () => {
   const pages = [
     {
       title: 'Normal',
-      content: <Normal appid={appid}/>,
+      content: <Normal appid={appid} />,
       icon: <FaCog />,
       hideTitle: false
     },
     {
       title: 'Advanced',
-      content: <Advanced appid={appid}/>,
+      content: <Advanced appid={appid} />,
       icon: <FaBolt />,
       hideTitle: false
     },
     {
       title: 'Custom',
-      content: <Custom appid={appid}/>,
+      content: <Custom appid={appid} />,
       icon: <FaInfo />,
       hideTitle: false
     },
     {
       title: 'CustomM',
-      content: <CustomManager/>,
+      content: <CustomManager />,
       icon: <FaInfo />,
       hideTitle: false
     }

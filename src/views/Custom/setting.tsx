@@ -6,7 +6,7 @@ import {
 } from "decky-frontend-lib";
 import { VFC, useEffect, useState } from "react";
 
-import { CustomOption, getCustomOptions, setCustomOptions } from "../utils/Settings";
+import { CustomOption, getCustomOptions, setCustomOptions } from "../../utils/Settings";
 
 
 const CustomManager: VFC = () => {
@@ -24,7 +24,7 @@ const CustomManager: VFC = () => {
         cusOptList.map((opt: CustomOption) => (
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Field
-              label="Lable"
+              label="label"
               padding="none"
               bottomSeparator="none"
             >
@@ -33,36 +33,12 @@ const CustomManager: VFC = () => {
               >
                 <TextField
                   style={{ padding: "10px", fontSize: "14px", width: "200px" }}
-                  value={opt.lable}
+                  value={opt.label}
                   onChange={(e) => {
                     e.persist();
                     const updatedCusOptList = cusOptList.map((item) => {
                       if (item.field === opt.field) {
-                        return { ...item, lable: e.target.value };
-                      }
-                      return item;
-                    });
-                    setCusOptList(updatedCusOptList);
-                  }}
-                />
-              </Focusable>
-            </Field>
-            <Field
-              label="Description"
-              padding="none"
-              bottomSeparator="none"
-            >
-              <Focusable
-                style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
-              >
-                <TextField
-                  style={{ padding: "10px", fontSize: "14px", width: "446px" }}
-                  value={opt.desc}
-                  onChange={(e) => {
-                    e.persist();
-                    const updatedCusOptList = cusOptList.map((item) => {
-                      if (item.field === opt.field) {
-                        return { ...item, desc: e.target.value };
+                        return { ...item, label: e.target.value };
                       }
                       return item;
                     });
@@ -93,7 +69,7 @@ const CustomManager: VFC = () => {
                     setCusOptList(updatedCusOptList);
                   }}
                 />
-                <div style={{ display: 'flex', alignItems: 'center', margin: '0 .5em' }}>
+                <div style={{ display: 'flex', alignItems: 'center', margin: '3px' }}>
                   <b>=</b>
                 </div>
                 <TextField

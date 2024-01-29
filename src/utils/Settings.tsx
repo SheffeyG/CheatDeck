@@ -1,26 +1,33 @@
 import { Backend } from "./Backend";
 import logger from "./Logger";
+import { v4 as uuidv4 } from "uuid";
 
 export interface CustomOption {
-  lable: string,
-  desc: string,
-  field: string,
-  value: string
+  id: string;
+  label: string;
+  field: string;
+  value: string;
 }
 
 const defaultOptions = [
   {
-    lable: "default",
-    desc: 'default',
+    label: "default",
     field: '',
     value: ''
   }
 ]
 
+
 export const getCustomOptions = async () => {
   const customOptions = await Backend.getSetting("CustomOptions", defaultOptions) as CustomOption[];
-  logger.info(`Load user settings:\n${JSON.stringify(customOptions, null, 2)}`);
-  return customOptions;
+
+  const updatedOptions = customOptions.map((option) => ({
+    ...option,
+    id: uuidv4(),
+  }));
+
+  logger.info(`Load user settings:\n${JSON.stringify(updatedOptions, null, 2)}`);
+  return updatedOptions;
 }
 
 export const setCustomOptions = async (data: CustomOption[]) => {
