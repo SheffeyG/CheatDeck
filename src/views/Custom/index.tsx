@@ -18,7 +18,6 @@ import logger from "../../utils/Logger";
 const Custom: VFC<{ appid: number }> = ({ appid }) => {
   const [optList, setOptList] = useState<CustomOption[]>([]);
   const [options, setOptions] = useState<Options>(new Options(""));
-  const [isSteam, setIsSteam] = useState<boolean>(true);
 
   useEffect(() => {
     getCustomOptions().then((result) => {
@@ -28,9 +27,6 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
       const optionsString = detail.strLaunchOptions;
       const savedOptions = new Options(optionsString);
       setOptions(savedOptions);
-      if (optionsString.match("heroicgameslauncher") || optionsString.match("Emulation")) {
-        setIsSteam(false);
-      }
     })
     setTimeout(() => { unregister() }, 1000);
   }, []);
@@ -42,16 +38,10 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
     );
   };
 
-
   const saveOptions = async () => {
-    if (isSteam) {
-      SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
-      Backend.sendNotice("Custom settings saved.");
-    } else {
-      // non steam games is not implemented
-      Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
-    }
+    SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
     await setCustomOptions(optList);
+    Backend.sendNotice("Custom settings saved.");
   }
 
 
@@ -59,7 +49,7 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
     <>
       <style>
         {`
-          /* From plugin CSSLoader */
+          /* CSS From plugin CSSLoader */
           .CD_ToggleContainer {
             flex-grow: 1;
             position: relative;
@@ -103,6 +93,14 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
             text-overflow: ellipsis;
             padding-left: 5px;
           }
+          .CD_SaveButton {
+            align-self: center !important;
+            margin-top: 20px !important;
+            padding: 10px !important;
+            font-size: 14px !important;
+            text-align: center !important;
+            width: 80% !important;
+          }
         `}
       </style>
       {(optList.length > 0) ? (
@@ -135,15 +133,8 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
       )}
 
       <DialogButton
+        className="CD_SaveButton"
         onClick={saveOptions}
-        style={{
-          alignSelf: "center",
-          marginTop: "20px",
-          padding: "10px",
-          fontSize: "14px",
-          textAlign: "center",
-          width: "80%"
-        }}
       >
         Save Settings
       </DialogButton>

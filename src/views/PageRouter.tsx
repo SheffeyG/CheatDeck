@@ -1,9 +1,6 @@
-import {
-  SidebarNavigation,
-  useParams
-} from "decky-frontend-lib"
 import { VFC } from "react"
-import { FaCog, FaBolt, FaList } from "react-icons/fa"
+import { SidebarNavigation, useParams } from "decky-frontend-lib"
+import { BsCSquareFill, BsExclamationSquareFill, BsFillBoxFill } from "react-icons/bs"
 
 import Normal from "./Normal"
 import Advanced from "./Advanced"
@@ -17,19 +14,19 @@ const PageRouter: VFC = () => {
     {
       title: 'Normal',
       content: <Normal appid={appid} />,
-      icon: <FaCog />,
+      icon: <BsFillBoxFill />,
       hideTitle: false
     },
     {
       title: 'Advanced',
       content: <Advanced appid={appid} />,
-      icon: <FaBolt />,
+      icon: <BsExclamationSquareFill />,
       hideTitle: false
     },
     {
       title: 'Custom',
       content: <Custom appid={appid} />,
-      icon: <FaList />,
+      icon: <BsCSquareFill />,
       hideTitle: false
     }
   ]
