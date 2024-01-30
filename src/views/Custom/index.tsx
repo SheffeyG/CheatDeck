@@ -10,8 +10,9 @@ import { BsGearFill } from "react-icons/bs";
 
 import { Backend } from "../../utils/Backend";
 import { Options } from "../../utils/Options";
-import { CustomOption, getCustomOptions } from "../../utils/Settings";
-import { CusOptSettingsModal } from "./profile";
+import { CustomOption, getCustomOptions, setCustomOptions } from "../../utils/Custom";
+import { SettingModal } from "./SettingModal";
+import logger from "../../utils/Logger";
 
 
 const Custom: VFC<{ appid: number }> = ({ appid }) => {
@@ -34,7 +35,15 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
     setTimeout(() => { unregister() }, 1000);
   }, []);
 
-  const saveOptions = () => {
+  const updateOptList = (updatedOpt: CustomOption) => {
+    logger.info(`saving changes ${JSON.stringify(updatedOpt)}`);
+    setOptList((optList) =>
+      optList.map((opt) => (opt.id === updatedOpt.id) ? updatedOpt : opt)
+    );
+  };
+
+
+  const saveOptions = async () => {
     if (isSteam) {
       SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
       Backend.sendNotice("Custom settings saved.");
@@ -42,6 +51,7 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
       // non steam games is not implemented
       Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
     }
+    await setCustomOptions(optList);
   }
 
 
@@ -49,17 +59,13 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
     <>
       <style>
         {`
-          /* Remove side padding on the PanelSections */
-          .CSSLoader_PanelSection_NoPadding_Parent > .quickaccesscontrols_PanelSection_2C0g0 {
-            padding-left: 0;
-            padding-right: 0;
-          }
-          .CSSLoader_FullTheme_ToggleContainer {
+          /* From plugin CSSLoader */
+          .CD_ToggleContainer {
             flex-grow: 1;
             position: relative;
           }
           /* The actual element of the ToggleContainer with the BG */
-          .CSSLoader_FullTheme_ToggleContainer > div {
+          .CD_ToggleContainer > div {
             background: rgba(255,255,255,.15);
             border-radius: 2px;
             padding-left: 5px;
@@ -69,10 +75,10 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
             height: 1.25em !important;
           }
           /* Since we manually force the height of the container, we have to adjust the text and ToggleSwitch */
-          .CSSLoader_FullTheme_ToggleContainer > div > div > div {
+          .CD_ToggleContainer > div > div > div {
             transform: translate(0, -1px);
           }
-          .CSSLoader_FullTheme_EntryContainer {
+          .CD_EntryContainer {
             display: flex;
             gap: 0.25em;
             height: auto;
@@ -81,16 +87,16 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
             justify-content: space-between;
             margin-bottom: 0.25em;
           }
-          .CSSLoader_FullTheme_DialogButton {
+          .CD_DialogButton {
             width: fit-content !important;
             min-width: fit-content !important;
             height: fit-content !important;
             padding: 10px 12px !important;
           }
-          .CSSLoader_FullTheme_IconTranslate {
+          .CD_IconTranslate {
             transform: translate(0px, 2px);
           }
-          .CSSLoader_FullTheme_ThemeLabel {
+          .CD_Label {
             white-space: nowrap;
             max-width: 300px;
             overflow: hidden;
@@ -101,13 +107,13 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
       </style>
       {(optList.length > 0) ? (
         optList.map((opt: CustomOption) => (
-          <Focusable className="CSSLoader_FullTheme_EntryContainer">
+          <Focusable className="CD_EntryContainer">
             <Focusable
-              className="CSSLoader_FullTheme_ToggleContainer"
+              className="CD_ToggleContainer"
             >
               <ToggleField
                 bottomSeparator="none"
-                label={<span className="CSSLoader_FullTheme_ThemeLabel">{opt.label}</span>}
+                label={<span className="CD_Label">{opt.label}</span>}
                 checked={options.hasField(opt.field)}
                 onChange={(enable: boolean) => {
                   const updatedOptions = new Options(options.getOptionsString());
@@ -117,50 +123,12 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
               />
             </Focusable>
             <DialogButton
-              className="CSSLoader_FullTheme_DialogButton"
-              onClick={() => {
-                showModal(CusOptSettingsModal(opt));
-              }}
+              className="CD_DialogButton"
+              onClick={() => {showModal(<SettingModal opt={opt} onSave={updateOptList}/>, window)}}
             >
-              <BsGearFill className="CSSLoader_FullTheme_IconTranslate" />
+              <BsGearFill className="CD_IconTranslate" />
             </DialogButton>
           </Focusable>
-
-          /* <div style={{ display: "flex", flexDirection: "row" }}>
-            <Focusable style={{ flex: "1" }}>
-              <ToggleField
-                label={opt.label}
-                description={opt.desc}
-                bottomSeparator={"standard"}
-                checked={options.hasField(opt.field)}
-                onChange={(enable: boolean) => {
-                  const updatedOptions = new Options(options.getOptionsString());
-                  updatedOptions.setFieldValue(opt.field, enable ? opt.value : '');
-                  setOptions(updatedOptions);
-                }}
-              />
-            </Focusable>
-            <DialogButton
-              onClick={() =>
-                setSettingVisible((prevVisibility) => ({
-                  ...prevVisibility,
-                  [opt.field]: !prevVisibility[opt.field],
-                }))
-              }
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "10px",
-                maxWidth: "40px",
-                minWidth: "auto",
-                marginLeft: ".5em",
-              }}
-            >
-              <FaFolderOpen />
-            </DialogButton>
-            {settingVisible[opt.field] && <div>Bingo</div>}
-          </div> */
         ))
       ) : (
         <span>No options</span>

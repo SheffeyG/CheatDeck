@@ -38,10 +38,10 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "@types/uuid": "^9.0.8",
     "decky-frontend-lib": "^3.24.4",
     "qrcode.react": "^3.1.0",
-    "react-icons": "^4.4.0",
-    "uuid": "^9.0.1"
+    "react-icons": "^4.4.0"
   },
   "pnpm": {
     "peerDependencyRules": {

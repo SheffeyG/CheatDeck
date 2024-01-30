@@ -3,12 +3,11 @@ import {
   useParams
 } from "decky-frontend-lib"
 import { VFC } from "react"
-import { FaCog, FaInfo, FaBolt } from "react-icons/fa"
+import { FaCog, FaBolt, FaList } from "react-icons/fa"
 
 import Normal from "./Normal"
 import Advanced from "./Advanced"
 import Custom from "./Custom"
-import CustomManager from "./Custom/setting"
 
 
 const PageRouter: VFC = () => {
@@ -30,13 +29,7 @@ const PageRouter: VFC = () => {
     {
       title: 'Custom',
       content: <Custom appid={appid} />,
-      icon: <FaInfo />,
-      hideTitle: false
-    },
-    {
-      title: 'CustomM',
-      content: <CustomManager />,
-      icon: <FaInfo />,
+      icon: <FaList />,
       hideTitle: false
     }
   ]
