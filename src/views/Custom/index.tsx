@@ -7,21 +7,22 @@ import {
 } from "decky-frontend-lib"
 import { VFC, useEffect, useState } from "react"
 import { BsGearFill } from "react-icons/bs";
+import { MdAddBox } from "react-icons/md";
 
 import { Backend } from "../../utils/Backend";
 import { Options } from "../../utils/Options";
 import { CustomOption, getCustomOptions, setCustomOptions } from "../../utils/Custom";
-import { SettingModal } from "./SettingModal";
-import logger from "../../utils/Logger";
+import { Modals } from "./Modals";
+// import logger from "../../utils/Logger";
 
 
 const Custom: VFC<{ appid: number }> = ({ appid }) => {
-  const [optList, setOptList] = useState<CustomOption[]>([]);
+  const [cusOptList, setCusOptList] = useState<CustomOption[]>([]);
   const [options, setOptions] = useState<Options>(new Options(""));
 
   useEffect(() => {
     getCustomOptions().then((result) => {
-      setOptList(result as CustomOption[]);
+      setCusOptList(result as CustomOption[]);
     });
     const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
       const optionsString = detail.strLaunchOptions;
@@ -31,16 +32,22 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
     setTimeout(() => { unregister() }, 1000);
   }, []);
 
-  const updateOptList = (updatedOpt: CustomOption) => {
-    logger.info(`saving changes ${JSON.stringify(updatedOpt)}`);
-    setOptList((optList) =>
-      optList.map((opt) => (opt.id === updatedOpt.id) ? updatedOpt : opt)
-    );
+  // const updateOptList = (updatedOpt: CustomOption) => {
+  //   logger.info(`saving changes ${JSON.stringify(updatedOpt)}`);
+  //   setCusOptList((optList) =>
+  //     optList.map((opt) => (
+  //       opt.id === updatedOpt.id ? updatedOpt : opt
+  //     )).filter((opt) => opt.value !== '') // empty value is to be deleted
+  //   )
+  // };
+
+  const updateOptList = (updatedOptList: CustomOption[]) => {
+    setCusOptList(updatedOptList);
   };
 
   const saveOptions = async () => {
     SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
-    await setCustomOptions(optList);
+    await setCustomOptions(cusOptList);
     Backend.sendNotice("Custom settings saved.");
   }
 
@@ -101,10 +108,16 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
             text-align: center !important;
             width: 80% !important;
           }
+          .CD_AddButton {
+            height: 1em !important;
+            text-align: center !important;
+            align-items: center !important;
+            padding: auto 0 !important;
+          }
         `}
       </style>
-      {(optList.length > 0) ? (
-        optList.map((opt: CustomOption) => (
+      {(cusOptList.length > 0) ? (
+        cusOptList.map((opt: CustomOption) => (
           <Focusable className="CD_EntryContainer">
             <Focusable
               className="CD_ToggleContainer"
@@ -122,7 +135,7 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
             </Focusable>
             <DialogButton
               className="CD_DialogButton"
-              onClick={() => {showModal(<SettingModal opt={opt} onSave={updateOptList}/>, window)}}
+              onClick={() => { showModal(<Modals id={opt.id} optList={cusOptList} onSave={updateOptList} type={"Mod"} />, window) }}
             >
               <BsGearFill className="CD_IconTranslate" />
             </DialogButton>
@@ -132,6 +145,11 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
         <span>No options</span>
       )}
 
+      <DialogButton
+        onClick={() => { showModal(<Modals optList={cusOptList} onSave={updateOptList} type="Add"/>)}}
+      >
+        <MdAddBox />
+      </DialogButton>
       <DialogButton
         className="CD_SaveButton"
         onClick={saveOptions}

@@ -27,3 +27,13 @@ export const setCustomOptions = async (data: CustomOption[]) => {
   let optList = await Backend.setSetting("CustomOptions", optsWithoutId);
   logger.info(`Set user settings:\n${JSON.stringify(optList, null, 2)}`)
 }
+
+export const getEmptyCusOpt = () => {
+  const emptyOpt: CustomOption = {
+    id: uuidv4(),
+    label: '',
+    field: '',
+    value: ''
+  }
+  return emptyOpt;
+}
