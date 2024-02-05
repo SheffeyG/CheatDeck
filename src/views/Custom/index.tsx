@@ -11,8 +11,8 @@ import { MdAddBox } from "react-icons/md";
 
 import { Backend } from "../../utils/Backend";
 import { Options } from "../../utils/Options";
-import { CustomOption, getCustomOptions, setCustomOptions } from "../../utils/Custom";
-import { Modals } from "./Modals";
+import { CustomOption, getCustomOptions } from "../../utils/Custom";
+import { Modals } from "./modals";
 // import logger from "../../utils/Logger";
 
 
@@ -32,22 +32,12 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
     setTimeout(() => { unregister() }, 1000);
   }, []);
 
-  // const updateOptList = (updatedOpt: CustomOption) => {
-  //   logger.info(`saving changes ${JSON.stringify(updatedOpt)}`);
-  //   setCusOptList((optList) =>
-  //     optList.map((opt) => (
-  //       opt.id === updatedOpt.id ? updatedOpt : opt
-  //     )).filter((opt) => opt.value !== '') // empty value is to be deleted
-  //   )
-  // };
-
   const updateOptList = (updatedOptList: CustomOption[]) => {
     setCusOptList(updatedOptList);
   };
 
   const saveOptions = async () => {
     SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
-    await setCustomOptions(cusOptList);
     Backend.sendNotice("Custom settings saved.");
   }
 
@@ -56,7 +46,7 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
     <>
       <style>
         {`
-          /* CSS From plugin CSSLoader */
+          /* Style From plugin CSSLoader */
           .CD_ToggleContainer {
             flex-grow: 1;
             position: relative;
@@ -71,7 +61,7 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
             margin-right: 0;
             height: 1.25em !important;
           }
-          /* Since we manually force the height of the container, we have to adjust the text and ToggleSwitch */
+          /* Adjust the text and ToggleSwitch */
           .CD_ToggleContainer > div > div > div {
             transform: translate(0, -1px);
           }
@@ -100,6 +90,12 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
             text-overflow: ellipsis;
             padding-left: 5px;
           }
+          .CD_AddButton {
+            display: flex !important;
+            align-items: center !important; 
+            justify-content: center !important; 
+            height: 1.5em !important;
+          }
           .CD_SaveButton {
             align-self: center !important;
             margin-top: 20px !important;
@@ -108,15 +104,9 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
             text-align: center !important;
             width: 80% !important;
           }
-          .CD_AddButton {
-            height: 1em !important;
-            text-align: center !important;
-            align-items: center !important;
-            padding: auto 0 !important;
-          }
         `}
       </style>
-      {(cusOptList.length > 0) ? (
+      {(cusOptList.length > 0) && (
         cusOptList.map((opt: CustomOption) => (
           <Focusable className="CD_EntryContainer">
             <Focusable
@@ -135,27 +125,28 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
             </Focusable>
             <DialogButton
               className="CD_DialogButton"
-              onClick={() => { showModal(<Modals id={opt.id} optList={cusOptList} onSave={updateOptList} type={"Mod"} />, window) }}
+              onClick={() => { showModal(<Modals id={opt.id} optList={cusOptList} onSave={updateOptList} />, window) }}
             >
               <BsGearFill className="CD_IconTranslate" />
             </DialogButton>
           </Focusable>
         ))
-      ) : (
-        <span>No options</span>
       )}
 
       <DialogButton
-        onClick={() => { showModal(<Modals optList={cusOptList} onSave={updateOptList} type="Add"/>)}}
+        className="CD_AddButton"
+        onClick={() => { showModal(<Modals optList={cusOptList} onSave={updateOptList} />) }}
       >
         <MdAddBox />
       </DialogButton>
-      <DialogButton
-        className="CD_SaveButton"
-        onClick={saveOptions}
-      >
-        Save Settings
-      </DialogButton>
+      {(cusOptList.length > 0) && (
+        <DialogButton
+          className="CD_SaveButton"
+          onClick={saveOptions}
+        >
+          Save Settings
+        </DialogButton>
+      )}
     </>
   )
 }

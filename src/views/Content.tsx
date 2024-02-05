@@ -26,8 +26,7 @@ const Content: VFC<{ serverAPI: ServerAPI }> = () => {
         }}
       >
         <DialogBodyText>
-          <p><b>CheatDeck is NOT for emulators.</b></p>
-          <p>CheatDeck only support the normal game launcher for now.</p>
+          <p><b>CheatDeck only support the normal steam launcher for now.</b></p>
           <li>You can find the cheat settings in the game details menu.</li>
           <li>Please enable developer mode in the steam system settings.</li>
           <li>If you are unable to click the selected cheat panel, please turn the game to window mode.</li>

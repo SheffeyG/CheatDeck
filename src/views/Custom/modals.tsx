@@ -1,52 +1,41 @@
 import { DialogButton, DialogHeader, Field, Focusable, ModalRoot, TextField } from "decky-frontend-lib";
 import { FC, useEffect, useState } from "react";
 
-import { CustomOption, getEmptyCusOpt } from "../../utils/Custom";
-import logger from "../../utils/Logger";
+import { CustomOption, getEmptyCusOpt, setCustomOptions } from "../../utils/Custom";
 
 
 export const Modals: FC<{
   closeModal?: () => void,
   id?: string,
   optList: CustomOption[],
-  onSave: (data: CustomOption[]) => void,
-  type: string
+  onSave: (data: CustomOption[]) => void
 }> = ({
   closeModal,
   id,
   optList,
-  onSave,
-  type
+  onSave
 }) => {
     const [targetOpt, setTargetOpt] = useState<CustomOption>(getEmptyCusOpt());
+    const existingIndex = optList.findIndex((otp) => otp.id === id);
 
     useEffect(() => {
-      if (type === "Mod" && id) {
-        setTargetOpt(optList.filter((otp) => otp.id === id)[0]);
+      if (existingIndex !== -1) {
+        setTargetOpt(optList[existingIndex]);
       }
     }, []);
 
-    const handleSave = () => {
+    const handleSave = async (action="Mod") => {
       const updatedOpts = [...optList];
-      const existingIndex = updatedOpts.findIndex((otp) => otp.id === targetOpt.id);
-
       if (existingIndex !== -1) {
-        updatedOpts[existingIndex] = targetOpt;
+        // Delete
+        if (action === "Del")  updatedOpts.splice(existingIndex, 1);
+        // update
+        if (action === "Mod") updatedOpts[existingIndex] = targetOpt;
       } else {
-        updatedOpts.push(targetOpt);
+        // Add
+        if (action === "Mod") updatedOpts.push(targetOpt);
       }
-      onSave(updatedOpts);
-      closeModal?.();
-    };
-
-    const handleDelete = () => {
-      const updatedOpts = [...optList];
-      const existingIndex = updatedOpts.findIndex((otp) => otp.id === targetOpt.id);
-      if (existingIndex !== -1) {
-        updatedOpts.splice(existingIndex, 1);
-      } else {
-        logger.error("Delete cus opt doesn't exist");
-      }
+      await setCustomOptions(updatedOpts);
       onSave(updatedOpts);
       closeModal?.();
     };
@@ -56,7 +45,7 @@ export const Modals: FC<{
       <ModalRoot onCancel={closeModal}>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <DialogHeader>
-            {type}
+            {id === undefined ? "Add" : "Modify"}
           </DialogHeader>
           <Field
             label="label"
@@ -110,18 +99,18 @@ export const Modals: FC<{
                 }}
               />
             </Focusable>
-          </Field >
-          <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+          </Field>
+          <Focusable style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
             <DialogButton
-              onClick={handleSave}
+              onClick={() => handleSave("Mod")}
               style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
             >
               Save
             </DialogButton>
-            {(type === "Mod" && id) ? (
+            {(id !== undefined) ? (
               <DialogButton
-                onClick={handleDelete}
-                style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
+                onClick={() => handleSave("Del")}
+                style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px", background: "rgba(255,0,0,.15)" }}
               >
                 Delete
               </DialogButton>
@@ -133,10 +122,8 @@ export const Modals: FC<{
                 Cancel
               </DialogButton>
             )}
-          </div >
+          </Focusable>
         </div>
       </ModalRoot>
-
-
     );
   };
