@@ -110,7 +110,7 @@ export const Modals: FC<{
             {(id !== undefined) ? (
               <DialogButton
                 onClick={() => handleSave("Del")}
-                style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px", background: "rgba(255,0,0,.15)" }}
+                style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
               >
                 Delete
               </DialogButton>
