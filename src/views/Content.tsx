@@ -3,17 +3,40 @@ import {
   DialogButton,
   Field,
   Focusable,
+  ModalRoot,
+  Navigation,
   PanelSection,
   PanelSectionRow,
   ServerAPI,
+  showModal,
 } from "decky-frontend-lib";
 import { VFC } from "react";
 import { HiQrCode } from 'react-icons/hi2';
-import { SiGithub } from 'react-icons/si';
+import { QRCodeSVG } from "qrcode.react";
 
-import { showQrModal, navLink } from "../utils/Utils";
 
 const Content: VFC<{ serverAPI: ServerAPI }> = () => {
+
+  const navLink = (url: string) => {
+    Navigation.CloseSideMenus();
+    Navigation.NavigateToExternalWeb(url);
+  };
+  
+  const showQrModal = (url: string) => {
+    showModal(
+      <ModalRoot>
+        <QRCodeSVG
+          style={{ margin: '0 auto 1.5em auto' }}
+          value={url}
+          includeMargin
+          size={256}
+        />
+        <span style={{ textAlign: 'center', wordBreak: 'break-word' }}>{url}</span>
+      </ModalRoot>,
+      window
+    );
+  };
+
   return (
     <PanelSection title="informatin">
       <Focusable
@@ -30,7 +53,6 @@ const Content: VFC<{ serverAPI: ServerAPI }> = () => {
           <li>You can find the cheat settings in the game details menu.</li>
           <li>Please enable developer mode in the steam system settings.</li>
           <li>If you are unable to click the selected cheat panel, please turn the game to window mode.</li>
-          <p>For more information, check the GitHub page blow. If you wanna add more launch options for CheatDeck, feel free to open an issue or pr, or just star the project to support it.</p>
         </DialogBodyText>
       </Focusable>
 
@@ -44,19 +66,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = () => {
           padding="none"
           spacingBetweenLabelAndChild="none"
           childrenContainerWidth="max"
+          description="For more information, check the GitHub page."
         >
           <Focusable style={{ display: 'flex' }}>
-            <div
-              style={{
-                display: 'flex',
-                fontSize: '1.5em',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginRight: '.5em',
-              }}
-            >
-              <SiGithub />
-            </div>
             <DialogButton
               onClick={() => navLink("https://github.com/SheffeyG/CheatDeck")}
               onSecondaryButton={() => showQrModal("https://github.com/SheffeyG/CheatDeck")}

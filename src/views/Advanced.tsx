@@ -81,7 +81,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="Shared Prefix"
-        description='Specify a folder as the prefix for the game (include saved game)'
+        description='Specify a folder as the prefix for the game'
         bottomSeparator={"none"}
         checked={showPrefix}
         onChange={(enable: boolean) => {
