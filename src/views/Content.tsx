@@ -50,8 +50,9 @@ const Content: VFC<{ serverAPI: ServerAPI }> = () => {
       >
         <DialogBodyText>
           <p><b>CheatDeck only support the normal steam launcher for now.</b></p>
-          <li>You can find the cheat settings in the game details menu.</li>
           <li>Please enable developer mode in the steam system settings.</li>
+          <li>You can find the cheat settings in the game details menu.</li>
+          <li>Use the steam key to switch between game and cheat windows.</li>
           <li>If you are unable to click the selected cheat panel, please turn the game to window mode.</li>
         </DialogBodyText>
       </Focusable>

@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@types/uuid": "^9.0.8",
-    "decky-frontend-lib": "^3.24.4",
+    "decky-frontend-lib": "^3.24.5",
     "qrcode.react": "^3.1.0",
     "react-icons": "^4.4.0"
   },
