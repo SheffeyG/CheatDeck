@@ -5,9 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@types/uuid':
-    specifier: ^9.0.8
-    version: 9.0.8
   decky-frontend-lib:
     specifier: ^3.24.5
     version: 3.24.5
@@ -17,6 +14,9 @@ dependencies:
   react-icons:
     specifier: ^4.4.0
     version: 4.9.0
+  uuid:
+    specifier: ^9.0.0
+    version: 9.0.1
 
 devDependencies:
   '@rollup/plugin-commonjs':
@@ -37,6 +37,9 @@ devDependencies:
   '@types/react':
     specifier: 16.14.0
     version: 16.14.0
+  '@types/uuid':
+    specifier: ^9.0.8
+    version: 9.0.8
   '@types/webpack':
     specifier: ^5.28.0
     version: 5.28.1
@@ -228,7 +231,7 @@ packages:
 
   /@types/uuid@9.0.8:
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
-    dev: false
+    dev: true
 
   /@types/webpack@5.28.1:
     resolution: {integrity: sha512-qw1MqGZclCoBrpiSe/hokSgQM/su8Ocpl3L/YHE0L6moyaypg4+5F7Uzq7NgaPKPxUxUbQ4fLPLpDWdR27bCZw==}
@@ -902,6 +905,11 @@ packages:
   /url-join@4.0.1:
     resolution: {integrity: sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA==}
     dev: true
+
+  /uuid@9.0.1:
+    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    hasBin: true
+    dev: false
 
   /watchpack@2.4.0:
     resolution: {integrity: sha512-Lcvm7MGST/4fup+ifyKi2hjyIAwcdI4HRgtvTpIUxBRhB+RFtUh8XtDOxUfctVCnhVi+QQj49i91OyvzkJl6cg==}
