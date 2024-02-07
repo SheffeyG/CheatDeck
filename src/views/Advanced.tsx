@@ -59,7 +59,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
         label="DXVK_ASYNC"
         description="Enable shaders pre-calculate for ProtonGE below 7-45"
         bottomSeparator={"standard"}
-        checked={options.hasField("DXVK_ASYNC")}
+        checked={options.hasFieldValue("DXVK_ASYNC", "1")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
           updatedOptions.setFieldValue('DXVK_ASYNC', enable ? '1' : '');
@@ -71,7 +71,7 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
         label="RADV_PERFTEST"
         description="Enable shaders pre-calculate for ProtonGE above 7-45"
         bottomSeparator={"standard"}
-        checked={options.hasField("RADV_PERFTEST")}
+        checked={options.hasFieldValue("RADV_PERFTEST", "gpl")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
           updatedOptions.setFieldValue('RADV_PERFTEST', enable ? 'gpl' : '');

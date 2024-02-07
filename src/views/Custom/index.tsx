@@ -17,7 +17,9 @@ import { Modals } from "./modals";
 
 
 const Custom: VFC<{ appid: number }> = ({ appid }) => {
+  // local storage custom options list
   const [cusOptList, setCusOptList] = useState<CustomOption[]>([]);
+  // launcher options
   const [options, setOptions] = useState<Options>(new Options(""));
 
   useEffect(() => {
@@ -115,7 +117,7 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
               <ToggleField
                 bottomSeparator="none"
                 label={<span className="CD_Label">{opt.label}</span>}
-                checked={options.hasField(opt.field)}
+                checked={options.hasFieldValue(opt.field, opt.value)}
                 onChange={(enable: boolean) => {
                   const updatedOptions = new Options(options.getOptionsString());
                   updatedOptions.setFieldValue(opt.field, enable ? opt.value : '');

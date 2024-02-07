@@ -23,6 +23,10 @@ export class Options {
     return key in this.options;
   }
 
+  hasFieldValue(key: string, value: string): boolean {
+    return key in this.options && this.options[key] === value;
+  }
+
   getFieldValue(key: string): string {
     if (key in this.options) {
       return this.options[key].replace(/^"(.*)"$/, '\$1').replace(/\\ /g, ' ');
