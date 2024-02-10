@@ -19,8 +19,9 @@ CheatDeck is a [Decky Loader](https://github.com/SteamDeckHomebrew/PluginLoader)
 - `LANGUAGE`: Use the language code setting if your game or cheat language not correct (most on non-steam games).
 - `DXVK_ASYNC`: Enable shaders pre-calculate for games use ProtonGE *below* version 7-45.
 - `RADV_PERFTEST`: Enable shaders pre-calculate for games use ProtonGE *above* version 7-45.
-- `Shared Prefix`: Specify a folder as the prefix for the game, so you don't have to upgrade dependencies repeatedly. (May need to migrate game saves)
-- You can also custom and quick access some launch options.
+- `STEAM_COMPAT_DATA_PATH`: Specify a folder as the shared prefix for the game, so you don't have to upgrade dependencies repeatedly. (May need to migrate game saves)
+
+You can also custom and quick access some other launch options.
 
 ## Reference
 - [decky-steamgriddb](https://github.com/SteamGridDB/decky-steamgriddb)
