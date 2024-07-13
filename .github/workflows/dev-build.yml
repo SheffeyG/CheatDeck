@@ -34,7 +34,7 @@ jobs:
       - name: Download Decky Plugin CLI
         run: |
           mkdir $(pwd)/cli
-          curl -L -o $(pwd)/cli/decky "https://github.com/SteamDeckHomebrew/cli/releases/latest/download/decky"
+          curl -L -o $(pwd)/cli/decky "https://github.com/SteamDeckHomebrew/cli/releases/latest/download/decky-linux-x86_64"
           chmod +x $(pwd)/cli/decky
 
       - name: Build plugin
