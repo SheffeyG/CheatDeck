@@ -8,7 +8,7 @@ import {
   MenuItem,
   Navigation,
   Patch,
-} from 'decky-frontend-lib';
+} from '@decky/ui';
 
 
 // Always add before "Properties..."

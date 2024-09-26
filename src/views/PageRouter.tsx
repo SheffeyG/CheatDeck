@@ -1,5 +1,5 @@
 import { VFC } from "react"
-import { SidebarNavigation, useParams } from "decky-frontend-lib"
+import { SidebarNavigation, useParams } from "@decky/ui"
 import { BsCSquareFill, BsExclamationSquareFill, BsFillBoxFill } from "react-icons/bs"
 
 import Normal from "./Normal"

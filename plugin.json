@@ -2,6 +2,7 @@
   "name": "CheatDeck",
   "author": "Sheffey",
   "flags": [],
+  "api_version": 1,
   "publish": {
     "tags": [ "cheat", "trainer" ],
     "description": "Launch games with cheat or trainer and manage your launch options.",

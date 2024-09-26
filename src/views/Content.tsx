@@ -7,15 +7,13 @@ import {
   Navigation,
   PanelSection,
   PanelSectionRow,
-  ServerAPI,
   showModal,
-} from "decky-frontend-lib";
-import { VFC } from "react";
+} from "@decky/ui";
 import { HiQrCode } from 'react-icons/hi2';
 import { QRCodeSVG } from "qrcode.react";
 
 
-const Content: VFC<{ serverAPI: ServerAPI }> = () => {
+const Content = () => {
 
   const navLink = (url: string) => {
     Navigation.CloseSideMenus();

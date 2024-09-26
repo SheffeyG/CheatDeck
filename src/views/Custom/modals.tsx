@@ -1,4 +1,4 @@
-import { DialogButton, DialogHeader, Field, Focusable, ModalRoot, TextField } from "decky-frontend-lib";
+import { DialogButton, DialogHeader, Field, Focusable, ModalRoot, TextField } from "@decky/ui";
 import { FC, useEffect, useState } from "react";
 
 import { CustomOption, getEmptyCusOpt, setCustomOptions } from "../../utils/Custom";

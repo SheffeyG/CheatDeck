@@ -1,36 +1,29 @@
 import { 
   FileSelectionType, 
   FilePickerRes,
-  ServerAPI, 
   ToastData,
-} from "decky-frontend-lib"
+  callable,
+  openFilePicker,
+  toaster,
+} from "@decky/api"
 
 export type FilePickerFilter = RegExp | ((file: File) => boolean) | undefined;
 
+const settingsGetSettings = callable<[{key: string, defaults: any}], any>("settings_getSetting");
+const settingsSetSettings = callable<[{key: string, value: any}], any>("settings_setSetting");
+const settingsCommit = callable<[], any>("settings_commit");
 
 export class Backend {
-  static serverAPI: ServerAPI
-
-  static initialize(serverApi: ServerAPI) {
-    Backend.serverAPI = serverApi
-  }
-
-  static async bridge(functionName: string, namedArgs?: any) {
-    namedArgs = (namedArgs) ? namedArgs : {}
-    console.debug(`Calling backend function: ${functionName}`)
-    let output = await Backend.serverAPI.callPluginMethod(functionName, namedArgs)
-    return output.result
-  }
   static async getSetting(key: string, defaults: any) {
-    let output = await Backend.bridge("settings_getSetting", { key, defaults })
+    let output = await settingsGetSettings({key, defaults})
     return output
   }
   static async setSetting(key: string, value: any) {
-    let output = await Backend.bridge("settings_setSetting", { key, value })
+    let output = await settingsSetSettings({ key, value })
     return output
   }
   static async commitSettings() {
-    let output = await Backend.bridge("settings_commit")
+    let output = await settingsCommit()
     return output
   }
 
@@ -42,7 +35,7 @@ export class Backend {
     defaultHidden?: boolean,
   ): Promise<FilePickerRes> => {
     return new Promise(async (resolve, reject) => {
-      await Backend.serverAPI.openFilePickerV2(
+      await openFilePicker(
         FileSelectionType.FILE,
         startPath,
         includeFiles,
@@ -63,6 +56,6 @@ export class Backend {
       playSound: true,
       showToast: true
     }
-    Backend.serverAPI.toaster.toast(toastData);
+    toaster.toast(toastData);
   }
 }

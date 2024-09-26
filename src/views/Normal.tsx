@@ -6,7 +6,7 @@ import {
   Focusable,
   TextField,
   ToggleField,
-} from "decky-frontend-lib"
+} from "@decky/ui"
 import { VFC, useEffect, useState } from "react"
 import { FaGamepad, FaLanguage, FaFolderOpen } from "react-icons/fa";
 

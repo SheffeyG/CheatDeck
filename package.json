@@ -1,5 +1,6 @@
 {
   "name": "cheatdeck",
+  "type": "module",
   "version": "0.3.2",
   "description": "Launch games with cheat or trainer and manage your launch options.",
   "scripts": {
@@ -24,25 +25,22 @@
   },
   "homepage": "https://github.com/SheffeyG/CheatDeck#readme",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^21.1.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "@rollup/plugin-replace": "^4.0.0",
-    "@rollup/plugin-typescript": "^8.3.3",
-    "@types/react": "16.14.0",
-    "@types/webpack": "^5.28.0",
-    "@types/uuid": "^9.0.8",
-    "rollup": "^2.77.1",
-    "rollup-plugin-import-assets": "^1.1.1",
+    "@decky/rollup": "^1.0.1",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "@types/uuid": "^10.0.0",
+    "@types/webpack": "^5.28.5",
+    "rollup": "^4.22.4",
     "shx": "^0.3.4",
-    "tslib": "^2.4.0",
-    "typescript": "^4.7.4"
+    "tslib": "^2.7.0",
+    "typescript": "^5.6.2"
   },
   "dependencies": {
-    "uuid": "^9.0.0",
-    "decky-frontend-lib": "^3.24.5",
-    "qrcode.react": "^3.1.0",
-    "react-icons": "^4.4.0"
+    "@decky/api": "1.1.2",
+    "@decky/ui": "4.7.2",
+    "uuid": "^10.0.0",
+    "qrcode.react": "^4.0.1",
+    "react-icons": "^5.3.0"
   },
   "pnpm": {
     "peerDependencyRules": {

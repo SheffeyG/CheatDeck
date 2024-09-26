@@ -4,7 +4,7 @@ import {
   Focusable,
   ToggleField,
   showModal,
-} from "decky-frontend-lib"
+} from "@decky/ui"
 import { VFC, useEffect, useState } from "react"
 import { BsGearFill } from "react-icons/bs";
 import { MdAddBox } from "react-icons/md";
