@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
+  lint-frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -23,10 +23,28 @@ jobs:
         with:
           version: 9
 
-      - name: Lint source
+      - name: Lint frontend source
         run: |
           pnpm i
           pnpm run lint:frontend
+
+  lint-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup latest Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          check-latest: true
+
+      - name: Install flake8
+        run: pip install flake8
+
+      - name: Lint backend source
+        run: flake8 main.py
 
   build-plugin:
     runs-on: ubuntu-latest
