@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import logging
+import typing
 from settings import SettingsManager  # type: ignore
 import decky  # type: ignore
 
@@ -16,14 +17,27 @@ settings = SettingsManager(name="settings", settings_directory=settingsDir)
 settings.read()
 
 
+class SetSettingOptions(typing.TypedDict):
+    key: str
+    value: typing.Any
+
+
+class GetSettingOptions(typing.TypedDict):
+    key: str
+    defaults: typing.Any
+
+
 class Plugin:
-    async def _main(self):
+    @classmethod
+    async def _main(cls):
         logger.info("[backend] Loading CheatDeck!")
 
-    async def _unload(self):
+    @classmethod
+    async def _unload(cls):
         logger.info("[backend] Unloading CheatDeck!")
 
-    async def _uninstall(self):
+    @classmethod
+    async def _uninstall(cls):
         logger.info("[backend] Uninstalling CheatDeck!")
 
     @classmethod
@@ -37,11 +51,11 @@ class Plugin:
         return settings.commit()
 
     @classmethod
-    async def settings_getSetting(cls, key: str, defaults):
-        logger.info('[backend] Get {}'.format(key))
-        return settings.getSetting(key, defaults)
+    async def settings_getSetting(cls, data: GetSettingOptions):
+        logger.info('[backend] Get {}'.format(data['key']))
+        return settings.getSetting(data['key'], data['defaults'])
 
     @classmethod
-    async def settings_setSetting(cls, key: str, value):
-        logger.info('[backend] Set {}: {}'.format(key, value))
-        return settings.setSetting(key, value)
+    async def settings_setSetting(cls, data: SetSettingOptions):
+        logger.info('[backend] Set {}: {}'.format(data['key'], data['value']))
+        return settings.setSetting(data['key'], data['value'])
