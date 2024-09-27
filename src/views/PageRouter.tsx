@@ -1,4 +1,4 @@
-import { VFC } from "react"
+import { FC } from "react"
 import { SidebarNavigation, useParams } from "@decky/ui"
 import { BsCSquareFill, BsExclamationSquareFill, BsFillBoxFill } from "react-icons/bs"
 
@@ -7,7 +7,7 @@ import Advanced from "./Advanced"
 import Custom from "./Custom"
 
 
-const PageRouter: VFC = () => {
+const PageRouter: FC = () => {
   var { appid } = useParams<{ appid: number }>();
   if (typeof appid === 'string') { appid = parseInt(appid, 10) }
   const pages = [

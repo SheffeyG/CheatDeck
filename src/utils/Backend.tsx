@@ -1,5 +1,5 @@
-import { 
-  FileSelectionType, 
+import {
+  FileSelectionType,
   FilePickerRes,
   ToastData,
   callable,
@@ -15,7 +15,7 @@ const settingsCommit = callable<[], any>("settings_commit");
 
 export class Backend {
   static async getSetting(key: string, defaults: any) {
-    let output = await settingsGetSettings({key, defaults})
+    let output = await settingsGetSettings({ key, defaults })
     return output
   }
   static async setSetting(key: string, value: any) {

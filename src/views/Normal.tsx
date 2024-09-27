@@ -7,7 +7,7 @@ import {
   TextField,
   ToggleField,
 } from "@decky/ui"
-import { VFC, useEffect, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { FaGamepad, FaLanguage, FaFolderOpen } from "react-icons/fa";
 
 // import logger from "../utils/logger"
@@ -15,7 +15,7 @@ import { Backend } from "../utils/Backend";
 import { Options } from "../utils/Options";
 import { defaultLangCodes } from "../utils/Default";
 
-const Normal: VFC<{ appid: number }> = ({ appid }) => {
+const Normal: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(''));
   const [showCheat, setShowChat] = useState(false);
   const [showLang, setShowLang] = useState(false);

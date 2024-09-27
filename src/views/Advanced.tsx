@@ -6,14 +6,14 @@ import {
   TextField,
   ToggleField,
 } from "@decky/ui"
-import { VFC, useEffect, useState } from "react"
+import { FC, useEffect, useState } from "react"
 
 // import logger from "../utils/logger"
 import { Backend } from "../utils/Backend";
 import { Options } from "../utils/Options";
 import { FaFolderOpen } from "react-icons/fa";
 
-const Advanced: VFC<{ appid: number }> = ({ appid }) => {
+const Advanced: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
   const [isSteam, setIsSteam] = useState(true);
   const [showPrefix, setShowPrefix] = useState(false);

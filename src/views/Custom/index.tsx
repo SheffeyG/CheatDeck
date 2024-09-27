@@ -5,7 +5,7 @@ import {
   ToggleField,
   showModal,
 } from "@decky/ui"
-import { VFC, useEffect, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { BsGearFill } from "react-icons/bs";
 import { MdAddBox } from "react-icons/md";
 
@@ -16,7 +16,7 @@ import { Modals } from "./modals";
 // import logger from "../../utils/Logger";
 
 
-const Custom: VFC<{ appid: number }> = ({ appid }) => {
+const Custom: FC<{ appid: number }> = ({ appid }) => {
   // local storage custom options list
   const [cusOptList, setCusOptList] = useState<CustomOption[]>([]);
   // launcher options
@@ -94,8 +94,8 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
           }
           .CD_AddButton {
             display: flex !important;
-            align-items: center !important; 
-            justify-content: center !important; 
+            align-items: center !important;
+            justify-content: center !important;
             height: 1.5em !important;
           }
           .CD_SaveButton {
