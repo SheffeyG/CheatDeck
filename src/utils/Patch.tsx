@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // From plugin SteamGridDB
- 
+
 import {
   afterPatch,
   fakeRenderComponent,
@@ -8,14 +9,13 @@ import {
   MenuItem,
   Navigation,
   Patch,
-} from '@decky/ui';
-
+} from "@decky/ui";
 
 // Always add before "Properties..."
 const spliceMenuItem = (children: any[], appid: number) => {
-  children.find((x: any) => x?.key === 'properties');
-  const propertiesMenuItemIdx = children.findIndex((item) =>
-    findInReactTree(item, (x) => x?.onSelected && x.onSelected.toString().includes('AppProperties'))
+  children.find((x: any) => x?.key === "properties");
+  const propertiesMenuItemIdx = children.findIndex(item =>
+    findInReactTree(item, x => x?.onSelected && x.onSelected.toString().includes("AppProperties")),
   );
   children.splice(propertiesMenuItemIdx, 0, (
     <MenuItem
@@ -36,19 +36,23 @@ const spliceMenuItem = (children: any[], appid: number) => {
  */
 const contextMenuPatch = (LibraryContextMenu: any) => {
   const patches: {
-    outer?: Patch,
-    inner?: Patch,
+    outer?: Patch;
+    inner?: Patch;
     unpatch: () => void;
-  } = { unpatch: () => {return null;} };
-  patches.outer = afterPatch(LibraryContextMenu.prototype, 'render', (_: Record<string, unknown>[], component: any) => {
+  } = { unpatch: () => {
+    return null;
+  } };
+  patches.outer = afterPatch(LibraryContextMenu.prototype, "render", (_: Record<string, unknown>[], component: any) => {
     const appid: number = component._owner.pendingProps.overview.appid;
 
     if (!patches.inner) {
-      patches.inner = afterPatch(component.type.prototype, 'shouldComponentUpdate', ([nextProps]: any, shouldUpdate: any) => {
+      patches.inner = afterPatch(component.type.prototype, "shouldComponentUpdate", ([nextProps]: any, shouldUpdate: any) => {
         try {
-          const sgdbIdx = nextProps.children.findIndex((x: any) => x?.key === 'cheat-deck');
+          const sgdbIdx = nextProps.children.findIndex((x: any) => x?.key === "cheat-deck");
           if (sgdbIdx != -1) nextProps.children.splice(sgdbIdx, 1);
-        } catch (error) {
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        catch (error) {
           // wrong context menu (probably)
           return component;
         }
@@ -56,8 +60,8 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
         if (shouldUpdate === true) {
           let updatedAppid: number = appid;
           // find the first menu component that has the correct appid assigned to _owner
-          const parentOverview = nextProps.children.find((x: any) => x?._owner?.pendingProps?.overview?.appid &&
-            x._owner.pendingProps.overview.appid !== appid
+          const parentOverview = nextProps.children.find((x: any) => x?._owner?.pendingProps?.overview?.appid
+            && x._owner.pendingProps.overview.appid !== appid,
           );
           // if found then use that appid
           if (parentOverview) {
@@ -68,7 +72,8 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
 
         return shouldUpdate;
       });
-    } else {
+    }
+    else {
       spliceMenuItem(component.props.children, appid);
     }
 
@@ -86,20 +91,20 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
  */
 export const LibraryContextMenu = fakeRenderComponent(
   findModuleChild((m) => {
-    if (typeof m !== 'object') return;
+    if (typeof m !== "object") return;
     for (const prop in m) {
       if (
-        m[prop]?.toString() &&
-        m[prop].toString().includes('().LibraryContextMenu')
+        m[prop]?.toString()
+        && m[prop].toString().includes("().LibraryContextMenu")
       ) {
-        return Object.values(m).find((sibling) => (
-          sibling?.toString().includes('createElement') &&
-          sibling?.toString().includes('navigator:')
+        return Object.values(m).find(sibling => (
+          sibling?.toString().includes("createElement")
+          && sibling?.toString().includes("navigator:")
         ));
       }
     }
     return;
-  })
+  }),
 ).type;
 
 export default contextMenuPatch;

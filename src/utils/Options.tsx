@@ -6,7 +6,10 @@ export class Options {
     this.options = {};
     const match = input.match(/(.*)%command%(.*)/);
     // no normal options
-    if (!match) { this.others = input; return }
+    if (!match) {
+      this.others = input;
+      return;
+    }
 
     const optionsPart = match[1].trim();
     this.others = match[2].trim();
@@ -29,28 +32,27 @@ export class Options {
 
   getFieldValue(key: string): string {
     if (key in this.options) {
-      return this.options[key].replace(/^"(.*)"$/, '\$1').replace(/\\ /g, ' ');
+      return this.options[key].replace(/^"(.*)"$/, "$1").replace(/\\ /g, " ");
     }
-    return '';
+    return "";
   }
 
   setFieldValue(key: string, value: string): string {
     const oldValue = this.options[key];
-    this.options[key] = value.trim().replace(/ /g, '\\ '); // escape the space
+    this.options[key] = value.trim().replace(/ /g, "\\ "); // escape the space
     return oldValue;
   }
 
   getOptionsString(): string {
-    let optionsString = '';
+    let optionsString = "";
     for (const key in this.options) {
       if (this.options[key]) {
         const value = this.options[key];
         optionsString += `${key}=${value} `;
       }
     }
-    if (optionsString) optionsString += '%command%';
-    if (this.others) optionsString += ' ' + this.others;
+    if (optionsString) optionsString += "%command%";
+    if (this.others) optionsString += " " + this.others;
     return optionsString.trim();
   }
-
 }

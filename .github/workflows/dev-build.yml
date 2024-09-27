@@ -7,6 +7,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup latest Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+
+      - name: Setup PNPM@9
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Lint source
+        run: |
+          pnpm i
+          pnpm run lint:frontend
+
   build-plugin:
     runs-on: ubuntu-latest
     steps:
@@ -18,13 +39,10 @@ jobs:
         with:
           node-version: latest
 
-      - name: Setup latest PNPM
+      - name: Setup PNPM@9
         uses: pnpm/action-setup@v4
         with:
           version: 9
-
-      - name: Update decky-frontend-lib
-        run: pnpm update decky-frontend-lib --latest
 
       - name: Build frontend from source
         run: |
