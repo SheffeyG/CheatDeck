@@ -34,7 +34,7 @@ const Content = () => {
   };
 
   return (
-    <PanelSection title="informatin">
+    <PanelSection title="information">
       <Focusable
         focusWithinClassName="gpfocuswithin"
         onActivate={() => {}}
