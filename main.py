@@ -11,7 +11,7 @@ logger = decky.logger
 
 # Setup backend logger
 logger.setLevel(logging.DEBUG)
-logger.info('[backend] Settings path: {}'.format(settingsDir))
+logger.info("[backend] Settings path: {}".format(settingsDir))
 settings = SettingsManager(name="settings", settings_directory=settingsDir)
 settings.read()
 
@@ -41,23 +41,23 @@ class Plugin:
 
     @classmethod
     async def settings_read(cls):
-        logger.info('[backend] Reading settings')
+        logger.info("[backend] Reading settings")
         return settings.read()
 
     @classmethod
     async def settings_commit(cls):
-        logger.info('[backend] Saving settings')
+        logger.info("[backend] Saving settings")
         return settings.commit()
 
     @classmethod
     async def settings_getSetting(cls, data: GetSettingOptions):
-        logger.info('[backend] Get {}'.format(data['key']))
-        return settings.getSetting(data['key'], data['defaults'])
+        logger.info("[backend] Get {}".format(data["key"]))
+        return settings.getSetting(data["key"], data["defaults"])
 
     @classmethod
     async def settings_setSetting(cls, data: SetSettingOptions):
-        logger.info('[backend] Set {}: {}'.format(data['key'], data['value']))
-        return settings.setSetting(data['key'], data['value'])
+        logger.info("[backend] Set {}: {}".format(data["key"], data["value"]))
+        return settings.setSetting(data["key"], data["value"])
 
     @classmethod
     async def get_env(cls, env: str):
