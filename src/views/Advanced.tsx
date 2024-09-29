@@ -35,7 +35,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
 
   const handleBrowse = async () => {
     const prefixDir = options.getFieldValue("STEAM_COMPAT_DATA_PATH");
-    const defaultDir = prefixDir ? prefixDir : "/home/deck";
+    const defaultDir = prefixDir ? prefixDir : await Backend.getEnv("DECKY_USER_HOME");
     const filePickerRes = await Backend.openFilePicker(defaultDir, false);
     const prefixPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());

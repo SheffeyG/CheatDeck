@@ -5,7 +5,6 @@ from settings import SettingsManager  # type: ignore
 import decky  # type: ignore
 
 # Setup environment variables
-deckyHomeDir = decky.DECKY_HOME
 settingsDir = decky.DECKY_PLUGIN_SETTINGS_DIR
 loggingDir = decky.DECKY_PLUGIN_LOG_DIR
 logger = decky.logger
@@ -59,3 +58,7 @@ class Plugin:
     async def settings_setSetting(cls, data: SetSettingOptions):
         logger.info('[backend] Set {}: {}'.format(data['key'], data['value']))
         return settings.setSetting(data['key'], data['value'])
+
+    @classmethod
+    async def get_env(cls, env: str):
+        return getattr(decky, env)

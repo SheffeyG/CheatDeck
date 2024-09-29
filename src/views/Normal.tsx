@@ -39,7 +39,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
 
   const handleBrowse = async () => {
     const cheatDir = options.getFieldValue("PRESSURE_VESSEL_FILESYSTEMS_RW");
-    const defaultDir = cheatDir ? cheatDir : "/home/deck";
+    const defaultDir = cheatDir ? cheatDir : await Backend.getEnv("DECKY_USER_HOME");
     const filePickerRes = await Backend.openFilePicker(defaultDir, true, ["exe", "bat"]);
     const cheatPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
