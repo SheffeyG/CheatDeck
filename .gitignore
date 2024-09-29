@@ -43,8 +43,8 @@ yalc.lock
 
 .vscode/settings.json
 
-# Ignore output folder
-
+# Ignore output files
+deck.json
 backend/out
 pkg/
 
