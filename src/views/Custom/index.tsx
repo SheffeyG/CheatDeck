@@ -4,8 +4,8 @@ import {
   Focusable,
   ToggleField,
   showModal,
-} from "decky-frontend-lib"
-import { VFC, useEffect, useState } from "react"
+} from "@decky/ui";
+import { FC, useEffect, useState } from "react";
 import { BsGearFill } from "react-icons/bs";
 import { MdAddBox } from "react-icons/md";
 
@@ -15,8 +15,7 @@ import { CustomOption, getCustomOptions } from "../../utils/Custom";
 import { Modals } from "./modals";
 // import logger from "../../utils/Logger";
 
-
-const Custom: VFC<{ appid: number }> = ({ appid }) => {
+const Custom: FC<{ appid: number }> = ({ appid }) => {
   // local storage custom options list
   const [cusOptList, setCusOptList] = useState<CustomOption[]>([]);
   // launcher options
@@ -30,8 +29,10 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
       const optionsString = detail.strLaunchOptions;
       const savedOptions = new Options(optionsString);
       setOptions(savedOptions);
-    })
-    setTimeout(() => { unregister() }, 1000);
+    });
+    setTimeout(() => {
+      unregister();
+    }, 1000);
   }, []);
 
   const updateOptList = (updatedOptList: CustomOption[]) => {
@@ -41,8 +42,7 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
   const saveOptions = async () => {
     SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
     Backend.sendNotice("Custom settings saved.");
-  }
-
+  };
 
   return (
     <>
@@ -94,8 +94,8 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
           }
           .CD_AddButton {
             display: flex !important;
-            align-items: center !important; 
-            justify-content: center !important; 
+            align-items: center !important;
+            justify-content: center !important;
             height: 1.5em !important;
           }
           .CD_SaveButton {
@@ -110,6 +110,7 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
       </style>
       {(cusOptList.length > 0) && (
         cusOptList.map((opt: CustomOption) => (
+          // eslint-disable-next-line react/jsx-key
           <Focusable className="CD_EntryContainer">
             <Focusable
               className="CD_ToggleContainer"
@@ -120,14 +121,14 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
                 checked={options.hasFieldValue(opt.field, opt.value)}
                 onChange={(enable: boolean) => {
                   const updatedOptions = new Options(options.getOptionsString());
-                  updatedOptions.setFieldValue(opt.field, enable ? opt.value : '');
+                  updatedOptions.setFieldValue(opt.field, enable ? opt.value : "");
                   setOptions(updatedOptions);
                 }}
               />
             </Focusable>
             <DialogButton
               className="CD_DialogButton"
-              onClick={() => { showModal(<Modals id={opt.id} optList={cusOptList} onSave={updateOptList} />, window) }}
+              onClick={() => { showModal(<Modals id={opt.id} optList={cusOptList} onSave={updateOptList} />, window); }}
             >
               <BsGearFill className="CD_IconTranslate" />
             </DialogButton>
@@ -137,7 +138,7 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
 
       <DialogButton
         className="CD_AddButton"
-        onClick={() => { showModal(<Modals optList={cusOptList} onSave={updateOptList} />) }}
+        onClick={() => { showModal(<Modals optList={cusOptList} onSave={updateOptList} />); }}
       >
         <MdAddBox />
       </DialogButton>
@@ -150,7 +151,7 @@ const Custom: VFC<{ appid: number }> = ({ appid }) => {
         </DialogButton>
       )}
     </>
-  )
-}
+  );
+};
 
 export default Custom;

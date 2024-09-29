@@ -1,4 +1,4 @@
-import { DropdownOption } from "decky-frontend-lib";
+import { DropdownOption } from "@decky/ui";
 
 export const defaultLangCodes: DropdownOption[] = [
   { label: "简体中文", data: "zh_CN.utf8" },
@@ -12,4 +12,4 @@ export const defaultLangCodes: DropdownOption[] = [
   { label: "한국어", data: "ko_KR.utf8" },
   { label: "Português", data: "pt_PT.utf8" },
   { label: "Русский", data: "ru_RU.utf8" },
-]
+];

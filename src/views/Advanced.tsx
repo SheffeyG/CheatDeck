@@ -5,15 +5,15 @@ import {
   Focusable,
   TextField,
   ToggleField,
-} from "decky-frontend-lib"
-import { VFC, useEffect, useState } from "react"
+} from "@decky/ui";
+import { FC, useEffect, useState } from "react";
 
 // import logger from "../utils/logger"
 import { Backend } from "../utils/Backend";
 import { Options } from "../utils/Options";
 import { FaFolderOpen } from "react-icons/fa";
 
-const Advanced: VFC<{ appid: number }> = ({ appid }) => {
+const Advanced: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
   const [isSteam, setIsSteam] = useState(true);
   const [showPrefix, setShowPrefix] = useState(false);
@@ -22,22 +22,24 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
     const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
       const optionsString = detail.strLaunchOptions;
       const savedOptions = new Options(optionsString);
-      setShowPrefix(savedOptions.hasField('STEAM_COMPAT_DATA_PATH'));
+      setShowPrefix(savedOptions.hasField("STEAM_COMPAT_DATA_PATH"));
       setOptions(savedOptions);
       if (optionsString.match("heroicgameslauncher") || optionsString.match("Emulation")) {
         setIsSteam(false);
       }
-    })
-    setTimeout(() => { unregister() }, 1000);
-  }, [])
+    });
+    setTimeout(() => {
+      unregister();
+    }, 1000);
+  }, []);
 
   const handleBrowse = async () => {
-    const prefixDir = options.getFieldValue('STEAM_COMPAT_DATA_PATH');
+    const prefixDir = options.getFieldValue("STEAM_COMPAT_DATA_PATH");
     const defaultDir = prefixDir ? prefixDir : "/home/deck";
     const filePickerRes = await Backend.openFilePicker(defaultDir, false);
     const prefixPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
-    newOptions.setFieldValue('STEAM_COMPAT_DATA_PATH', `"${prefixPath}"`);
+    newOptions.setFieldValue("STEAM_COMPAT_DATA_PATH", `"${prefixPath}"`);
     setOptions(newOptions);
   };
 
@@ -45,12 +47,12 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
     if (isSteam) {
       SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
       Backend.sendNotice("Advanced settings saved.");
-    } else {
+    }
+    else {
       // non steam games is not implemented
       Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
     }
-  }
-
+  };
 
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
@@ -58,11 +60,11 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
       <ToggleField
         label="DXVK_ASYNC"
         description="Enable shaders pre-calculate for ProtonGE below 7-45"
-        bottomSeparator={"standard"}
+        bottomSeparator="standard"
         checked={options.hasFieldValue("DXVK_ASYNC", "1")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
-          updatedOptions.setFieldValue('DXVK_ASYNC', enable ? '1' : '');
+          updatedOptions.setFieldValue("DXVK_ASYNC", enable ? "1" : "");
           setOptions(updatedOptions);
         }}
       />
@@ -70,68 +72,70 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
       <ToggleField
         label="RADV_PERFTEST"
         description="Enable shaders pre-calculate for ProtonGE above 7-45"
-        bottomSeparator={"standard"}
+        bottomSeparator="standard"
         checked={options.hasFieldValue("RADV_PERFTEST", "gpl")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
-          updatedOptions.setFieldValue('RADV_PERFTEST', enable ? 'gpl' : '');
+          updatedOptions.setFieldValue("RADV_PERFTEST", enable ? "gpl" : "");
           setOptions(updatedOptions);
         }}
       />
 
       <ToggleField
         label="STEAM_COMPAT_DATA_PATH"
-        description='Specify a folder as the shared prefix for the game'
-        bottomSeparator={"none"}
+        description="Specify a folder as the shared prefix for the game"
+        bottomSeparator="none"
         checked={showPrefix}
         onChange={(enable: boolean) => {
           setShowPrefix(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.setFieldValue('STEAM_COMPAT_DATA_PATH', '');
+            updatedOptions.setFieldValue("STEAM_COMPAT_DATA_PATH", "");
             setOptions(updatedOptions);
           }
         }}
       />
-      {showPrefix && (<Field
-        key={1}
-        label={"Prefix folder"}
-        padding={"none"}
-        bottomSeparator="thick"
-      >
-        <Focusable
-          style={{
-            boxShadow: "none",
-            display: "flex",
-            justifyContent: "right",
-            padding: "10px 0",
-          }}
+      {showPrefix && (
+        <Field
+          key={1}
+          label="Prefix folder"
+          padding="none"
+          bottomSeparator="thick"
         >
-          <TextField
+          <Focusable
             style={{
-              padding: "10px",
-              fontSize: "14px",
-              width: "400px",
-            }}
-            disabled={true}
-            value={options.getFieldValue('STEAM_COMPAT_DATA_PATH')}
-          />
-          <DialogButton
-            onClick={handleBrowse}
-            style={{
+              boxShadow: "none",
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: "10px",
-              maxWidth: "40px",
-              minWidth: "auto",
-              marginLeft: ".5em",
+              justifyContent: "right",
+              padding: "10px 0",
             }}
           >
-            <FaFolderOpen />
-          </DialogButton>
-        </Focusable>
-      </Field>)}
+            <TextField
+              style={{
+                padding: "10px",
+                fontSize: "14px",
+                width: "400px",
+              }}
+              disabled={true}
+              value={options.getFieldValue("STEAM_COMPAT_DATA_PATH")}
+            />
+            <DialogButton
+              onClick={handleBrowse}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "10px",
+                maxWidth: "40px",
+                minWidth: "auto",
+                marginLeft: ".5em",
+              }}
+            >
+              <FaFolderOpen />
+            </DialogButton>
+          </Focusable>
+        </Field>
+      )}
 
       <DialogButton
         onClick={saveOptions}
@@ -141,13 +145,13 @@ const Advanced: VFC<{ appid: number }> = ({ appid }) => {
           padding: "10px",
           fontSize: "14px",
           textAlign: "center",
-          width: "80%"
+          width: "80%",
         }}
       >
         Save Settings
       </DialogButton>
     </Focusable>
-  )
-}
+  );
+};
 
-export default Advanced
+export default Advanced;

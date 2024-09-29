@@ -1,21 +1,18 @@
 import {
   definePlugin,
-  ServerAPI,
   staticClasses,
-} from "decky-frontend-lib";
+} from "@decky/ui";
+import {
+  routerHook,
+} from "@decky/api";
 import { FaWrench } from "react-icons/fa";
 
 import Content from "./views/Content";
 import PageRouter from "./views/PageRouter";
-import contextMenuPatch, { LibraryContextMenu } from './utils/Patch';
-import { Backend } from "./utils/Backend";
+import contextMenuPatch, { LibraryContextMenu } from "./utils/Patch";
 
-
-export default definePlugin((serverApi: ServerAPI) => {
-  
-  Backend.initialize(serverApi);
-
-  serverApi.routerHook.addRoute("/cheatdeck/:appid", PageRouter, {
+export default definePlugin(() => {
+  routerHook.addRoute("/cheatdeck/:appid", PageRouter, {
     exact: true,
   });
 
@@ -23,10 +20,10 @@ export default definePlugin((serverApi: ServerAPI) => {
 
   return {
     title: <div className={staticClasses.Title}>CheatDeck</div>,
-    content: <Content serverAPI={serverApi} />,
+    content: <Content />,
     icon: <FaWrench />,
     onDismount() {
-      serverApi.routerHook.removeRoute("/cheatdeck/:appid");
+      routerHook.removeRoute("/cheatdeck/:appid");
       menuPatches?.unpatch();
     },
   };
