@@ -9,7 +9,7 @@ import { FaWrench } from "react-icons/fa";
 
 import Content from "./views/Content";
 import PageRouter from "./views/PageRouter";
-import contextMenuPatch, { LibraryContextMenu } from "./utils/Patch";
+import contextMenuPatch, { LibraryContextMenu } from "./utils/patch";
 
 export default definePlugin(() => {
   routerHook.addRoute("/cheatdeck/:appid", PageRouter, {

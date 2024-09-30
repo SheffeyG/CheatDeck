@@ -9,8 +9,8 @@ import {
 import { FC, useEffect, useState } from "react";
 
 // import logger from "../utils/logger"
-import { Backend } from "../utils/Backend";
-import { Options } from "../utils/Options";
+import { Backend } from "../utils/backend";
+import { Options } from "../utils/options";
 import { FaFolderOpen } from "react-icons/fa";
 
 const Advanced: FC<{ appid: number }> = ({ appid }) => {

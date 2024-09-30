@@ -9,9 +9,9 @@ import { FC, useEffect, useState } from "react";
 import { BsGearFill } from "react-icons/bs";
 import { MdAddBox } from "react-icons/md";
 
-import { Backend } from "../../utils/Backend";
-import { Options } from "../../utils/Options";
-import { CustomOption, getCustomOptions } from "../../utils/Custom";
+import { Backend } from "../../utils/backend";
+import { Options } from "../../utils/options";
+import { CustomOption, getCustomOptions } from "../../utils/custom";
 import { Modals } from "./modals";
 // import logger from "../../utils/Logger";
 

@@ -12,8 +12,8 @@ import { FC, useEffect, useState } from "react";
 import { FaGamepad, FaLanguage, FaFolderOpen } from "react-icons/fa";
 
 // import logger from "../utils/logger"
-import { Backend } from "../utils/Backend";
-import { Options } from "../utils/Options";
+import { Backend } from "../utils/backend";
+import { Options } from "../utils/options";
 import { LangCodes } from "../default.json";
 
 const Normal: FC<{ appid: number }> = ({ appid }) => {

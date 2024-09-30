@@ -1,7 +1,7 @@
 import { DialogButton, DialogHeader, Field, Focusable, ModalRoot, TextField } from "@decky/ui";
 import { FC, useEffect, useState } from "react";
 
-import { CustomOption, getEmptyCusOpt, setCustomOptions } from "../../utils/Custom";
+import { CustomOption, getEmptyCusOpt, setCustomOptions } from "../../utils/custom";
 
 export const Modals: FC<{
   closeModal?: () => void;
