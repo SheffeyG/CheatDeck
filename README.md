@@ -5,11 +5,11 @@ CheatDeck is a [Decky Loader](https://github.com/SteamDeckHomebrew/PluginLoader)
 1. Enable the developer mode at steam system settings.
 2. Download the cheat or trainer you need in your steamdeck.
 3. Navigate to the game details menu, and find the `CheatDeck` item.
-![](doc/menu.jpg)
+![menu](docs/menu.jpg)
 4. Enable the cheat setting and select the cheat exe file you just downloaded, then save settings.
-![](doc/settings.jpg)
+![settings](docs/settings.jpg)
 5. Launch the game, and the cheat windows should be shown, if not, press the `steam` key, you can switch the game and cheat windows.
-![](doc/trainer.jpg)
+![trainer](docs/trainer.jpg)
 
 ## Tips
 - Please make sure the file or folder name does not contain slashes or quotes.
