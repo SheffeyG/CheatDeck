@@ -31,9 +31,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
       setOptions(savedOptions);
       setShowChat(savedOptions.hasField("PROTON_REMOTE_DEBUG_CMD"));
       setShowLang(savedOptions.hasField("LANG"));
-      if (optionsString.match("heroicgameslauncher") || optionsString.match("Emulation")) {
-        setIsSteam(false);
-      }
+      setIsSteam(savedOptions.isSteam());
     });
     setTimeout(() => {
       unregister();
@@ -47,6 +45,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
     const cheatPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
     newOptions.setFieldValue("PROTON_REMOTE_DEBUG_CMD", `"${cheatPath}"`);
+    // `PRESSURE_VESSEL_FILESYSTEMS_RW` value should be a dir
     newOptions.setFieldValue("PRESSURE_VESSEL_FILESYSTEMS_RW", `"${cheatPath.replace(/\/[^/]+$/, "")}"`);
     setOptions(newOptions);
   };
@@ -57,7 +56,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
       Backend.sendNotice("Normal settings saved.");
     }
     else {
-      // non steam games is not implemented
+      // Never change anything for non-steam games
       Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
     }
   };

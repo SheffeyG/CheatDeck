@@ -24,9 +24,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       const savedOptions = new Options(optionsString);
       setShowPrefix(savedOptions.hasField("STEAM_COMPAT_DATA_PATH"));
       setOptions(savedOptions);
-      if (optionsString.match("heroicgameslauncher") || optionsString.match("Emulation")) {
-        setIsSteam(false);
-      }
+      setIsSteam(savedOptions.isSteam());
     });
     setTimeout(() => {
       unregister();
