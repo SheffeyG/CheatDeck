@@ -1,148 +1,105 @@
 {
     "version": "2.0.0",
     "tasks": [
-        //PRELIMINARY SETUP TASKS
-        //Dependency setup task
+        // OTHER
         {
-            "label": "depsetup",
-            "type": "shell",
-            "group": "none",
-            "detail": "Install depedencies for basic setup",
-            "linux": {
-                "command": "${workspaceFolder}/.vscode/setup.sh",
-            },
-            // // placeholder for windows scripts, not currently planned
-            // "windows": {
-            //     "command": "call -c ${workspaceFolder}\\.vscode\\setup.bat",
-            // },
-            "problemMatcher": []
-        },
-        //pnpm setup task to grab all needed modules
-        {
-            "label": "pnpmsetup",
-            "type": "shell",
-            "group": "none",
-            "detail": "Setup pnpm",
-            "command": "which pnpm && pnpm i",
-            "problemMatcher": []
-        },
-        //Preliminary "All-in-one" setup task
-        {
-            "label": "setup",
-            "detail": "Set up depedencies, pnpm and update Decky Frontend Library.",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "depsetup",
-                "pnpmsetup",
-                "updatefrontendlib"
-            ],
-            "problemMatcher": []
-        },
-        //Preliminary Deploy Config Setup
-        {
-            "label": "settingscheck",
+            "label": "checkforsettings",
             "type": "shell",
             "group": "none",
             "detail": "Check that settings.json has been created",
-            "linux": {
-                "command": "${workspaceFolder}/.vscode/config.sh",
-            },
-            // // placeholder for windows scripts, not currently planned
-            // "windows": {
-            //     "command": "call ${workspaceFolder}\\.vscode\\config.bat",
-            // },
+            "command": "bash -c ${workspaceFolder}/.vscode/config.sh",
             "problemMatcher": []
         },
-        //BUILD TASKS
+        // BUILD
         {
-            "label": "cli-build",
-            "group": "build",
-            "detail": "Build plugin with CLI",
-            "linux": {
-                "command": "${workspaceFolder}/.vscode/build.sh",
-            },
-            // // placeholder for windows logic, not currently planned
-            // "windows": {
-            //     "command": "call ${workspaceFolder}\\.vscode\\build.bat",
-            // },
-            "problemMatcher": []
-        },
-        //"All-in-one" build task
-        {
-            "label": "build",
-            "group": "build",
-            "detail": "Build decky-plugin-template",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                // "setup",
-                // "settingscheck",
-                "cli-build",
-            ],
-            "problemMatcher": []
-        },
-        //DEPLOY TASKS
-        //Copies the zip file of the built plugin to the plugins folder
-        {
-            "label": "copyzip",
-            "detail": "Deploy plugin zip to deck",
+            "label": "pnpmsetup",
             "type": "shell",
-            "group": "none",
-            "dependsOn": [
-                "chmodplugins"
-            ],
-            "command": "rsync -azp --chmod=D0755,F0755 --rsh='ssh -p ${config:deckport} ${config:deckkey}' out/ ${config:deckuser}@${config:deckip}:${config:deckdir}/homebrew/plugins",
+            "group": "build",
+            "detail": "Setup pnpm",
+            "command": "pnpm i",
             "problemMatcher": []
         },
-        //
-        {
-            "label": "extractzip",
-            "detail": "",
-            "type": "shell",
-            "group": "none",
-            "command": "echo '${config:deckdir}/homebrew/plugins/${config:pluginname}.zip' && ssh ${config:deckuser}@${config:deckip} -p ${config:deckport} ${config:deckkey} 'echo ${config:deckpass} | sudo -S mkdir 755 -p \"$(echo \"${config:deckdir}/homebrew/plugins/${config:pluginname}\" | sed \"s| |-|\")\" && echo ${config:deckpass} | sudo -S chown ${config:deckuser}:${config:deckuser} \"$(echo \"${config:deckdir}/homebrew/plugins/${config:pluginname}\" | sed \"s| |-|\")\" && echo ${config:deckpass} | sudo -S bsdtar -xzpf \"${config:deckdir}/homebrew/plugins/${config:pluginname}.zip\" -C \"$(echo \"${config:deckdir}/homebrew/plugins/${config:pluginname}\" | sed \"s| |-|g\")\" --strip-components=1 --fflags '",
-            "problemMatcher": []
-        },
-        //"All-in-one" deploy task
-        {
-            "label": "deploy",
-            "dependsOrder": "sequence",
-            "group": "none",
-            "dependsOn": [
-                "copyzip",
-                "extractzip"
-            ],
-            "problemMatcher": []
-        },
-        //"All-in-on" build & deploy task
-        {
-            "label": "builddeploy",
-            "detail": "Builds plugin and deploys to deck",
-            "dependsOrder": "sequence",
-            "group": "none",
-            "dependsOn": [
-                "build",
-                "deploy"
-            ],
-            "problemMatcher": []
-        },
-        //GENERAL TASKS
-        //Update Decky Frontend Library, aka DFL
         {
             "label": "updatefrontendlib",
             "type": "shell",
             "group": "build",
-            "detail": "Update deck-frontend-lib aka DFL",
-            "command": "pnpm update decky-frontend-lib --latest",
+            "detail": "Update @decky/ui",
+            "command": "pnpm update @decky/ui --latest",
             "problemMatcher": []
         },
-        //Used chmod plugins folder to allow copy-over of files
         {
-            "label": "chmodplugins",
-            "detail": "chmods plugins folder to prevent perms issues",
+            "label": "build",
+            "type": "npm",
+            "group": "build",
+            "detail": "rollup -c",
+            "script": "build",
+            "path": "",
+            "problemMatcher": []
+        },
+        {
+            "label": "buildall",
+            "group": "build",
+            "detail": "Build decky-plugin-template",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "pnpmsetup",
+                "build"
+            ],
+            "problemMatcher": []
+        },
+        // DEPLOY
+        {
+            "label": "createfolders",
+            "detail": "Create plugins folder in expected directory",
             "type": "shell",
             "group": "none",
-            "command": "ssh ${config:deckuser}@${config:deckip} -p ${config:deckport} ${config:deckkey} 'echo '${config:deckpass}' | sudo -S chmod -R ug+rw ${config:deckdir}/homebrew/plugins/'",
+            "dependsOn": [
+                "checkforsettings"
+            ],
+            "command": "ssh deck@${config:deckip} -p ${config:deckport} ${config:deckkey} 'mkdir -p ${config:deckdir}/homebrew/pluginloader && mkdir -p ${config:deckdir}/homebrew/plugins'",
             "problemMatcher": []
         },
+        {
+            "label": "deploy",
+            "detail": "Deploy dev plugin to deck",
+            "type": "shell",
+            "group": "none",
+            "dependsOn": [
+                "createfolders",
+                "chmodfolders"
+            ],
+            "command": "rsync -azp --delete --chmod=D0755,F0755 --rsh='ssh -p ${config:deckport} ${config:deckkey}' --exclude='.git/' --exclude='.github/' --exclude='.vscode/' --exclude='node_modules/' --exclude='src/' --exclude='*.log' --exclude='.gitignore' . deck@${config:deckip}:${config:deckdir}/homebrew/plugins/${workspaceFolderBasename}",
+            "problemMatcher": []
+        },
+        {
+            "label": "chmodfolders",
+            "detail": "chmods folders to prevent perms issues",
+            "type": "shell",
+            "group": "none",
+            "command": "ssh deck@${config:deckip} -p ${config:deckport} ${config:deckkey} 'echo '${config:deckpass}' | sudo -S chmod -R ug+rw ${config:deckdir}/homebrew/'",
+            "problemMatcher": []
+        },
+        {
+            "label": "deployall",
+            "dependsOrder": "sequence",
+            "group": "none",
+            "dependsOn": [
+                "deploy",
+                "chmodfolders"
+            ],
+            "problemMatcher": []
+        },
+        // ALL-IN-ONE
+        {
+            "label": "allinone",
+            "detail": "Build and deploy",
+            "dependsOrder": "sequence",
+            "group": "test",
+            "dependsOn": [
+                "buildall",
+                "deployall"
+            ],
+            "problemMatcher": []
+        }
     ]
 }

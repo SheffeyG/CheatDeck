@@ -28,25 +28,21 @@ bower_components
 # Editors
 .idea
 *.iml
+.vscode/settings.json
 
 # OS metadata
 .DS_Store
 Thumbs.db
 
-# Ignore built ts files
-dist/
-
+# Ignore built files
 __pycache__/
-
 /.yalc
 yalc.lock
 
-.vscode/settings.json
-
 # Ignore output files
+dist/
 deck.json
 backend/out
-pkg/
 
 # Make sure to ignore any instance of the loader's decky_plugin.py
 decky_plugin.py
