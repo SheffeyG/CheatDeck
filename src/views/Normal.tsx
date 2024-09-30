@@ -2,6 +2,7 @@ import {
   AppDetails,
   DialogButton,
   Dropdown,
+  DropdownOption,
   Field,
   Focusable,
   TextField,
@@ -13,13 +14,15 @@ import { FaGamepad, FaLanguage, FaFolderOpen } from "react-icons/fa";
 // import logger from "../utils/logger"
 import { Backend } from "../utils/Backend";
 import { Options } from "../utils/Options";
-import { defaultLangCodes } from "../utils/Default";
+import { LangCodes } from "../default.json";
 
 const Normal: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
   const [showCheat, setShowChat] = useState(false);
   const [showLang, setShowLang] = useState(false);
   const [isSteam, setIsSteam] = useState(true);
+
+  const defaultLangCodes: DropdownOption[] = LangCodes;
 
   useEffect(() => {
     const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
