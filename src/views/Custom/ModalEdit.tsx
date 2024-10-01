@@ -1,9 +1,16 @@
-import { DialogButton, DialogHeader, Field, Focusable, ModalRoot, TextField } from "@decky/ui";
-import { FC, useEffect, useState } from "react";
+import {
+  DialogButton,
+  DialogHeader,
+  Field,
+  Focusable,
+  ModalRoot,
+  TextField,
+} from "@decky/ui";
+import { FC, useState } from "react";
 
-import { CustomOption, getEmptyCusOpt, setCustomOptions } from "../../utils/custom";
+import { CustomOption, setCustomOptions } from "../../utils/custom";
 
-export const Modals: FC<{
+export const ModalEdit: FC<{
   closeModal?: () => void;
   id?: string;
   optList: CustomOption[];
@@ -14,27 +21,15 @@ export const Modals: FC<{
   optList,
   onSave,
 }) => {
-  const [targetOpt, setTargetOpt] = useState<CustomOption>(getEmptyCusOpt());
-  const existingIndex = optList.findIndex(otp => otp.id === id);
+  const optIndex = optList.findIndex(otp => otp.id === id);
+  const [targetOpt, setTargetOpt] = useState<CustomOption>(
+    optList[optIndex],
+  );
 
-  useEffect(() => {
-    if (existingIndex !== -1) {
-      setTargetOpt(optList[existingIndex]);
-    }
-  }, []);
-
-  const handleSave = async (action = "Mod") => {
+  const handleSave = async (action = "Save") => {
     const updatedOpts = [...optList];
-    if (existingIndex !== -1) {
-      // Delete
-      if (action === "Del") updatedOpts.splice(existingIndex, 1);
-      // update
-      if (action === "Mod") updatedOpts[existingIndex] = targetOpt;
-    }
-    else {
-      // Add
-      if (action === "Mod") updatedOpts.push(targetOpt);
-    }
+    if (action === "Delete") updatedOpts.splice(optIndex, 1);
+    if (action === "Save") updatedOpts[optIndex] = targetOpt;
     await setCustomOptions(updatedOpts);
     onSave(updatedOpts);
     closeModal?.();
@@ -43,11 +38,9 @@ export const Modals: FC<{
   return (
     <ModalRoot onCancel={closeModal}>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <DialogHeader>
-          {id === undefined ? "Add" : "Modify"}
-        </DialogHeader>
+        <DialogHeader>Edit Option</DialogHeader>
         <Field
-          label="label"
+          label="Label"
           padding="none"
           bottomSeparator="none"
         >
@@ -101,28 +94,17 @@ export const Modals: FC<{
         </Field>
         <Focusable style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <DialogButton
-            onClick={() => handleSave("Mod")}
+            onClick={() => handleSave("Save")}
             style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
           >
             Save
           </DialogButton>
-          {(id !== undefined)
-            ? (
-                <DialogButton
-                  onClick={() => handleSave("Del")}
-                  style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
-                >
-                  Delete
-                </DialogButton>
-              )
-            : (
-                <DialogButton
-                  onClick={closeModal}
-                  style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
-                >
-                  Cancel
-                </DialogButton>
-              )}
+          <DialogButton
+            onClick={() => handleSave("Delete")}
+            style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
+          >
+            Delete
+          </DialogButton>
         </Focusable>
       </div>
     </ModalRoot>

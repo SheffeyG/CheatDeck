@@ -6,19 +6,19 @@ import {
   showModal,
 } from "@decky/ui";
 import { FC, useEffect, useState } from "react";
-import { BsGearFill } from "react-icons/bs";
+import { BsPencilFill } from "react-icons/bs";
 import { MdAddBox } from "react-icons/md";
 
 import { Backend } from "../../utils/backend";
-import { Options } from "../../utils/options";
 import { CustomOption, getCustomOptions } from "../../utils/custom";
-import { Modals } from "./modals";
-// import logger from "../../utils/Logger";
+import { ModalEdit } from "./ModalEdit";
+import { ModalNew } from "./ModalNew";
+import { Options } from "../../utils/options";
 
 const Custom: FC<{ appid: number }> = ({ appid }) => {
-  // local storage custom options list
+  // Custom Options from user's saved settings
   const [cusOptList, setCusOptList] = useState<CustomOption[]>([]);
-  // launcher options
+  // Launch Options from current game
   const [options, setOptions] = useState<Options>(new Options(""));
 
   useEffect(() => {
@@ -128,9 +128,9 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
             </Focusable>
             <DialogButton
               className="CD_DialogButton"
-              onClick={() => { showModal(<Modals id={opt.id} optList={cusOptList} onSave={updateOptList} />, window); }}
+              onClick={() => { showModal(<ModalEdit id={opt.id} optList={cusOptList} onSave={updateOptList} />, window); }}
             >
-              <BsGearFill className="CD_IconTranslate" />
+              <BsPencilFill className="CD_IconTranslate" />
             </DialogButton>
           </Focusable>
         ))
@@ -138,7 +138,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
 
       <DialogButton
         className="CD_AddButton"
-        onClick={() => { showModal(<Modals optList={cusOptList} onSave={updateOptList} />); }}
+        onClick={() => { showModal(<ModalNew optList={cusOptList} onSave={updateOptList} />); }}
       >
         <MdAddBox />
       </DialogButton>
