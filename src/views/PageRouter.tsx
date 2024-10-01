@@ -1,6 +1,10 @@
 import { FC } from "react";
 import { SidebarNavigation, useParams } from "@decky/ui";
-import { BsCSquareFill, BsExclamationSquareFill, BsFillBoxFill } from "react-icons/bs";
+import {
+  BsFillDice2Fill as IconNormal,
+  BsExclamationSquareFill as IconAdvanced,
+  BsCSquareFill as IconCustom,
+} from "react-icons/bs";
 
 import Normal from "./Normal";
 import Advanced from "./Advanced";
@@ -15,19 +19,19 @@ const PageRouter: FC = () => {
     {
       title: "Normal",
       content: <Normal appid={appid} />,
-      icon: <BsFillBoxFill />,
+      icon: <IconNormal />,
       hideTitle: false,
     },
     {
       title: "Advanced",
       content: <Advanced appid={appid} />,
-      icon: <BsExclamationSquareFill />,
+      icon: <IconAdvanced />,
       hideTitle: false,
     },
     {
       title: "Custom",
       content: <Custom appid={appid} />,
-      icon: <BsCSquareFill />,
+      icon: <IconCustom />,
       hideTitle: false,
     },
   ];
