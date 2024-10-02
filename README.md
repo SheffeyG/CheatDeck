@@ -4,6 +4,9 @@
 
 CheatDeck is a [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader) plugin to make it more conveniently to use cheat or trainer and manage launch options on your Steam Deck.
 
+## Nightly Release Download
+You can download the latest nightly build of CheatDeck from the [following link](https://nightly.link/SheffeyG/CheatDeck/workflows/dev-build/main/CheatDeck.zip) and installing as ZIP in Decky Loader, or by directly installing from URL using `https://nightly.link/SheffeyG/CheatDeck/workflows/dev-build/main/CheatDeck.zip` in Decky Loader.
+
 ## Usage
 1. Enable the developer mode at Steam system settings.
 2. Download the cheat or trainer you need in your Steam Deck.
@@ -36,9 +39,6 @@ CheatDeck is a [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader)
 - `STEAM_COMPAT_DATA_PATH`: Specify a folder as the shared prefix for the game, so you don't have to upgrade dependencies repeatedly. (May need to migrate game saves)
 
 You can also custom and quick access some other launch options.
-
-## Nightly Release Download
-You can download the latest nightly build of CheatDeck from the [following link](https://nightly.link/SheffeyG/CheatDeck/workflows/dev-build/main/CheatDeck.zip) and installing as ZIP in Decky Loader, or by directly installing from URL using `https://nightly.link/SheffeyG/CheatDeck/workflows/dev-build/main/CheatDeck.zip` in Decky Loader.
 
 ## Reference
 - [decky-steamgriddb](https://github.com/SteamGridDB/decky-steamgriddb)
