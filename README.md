@@ -1,6 +1,8 @@
 # CheatDeck
-[![Nightly Action Status](https://img.shields.io/github/actions/workflow/status/SheffeyG/CheatDeck/dev-build.yml?label=nightly%20build)](https://nightly.link/SheffeyG/CheatDeck/workflows/dev-build/main/CheatDeck.zip) [![License: GPL 3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](./LICENSE) ![Testing Store Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ftesting.deckbrew.xyz%2Fplugins%3Fquery%3DCheatDeck&query=%24%5B%3A1%5D.downloads&suffix=%20installs&label=testing%20store) ![Release Store Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fplugins.deckbrew.xyz%2Fplugins%3Fquery%3DCheatDeck&query=%24%5B%3A1%5D.downloads&suffix=%20installs&label=release%20store)
-
+[![Nightly Action Status](https://img.shields.io/github/actions/workflow/status/SheffeyG/CheatDeck/dev-build.yml?label=nightly%20build)](https://nightly.link/SheffeyG/CheatDeck/workflows/dev-build/main/CheatDeck.zip)
+![Release Store Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fplugins.deckbrew.xyz%2Fplugins%3Fquery%3DCheatDeck&query=%24%5B%3A1%5D.downloads&suffix=%20installs&label=decky%20store)
+![Testing Store Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ftesting.deckbrew.xyz%2Fplugins%3Fquery%3DCheatDeck&query=%24%5B%3A1%5D.downloads&suffix=%20installs&label=testing%20store)
+[![License: GPL 3.0](https://img.shields.io/github/license/SheffeyG/CheatDeck)](./LICENSE)
 
 CheatDeck is a [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader) plugin to make it more conveniently to use cheat or trainer and manage launch options on your Steam Deck.
 
@@ -34,8 +36,8 @@ You can download the latest nightly build of CheatDeck from the [following link]
 
 ## Other Options
 - `LANGUAGE`: Use the language code setting if your game or cheat language not correct (most on non-steam games).
-- `DXVK_ASYNC`: Enable shaders pre-calculate for games use ProtonGE *below* version 7-45.
-- `RADV_PERFTEST`: Enable shaders pre-calculate for games use ProtonGE *above* version 7-45.
+- `DXVK_ASYNC`: Enable shaders pre-calculate for games use ProtonGE **below** version 7-45.
+- `RADV_PERFTEST`: Enable shaders pre-calculate for games use ProtonGE **above** version 7-45.
 - `STEAM_COMPAT_DATA_PATH`: Specify a folder as the shared prefix for the game, so you don't have to upgrade dependencies repeatedly. (May need to migrate game saves)
 
 You can also custom and quick access some other launch options.
