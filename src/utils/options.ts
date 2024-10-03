@@ -1,3 +1,5 @@
+import { Backend } from "./backend";
+
 export class Options {
   #options: { [key: string]: string };
   #others: string;
@@ -5,6 +7,9 @@ export class Options {
 
   constructor(input: string) {
     this.#options = {};
+
+    // Launch options from Heroic and Emudeck should nerver be changed,
+    // maybe there are more launchers to be added.
     this.#isSteam = !(input.includes("heroicgameslauncher") || input.includes("Emulation"));
 
     const match = input.match(/(.*)%command%(.*)/);
@@ -25,10 +30,6 @@ export class Options {
         this.#options[key.trim()] = value.trim();
       }
     }
-  }
-
-  isSteam(): boolean {
-    return this.#isSteam;
   }
 
   hasField(key: string): boolean {
@@ -66,4 +67,15 @@ export class Options {
     if (this.#others) optionsString += " " + this.#others;
     return optionsString.trim();
   }
+
+  saveOptions(appid: number) {
+    if (this.#isSteam) {
+      SteamClient.Apps.SetAppLaunchOptions(appid, this.getOptionsString());
+      Backend.sendNotice("Launch Options Saved.");
+    }
+    else {
+      // Never change anything for non-steam games
+      Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
+    }
+  };
 }

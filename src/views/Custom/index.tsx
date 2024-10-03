@@ -9,7 +9,6 @@ import { FC, useEffect, useState } from "react";
 import { BsPencilFill } from "react-icons/bs";
 import { MdAddBox } from "react-icons/md";
 
-import { Backend } from "../../utils/backend";
 import { CustomOption, getCustomOptions } from "../../utils/custom";
 import { ModalEdit } from "./ModalEdit";
 import { ModalNew } from "./ModalNew";
@@ -37,11 +36,6 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
 
   const updateOptList = (updatedOptList: CustomOption[]) => {
     setCusOptList(updatedOptList);
-  };
-
-  const saveOptions = async () => {
-    SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
-    Backend.sendNotice("Custom settings saved.");
   };
 
   return (
@@ -145,7 +139,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
       {(cusOptList.length > 0) && (
         <DialogButton
           className="CD_SaveButton"
-          onClick={saveOptions}
+          onClick={() => options.saveOptions(appid)}
         >
           Save Settings
         </DialogButton>

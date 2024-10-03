@@ -15,7 +15,6 @@ import { FaFolderOpen } from "react-icons/fa";
 
 const Advanced: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
-  const [isSteam, setIsSteam] = useState(true);
   const [showPrefix, setShowPrefix] = useState(false);
 
   useEffect(() => {
@@ -24,7 +23,6 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       const savedOptions = new Options(optionsString);
       setShowPrefix(savedOptions.hasField("STEAM_COMPAT_DATA_PATH"));
       setOptions(savedOptions);
-      setIsSteam(savedOptions.isSteam());
     });
     setTimeout(() => {
       unregister();
@@ -33,23 +31,12 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
 
   const handleBrowse = async () => {
     const prefixDir = options.getFieldValue("STEAM_COMPAT_DATA_PATH");
-    const defaultDir = prefixDir ? prefixDir : await Backend.getEnv("DECKY_USER_HOME");
+    const defaultDir = prefixDir ?? await Backend.getEnv("DECKY_USER_HOME");
     const filePickerRes = await Backend.openFilePicker(defaultDir, false);
     const prefixPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
     newOptions.setFieldValue("STEAM_COMPAT_DATA_PATH", `"${prefixPath}"`);
     setOptions(newOptions);
-  };
-
-  const saveOptions = () => {
-    if (isSteam) {
-      SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
-      Backend.sendNotice("Advanced settings saved.");
-    }
-    else {
-      // non steam games is not implemented
-      Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
-    }
   };
 
   return (
@@ -136,7 +123,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       )}
 
       <DialogButton
-        onClick={saveOptions}
+        onClick={() => options.saveOptions(appid)}
         style={{
           alignSelf: "center",
           marginTop: "20px",

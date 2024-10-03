@@ -20,7 +20,6 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
   const [showCheat, setShowChat] = useState(false);
   const [showLang, setShowLang] = useState(false);
-  const [isSteam, setIsSteam] = useState(true);
 
   const defaultLangCodes: DropdownOption[] = LangCodes;
 
@@ -31,7 +30,6 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
       setOptions(savedOptions);
       setShowChat(savedOptions.hasField("PROTON_REMOTE_DEBUG_CMD"));
       setShowLang(savedOptions.hasField("LANG"));
-      setIsSteam(savedOptions.isSteam());
     });
     setTimeout(() => {
       unregister();
@@ -40,7 +38,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
 
   const handleBrowse = async () => {
     const cheatDir = options.getFieldValue("PRESSURE_VESSEL_FILESYSTEMS_RW");
-    const defaultDir = cheatDir ? cheatDir : await Backend.getEnv("DECKY_USER_HOME");
+    const defaultDir = cheatDir ?? await Backend.getEnv("DECKY_USER_HOME");
     const filePickerRes = await Backend.openFilePicker(defaultDir, true, ["exe", "bat"]);
     const cheatPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
@@ -48,17 +46,6 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
     // `PRESSURE_VESSEL_FILESYSTEMS_RW` value should be a dir
     newOptions.setFieldValue("PRESSURE_VESSEL_FILESYSTEMS_RW", `"${cheatPath.replace(/\/[^/]+$/, "")}"`);
     setOptions(newOptions);
-  };
-
-  const saveOptions = () => {
-    if (isSteam) {
-      SteamClient.Apps.SetAppLaunchOptions(appid, options.getOptionsString());
-      Backend.sendNotice("Normal settings saved.");
-    }
-    else {
-      // Never change anything for non-steam games
-      Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
-    }
   };
 
   return (
@@ -182,7 +169,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
       )}
 
       <DialogButton
-        onClick={saveOptions}
+        onClick={() => options.saveOptions(appid)}
         style={{
           alignSelf: "center",
           marginTop: "20px",
