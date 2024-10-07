@@ -40,12 +40,12 @@ export class Options {
     return key in this.#options && this.#options[key] === value;
   }
 
-  getFieldValue(key: string): string {
+  getFieldValue(key: string): string | undefined {
     if (key in this.#options) {
       // Unescape spaces to get real value
       return this.#options[key].replace(/^"(.*)"$/, "$1").replace(/\\ /g, " ");
     }
-    return "";
+    return undefined;
   }
 
   setFieldValue(key: string, value: string): string {

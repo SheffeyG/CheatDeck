@@ -106,9 +106,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
         cusOptList.map((opt: CustomOption) => (
           // eslint-disable-next-line react/jsx-key
           <Focusable className="CD_EntryContainer">
-            <Focusable
-              className="CD_ToggleContainer"
-            >
+            <Focusable className="CD_ToggleContainer">
               <ToggleField
                 bottomSeparator="none"
                 label={<span className="CD_Label">{opt.label}</span>}

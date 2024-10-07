@@ -48,8 +48,8 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
     if (!patches.inner) {
       patches.inner = afterPatch(component.type.prototype, "shouldComponentUpdate", ([nextProps]: any, shouldUpdate: any) => {
         try {
-          const sgdbIdx = nextProps.children.findIndex((x: any) => x?.key === "cheat-deck");
-          if (sgdbIdx != -1) nextProps.children.splice(sgdbIdx, 1);
+          const idx = nextProps.children.findIndex((x: any) => x?.key === "cheat-deck");
+          if (idx != -1) nextProps.children.splice(idx, 1);
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         catch (error) {
