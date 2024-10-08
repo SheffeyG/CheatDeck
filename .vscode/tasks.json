@@ -44,7 +44,13 @@
             "dependsOn": [
                 "CheckSettings"
             ],
-            "command": "ssh deck@${config:deckip} -p ${config:deckport} ${config:deckkey} 'mkdir -p ${config:deckdir}/homebrew/pluginloader && mkdir -p ${config:deckdir}/homebrew/plugins'",
+            "command": "ssh",
+            "args": [
+                "${config:deckuser}@${config:deckip}",
+                "-p ${config:deckport}",
+                "-i ${config:deckkey}",
+                "'mkdir -p ${config:deckdir}/homebrew/plugins'",
+            ],
             "problemMatcher": []
         },
         {
@@ -55,7 +61,20 @@
             "dependsOn": [
                 "CreateFolders",
             ],
-            "command": "rsync -azp --delete --chmod=D0755,F0755 --rsh='ssh -p ${config:deckport} ${config:deckkey}' --exclude='.git/' --exclude='.pnpm-store/' --exclude='node_modules/' --exclude='pnpm-lock.yaml' --exclude='src/' . deck@${config:deckip}:${config:deckdir}/homebrew/plugins/${workspaceFolderBasename}",
+            "command": "rsync",
+            "args": [
+                "-azp",
+                "--delete",
+                "--chmod=D0755,F0755",
+                "--rsh='ssh -p ${config:deckport} -i ${config:deckkey}'",
+                "--exclude='src/'",
+                "--exclude='.git/'",
+                "--exclude='.pnpm-store/'",
+                "--exclude='node_modules/'",
+                "--exclude='pnpm-lock.yaml'",
+                ".",
+                "${config:deckuser}@${config:deckip}:${config:deckdir}/homebrew/plugins/${config:pluginname}",
+            ],
             "problemMatcher": []
         },
         {
@@ -63,7 +82,13 @@
             "detail": "Chmods folders to prevent perms issues",
             "type": "shell",
             "group": "none",
-            "command": "ssh deck@${config:deckip} -p ${config:deckport} ${config:deckkey} 'echo '${config:deckpass}' | sudo -S chmod -R ug+rw ${config:deckdir}/homebrew/'",
+            "command": "ssh",
+            "args": [
+                "${config:deckuser}@${config:deckip}",
+                "-p ${config:deckport}",
+                "-i ${config:deckkey}",
+                "'echo '${config:deckpass}' | sudo -S chmod -R ug+rw ${config:deckdir}/homebrew/'",
+            ],
             "problemMatcher": []
         },
         // ALL-IN-ONE
