@@ -14,7 +14,7 @@ import { FaGamepad, FaLanguage, FaFolderOpen } from "react-icons/fa";
 // import logger from "../utils/logger"
 import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
-import { LangCodes } from "../default.json";
+import { LangCodes } from "../data/default.json";
 
 const Normal: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
