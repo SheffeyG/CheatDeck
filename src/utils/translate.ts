@@ -1,34 +1,29 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-import { useState } from "react";
+import { useMemo } from "react";
 
-const languages = {
-  en: require("../data/i18n/en.json"),
-  zh: require("../data/i18n/zh.json"),
-};
+import * as en from "../data/i18n/en.json";
+import * as zhCn from "../data/i18n/zh-cn.json";
+import logger from "./logger";
 
-type typeLang = keyof typeof languages;
+type Language = { [key: string]: string };
+type Languages = { [key: string]: Language };
 
-function getCurrentLanguage(): typeLang {
+const languages: Languages = { zhCn, en };
+
+function getCurrentLangCode(): string {
   const steamLang = window.LocalizationManager.m_rgLocalesToUse[0];
-  const lang = steamLang.replace(/-([a-z])/g, (_, letter: string) =>
+  const langCode = steamLang.replace(/-([a-z])/g, (_, letter: string) =>
     letter.toUpperCase(),
-  ) as typeLang;
-  return languages[lang] ? lang : "en";
+  );
+  logger.info(`LanguageCode: ${langCode}`);
+  return langCode;
 }
 
-function useTranslation() {
-  const [lang] = useState(getCurrentLanguage());
+function translate() {
+  const langCode: string = useMemo(() => getCurrentLangCode(), []);
+  const lang: Language = languages[langCode] ?? languages.en;
   return function (label: string, defaultString: string): string {
-    if (languages[lang]?.[label]?.length) {
-      return languages[lang]?.[label];
-    }
-    else if (languages.en?.[label]?.length) {
-      return languages.en?.[label];
-    }
-    else {
-      return defaultString;
-    }
+    return lang[label] ?? defaultString;
   };
 }
 
-export default useTranslation;
+export default translate;
