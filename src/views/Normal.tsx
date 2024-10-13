@@ -15,6 +15,7 @@ import { FaGamepad, FaLanguage, FaFolderOpen } from "react-icons/fa";
 import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
 import { LangCodes } from "../data/default.json";
+import t from "../utils/translate";
 
 const Normal: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
@@ -52,8 +53,8 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
 
       <ToggleField
-        label="Enable Cheat"
-        description="Select the cheat or trainer exe file from storage"
+        label={t("NORMAL_CHEAT_TOGGLE_LABEL", "Enable Cheat")}
+        description={t("NORMAL_CHEAT_TOGGLE_DESC", "Select the cheat or trainer exe file from storage")}
         icon={<FaGamepad />}
         bottomSeparator="none"
         checked={showCheat}
@@ -70,7 +71,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
       {showCheat && (
         <Field
           key={1}
-          label="Cheat path"
+          label={t("NORMAL_CHEAT_LABEL", "EXE Path")}
           padding="none"
           bottomSeparator="thick"
         >
@@ -110,8 +111,8 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
       )}
 
       <ToggleField
-        label="Language"
-        description="Try to specify the game language"
+        label={t("NORMAL_LANG_TOGGLE_LABEL", "Language")}
+        description={t("NORMAL_LANG_TOGGLE_DESC", "Try to specify the game language")}
         icon={<FaLanguage />}
         checked={showLang}
         bottomSeparator="none"
@@ -126,7 +127,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
       />
       {showLang && (
         <Field
-          label="Language code"
+          label={t("NORMAL_LANG_LABEL", "Language Code")}
           padding="none"
           bottomSeparator="thick"
         >
@@ -162,7 +163,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
                 updatedOptions.setFieldValue("LANG", `"${v.data}"`);
                 setOptions(updatedOptions);
               }}
-              strDefaultLabel="Default"
+              strDefaultLabel={t("NORMAL_LANG_DEFAULT", "Default")}
             />
           </Focusable>
         </Field>
@@ -179,7 +180,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
           width: "80%",
         }}
       >
-        Save Settings
+        {t("SAVE", "Save")}
       </DialogButton>
     </Focusable>
   );

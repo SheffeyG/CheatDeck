@@ -13,6 +13,7 @@ import { CustomOption, getCustomOptions } from "../../utils/custom";
 import { ModalEdit } from "./ModalEdit";
 import { ModalNew } from "./ModalNew";
 import { Options } from "../../utils/options";
+import t from "../../utils/translate";
 
 const Custom: FC<{ appid: number }> = ({ appid }) => {
   // Custom Options from user's saved settings
@@ -139,7 +140,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
           className="CD_SaveButton"
           onClick={() => options.saveOptions(appid)}
         >
-          Save Settings
+          {t("SAVE", "Save")}
         </DialogButton>
       )}
     </>

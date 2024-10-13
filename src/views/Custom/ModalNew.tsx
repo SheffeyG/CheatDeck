@@ -9,6 +9,7 @@ import {
 import { FC, useState } from "react";
 
 import { CustomOption, getEmptyCusOpt, setCustomOptions } from "../../utils/custom";
+import t from "../../utils/translate";
 
 export const ModalNew: FC<{
   closeModal?: () => void;
@@ -32,9 +33,9 @@ export const ModalNew: FC<{
   return (
     <ModalRoot onCancel={closeModal}>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <DialogHeader>Add a New Option</DialogHeader>
+        <DialogHeader>{t("CUSTOM_NEW_TITLE", "Add a New Option")}</DialogHeader>
         <Field
-          label="Label"
+          label={t("CUSTOM_OPTION_LABEL", "Label")}
           padding="none"
           bottomSeparator="none"
         >
@@ -54,7 +55,7 @@ export const ModalNew: FC<{
           </Focusable>
         </Field>
         <Field
-          label="Field & Value"
+          label={t("CUSTOM_OPTION_Fields", "Field & Value")}
           padding="none"
           bottomSeparator="none"
         >
@@ -91,13 +92,13 @@ export const ModalNew: FC<{
             onClick={() => handleSave()}
             style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
           >
-            Save
+            {t("SAVE", "Save")}
           </DialogButton>
           <DialogButton
             onClick={closeModal}
             style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
           >
-            Cancel
+            {t("CANCEL", "Cancel")}
           </DialogButton>
         </Focusable>
       </div>
