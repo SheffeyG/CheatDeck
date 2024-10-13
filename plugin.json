@@ -6,6 +6,6 @@
   "publish": {
     "tags": [ "cheat", "trainer" ],
     "description": "Launch games with cheat or trainer and manage your launch options.",
-    "image": "https://github.com/SheffeyG/CheatDeck/raw/main/doc/settings.jpg"
+    "image": "https://github.com/SheffeyG/CheatDeck/raw/main/docs/settings.jpg"
   }
 }
