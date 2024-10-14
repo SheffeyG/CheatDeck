@@ -12,6 +12,7 @@ import { FC, useEffect, useState } from "react";
 import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
 import { FaFolderOpen } from "react-icons/fa";
+import t from "../utils/translate";
 
 const Advanced: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
@@ -44,7 +45,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="DXVK_ASYNC"
-        description="Enable shaders pre-calculate for ProtonGE below 7-45"
+        description={t("ADVANCED_DXVK_ASYNC_DESC", "Enable shaders pre-calculate for ProtonGE below 7-45")}
         bottomSeparator="standard"
         checked={options.hasFieldValue("DXVK_ASYNC", "1")}
         onChange={(enable: boolean) => {
@@ -56,7 +57,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="RADV_PERFTEST"
-        description="Enable shaders pre-calculate for ProtonGE above 7-45"
+        description={t("ADVANCED_RADV_PERFTEST_DESC", "Enable shaders pre-calculate for ProtonGE above 7-45")}
         bottomSeparator="standard"
         checked={options.hasFieldValue("RADV_PERFTEST", "gpl")}
         onChange={(enable: boolean) => {
@@ -68,7 +69,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="STEAM_COMPAT_DATA_PATH"
-        description="Specify a folder as the shared prefix for the game"
+        description={t("ADVANCED_STEAM_COMPAT_DATA_PATH_DESC", "Specify a folder as the shared prefix for the game")}
         bottomSeparator="none"
         checked={showPrefix}
         onChange={(enable: boolean) => {
@@ -83,7 +84,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       {showPrefix && (
         <Field
           key={1}
-          label="Prefix folder"
+          label={t("ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL", "Prefix Folder")}
           padding="none"
           bottomSeparator="thick"
         >
@@ -133,7 +134,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           width: "80%",
         }}
       >
-        Save Settings
+        {t("SAVE", "Save")}
       </DialogButton>
     </Focusable>
   );

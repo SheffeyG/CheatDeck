@@ -9,6 +9,7 @@ import {
 import { FC, useState } from "react";
 
 import { CustomOption, setCustomOptions } from "../../utils/custom";
+import t from "../../utils/translate";
 
 export const ModalEdit: FC<{
   closeModal?: () => void;
@@ -38,9 +39,9 @@ export const ModalEdit: FC<{
   return (
     <ModalRoot onCancel={closeModal}>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <DialogHeader>Edit Option</DialogHeader>
+        <DialogHeader>{t("CUSTOM_EDIT_TITLE", "Edit Option")}</DialogHeader>
         <Field
-          label="Label"
+          label={t("CUSTOM_OPTION_LABEL", "Label")}
           padding="none"
           bottomSeparator="none"
         >
@@ -60,7 +61,7 @@ export const ModalEdit: FC<{
           </Focusable>
         </Field>
         <Field
-          label="Field & Value"
+          label={t("CUSTOM_OPTION_Fields", "Field & Value")}
           padding="none"
           bottomSeparator="none"
         >
@@ -97,13 +98,13 @@ export const ModalEdit: FC<{
             onClick={() => handleSave("Save")}
             style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
           >
-            Save
+            {t("SAVE", "Save")}
           </DialogButton>
           <DialogButton
             onClick={() => handleSave("Delete")}
             style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
           >
-            Delete
+            {t("DELETE", "Delete")}
           </DialogButton>
         </Focusable>
       </div>
