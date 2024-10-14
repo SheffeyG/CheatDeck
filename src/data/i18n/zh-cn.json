@@ -1,3 +1,40 @@
 {
-    "THIS_IS": "chinese"
+    "TRANSLATION": "中文",
+    "CREDIT": "",
+
+    "SAVE": "保存",
+    "DELETE": "删除",
+    "CANCEL": "取消",
+    "MESSAGE_SAVED": "游戏启动选项已保存.",
+    "MESSAGE_NON_STEAM": "警告：这是非 Steam 游戏！设置将永远不会保存.",
+
+    "CONTENT_TITLE": "信息",
+    "CONTENT_NOTE0": "游戏修改器 目前仅支持普通 Steam 启动器。",
+    "CONTENT_NOTE1": "请在 SteamOS 设置中启用开发者模式;",
+    "CONTENT_NOTE2": "您可以在游戏详细信息菜单中找到 游戏修改器 设置;",
+    "CONTENT_NOTE3": "使用 STEAM 键在游戏和作弊窗口之间切换;",
+    "CONTENT_NOTE4": "如果您无法单击所选的作弊面板，请将游戏转为窗口模式.",
+    "CONTENT_GH_DESC": "有关更多信息，请查看 GitHub页面.",
+    "CONTENT_QR_DESC": "显示链接二维码",
+
+    "NORMAL_TITLE": "普通",
+    "NORMAL_CHEAT_TOGGLE_LABEL": "启用作弊",
+    "NORMAL_CHEAT_TOGGLE_DESC": "从存储中选择作弊或训练程序 exe 文件",
+    "NORMAL_CHEAT_LABEL": "EXE 路径",
+    "NORMAL_LANG_TOGGLE_LABEL": "语言",
+    "NORMAL_LANG_TOGGLE_DESC": "设置游戏环境语言",
+    "NORMAL_LANG_LABEL": "语言代码",
+    "NORMAL_LANG_DEFAULT": "默认",
+
+    "ADVANCED_TITLE": "高级",
+    "ADVANCED_DXVK_ASYNC_DESC": "开启 7-45 以下的 ProtonGE 启用着色器预计算",
+    "ADVANCED_RADV_PERFTEST_DESC": "开启 7-45 以上的 ProtonGE 启用着色器预计算",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "选择游戏数据保存路径",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "前缀文件夹",
+
+    "CUSTOM_TITLE": "自定义",
+    "CUSTOM_OPTION_LABEL": "标签",
+    "CUSTOM_OPTION_Fields": "字段和值",
+    "CUSTOM_EDIT_TITLE": "编辑选项",
+    "CUSTOM_NEW_TITLE": "添加新选项"
 }
