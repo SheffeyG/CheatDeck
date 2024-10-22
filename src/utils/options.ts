@@ -1,4 +1,5 @@
 import { Backend } from "./backend";
+import t from "./translate";
 
 export class Options {
   #options: { [key: string]: string };
@@ -71,11 +72,14 @@ export class Options {
   saveOptions(appid: number) {
     if (this.#isSteam) {
       SteamClient.Apps.SetAppLaunchOptions(appid, this.getOptionsString());
-      Backend.sendNotice("Launch Options Saved.");
+      Backend.sendNotice(t("MESSAGE_SAVED", "Launch Options Saved."));
     }
     else {
       // Never change anything for non-steam games
-      Backend.sendNotice("Warning: This is not a steam game! settings will not be saved.");
+      Backend.sendNotice(t(
+        "MESSAGE_NON_STEAM",
+        "Warning: This is NOT a steam game! Settings will never be saved.",
+      ));
     }
   };
 }
