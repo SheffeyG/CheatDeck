@@ -1,11 +1,11 @@
 {
-    "TRANSLATION": "English",
+    "TRANSLATION": "English Translation",
     "CREDIT": "",
 
     "SAVE": "Save",
     "DELETE": "Delete",
     "CANCEL": "Cancel",
-    "MESSAGE_SAVED": "Game launch options saved.",
+    "MESSAGE_SAVED": "Game launch options have been saved.",
     "MESSAGE_NON_STEAM": "Warning: This is NOT a Steam game! Settings will never be saved.",
 
     "CONTENT_TITLE": "Information",
@@ -14,7 +14,7 @@
     "CONTENT_NOTE2": "You can find the CheatDeck setting in the game details menu;",
     "CONTENT_NOTE3": "Use the STEAM key to switch between game and cheat windows;",
     "CONTENT_NOTE4": "If you are unable to click the selected cheat panel, please turn the game to window mode.",
-    "CONTENT_GH_DESC": "For more information, check the GitHub page.",
+    "CONTENT_GH_DESC": "Check the GitHub page for more information and help translation.",
     "CONTENT_QR_DESC": "Show Link QR",
 
     "NORMAL_TITLE": "Normal",
@@ -27,9 +27,9 @@
     "NORMAL_LANG_DEFAULT": "Default",
 
     "ADVANCED_TITLE": "Advanced",
-    "ADVANCED_DXVK_ASYNC_DESC": "Enable shaders pre-calculate for ProtonGE below 7-45",
-    "ADVANCED_RADV_PERFTEST_DESC": "Enable shaders pre-calculate for ProtonGE above 7-45",
-    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "Choose the game data save path",
+    "ADVANCED_DXVK_ASYNC_DESC": "Optimize the ProtonGE compatibility layer to reduce frame time and input lag",
+    "ADVANCED_RADV_PERFTEST_DESC": "Optimize the shader cache behavior of the ProtonGE compatibility layer",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "Specify the game data save path",
     "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "Prefix Folder",
 
     "CUSTOM_TITLE": "Custom",
