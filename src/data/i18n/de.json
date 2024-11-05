@@ -1,0 +1,40 @@
+{
+    "TRANSLATION": "Deutsch",
+    "CREDIT": "",
+
+    "SAVE": "Speichern",
+    "DELETE": "Löschen",
+    "CANCEL": "Abbrechen",
+    "MESSAGE_SAVED": "Spielstartoptionen wurden gespeichert.",
+    "MESSAGE_NON_STEAM": "Warnung: Dies ist KEIN Steam-Spiel! Einstellungen werden niemals gespeichert.",
+
+    "CONTENT_TITLE": "Informationen",
+    "CONTENT_NOTE0": "CheatDeck unterstützt derzeit nur den normalen Steam-Launcher.",
+    "CONTENT_NOTE1": "Bitte aktivieren Sie den Entwicklermodus in den SteamOS-Einstellungen;",
+    "CONTENT_NOTE2": "Sie finden die CheatDeck-Einstellung im Detailmenü des Spiels;",
+    "CONTENT_NOTE3": "Verwenden Sie die STEAM-Taste, um zwischen Spiel- und Cheat-Fenstern zu wechseln;",
+    "CONTENT_NOTE4": "Wenn Sie nicht auf das ausgewählte Cheat-Panel klicken können, schalten Sie das Spiel bitte in den Fenstermodus.",
+    "CONTENT_GH_DESC": "Besuchen Sie die GitHub-Seite für weitere Informationen und Hilfe bei der Übersetzung.",
+    "CONTENT_QR_DESC": "Link-QR anzeigen",
+
+    "NORMAL_TITLE": "Normal",
+    "NORMAL_CHEAT_TOGGLE_LABEL": "Cheat aktivieren",
+    "NORMAL_CHEAT_TOGGLE_DESC": "Wählen Sie die Cheat- oder Trainer-Exe-Datei aus dem Speicher aus",
+    "NORMAL_CHEAT_LABEL": "EXE-Pfad",
+    "NORMAL_LANG_TOGGLE_LABEL": "Sprache",
+    "NORMAL_LANG_TOGGLE_DESC": "Legen Sie die Spielumgebungssprache fest",
+    "NORMAL_LANG_LABEL": "Sprachcode",
+    "NORMAL_LANG_DEFAULT": "Standard",
+
+    "ADVANCED_TITLE": "Erweitert",
+    "ADVANCED_DXVK_ASYNC_DESC": "Optimieren Sie die ProtonGE-Kompatibilitätsschicht, um die Framezeit und die Eingabeverzögerung zu reduzieren",
+    "ADVANCED_RADV_PERFTEST_DESC": "Optimieren Sie das Shader-Cache-Verhalten der ProtonGE-Kompatibilitätsschicht",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "Geben Sie den Speicherpfad für Spieldaten an",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "Präfix-Ordner",
+
+    "CUSTOM_TITLE": "Benutzerdefiniert",
+    "CUSTOM_OPTION_LABEL": "Bezeichnung",
+    "CUSTOM_OPTION_Fields": "Feld & Wert",
+    "CUSTOM_EDIT_TITLE": "Option bearbeiten",
+    "CUSTOM_NEW_TITLE": "Neue Option hinzufügen"
+}

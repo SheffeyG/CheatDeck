@@ -1,0 +1,40 @@
+{
+    "TRANSLATION": "한국어 번역",
+    "CREDIT": "",
+
+    "SAVE": "저장",
+    "DELETE": "삭제",
+    "CANCEL": "취소",
+    "MESSAGE_SAVED": "게임 실행 옵션이 저장되었습니다.",
+    "MESSAGE_NON_STEAM": "경고: 스팀 게임이 아닙니다! 설정이 저장되지 않습니다.",
+
+    "CONTENT_TITLE": "정보",
+    "CONTENT_NOTE0": "CheatDeck은 현재 일반 스팀 런처만 지원합니다.",
+    "CONTENT_NOTE1": "SteamOS 설정에서 개발자 모드를 활성화하십시오.",
+    "CONTENT_NOTE2": "게임 세부 정보 메뉴에서 CheatDeck 설정을 찾을 수 있습니다.",
+    "CONTENT_NOTE3": "STEAM 키를 사용하여 게임 및 치트 창 사이를 전환하십시오.",
+    "CONTENT_NOTE4": "선택한 치트 패널을 클릭할 수 없는 경우 게임을 창 모드로 전환하십시오.",
+    "CONTENT_GH_DESC": "자세한 정보 및 번역 지원은 GitHub 페이지를 확인하십시오.",
+    "CONTENT_QR_DESC": "링크 QR 표시",
+
+    "NORMAL_TITLE": "일반",
+    "NORMAL_CHEAT_TOGGLE_LABEL": "치트 활성화",
+    "NORMAL_CHEAT_TOGGLE_DESC": "저장소에서 치트 또는 트레이너 exe 파일을 선택하십시오.",
+    "NORMAL_CHEAT_LABEL": "EXE 경로",
+    "NORMAL_LANG_TOGGLE_LABEL": "언어",
+    "NORMAL_LANG_TOGGLE_DESC": "게임 환경 언어를 설정하십시오.",
+    "NORMAL_LANG_LABEL": "언어 코드",
+    "NORMAL_LANG_DEFAULT": "기본값",
+
+    "ADVANCED_TITLE": "고급",
+    "ADVANCED_DXVK_ASYNC_DESC": "프레임 시간 및 입력 지연을 줄이기 위해 ProtonGE 호환성 레이어를 최적화합니다.",
+    "ADVANCED_RADV_PERFTEST_DESC": "ProtonGE 호환성 레이어의 셰이더 캐시 동작을 최적화합니다.",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "게임 데이터 저장 경로를 지정하십시오.",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "접두사 폴더",
+
+    "CUSTOM_TITLE": "사용자 지정",
+    "CUSTOM_OPTION_LABEL": "레이블",
+    "CUSTOM_OPTION_Fields": "필드 및 값",
+    "CUSTOM_EDIT_TITLE": "옵션 편집",
+    "CUSTOM_NEW_TITLE": "새 옵션 추가"
+}

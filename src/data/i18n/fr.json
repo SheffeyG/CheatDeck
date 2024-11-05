@@ -1,0 +1,40 @@
+{
+    "TRANSLATION": "Traduction française",
+    "CREDIT": "",
+
+    "SAVE": "Enregistrer",
+    "DELETE": "Supprimer",
+    "CANCEL": "Annuler",
+    "MESSAGE_SAVED": "Les options de lancement du jeu ont été enregistrées.",
+    "MESSAGE_NON_STEAM": "Attention : Ceci n'est PAS un jeu Steam ! Les paramètres ne seront jamais enregistrés.",
+
+    "CONTENT_TITLE": "Informations",
+    "CONTENT_NOTE0": "CheatDeck ne prend en charge que le lanceur Steam normal pour le moment.",
+    "CONTENT_NOTE1": "Veuillez activer le mode développeur dans les paramètres SteamOS ;",
+    "CONTENT_NOTE2": "Vous pouvez trouver le paramètre CheatDeck dans le menu des détails du jeu ;",
+    "CONTENT_NOTE3": "Utilisez la touche STEAM pour basculer entre le jeu et les fenêtres de triche ;",
+    "CONTENT_NOTE4": "Si vous ne parvenez pas à cliquer sur le panneau de triche sélectionné, veuillez passer le jeu en mode fenêtré.",
+    "CONTENT_GH_DESC": "Consultez la page GitHub pour plus d'informations et pour aider à la traduction.",
+    "CONTENT_QR_DESC": "Afficher le QR Code du lien",
+
+    "NORMAL_TITLE": "Normal",
+    "NORMAL_CHEAT_TOGGLE_LABEL": "Activer la triche",
+    "NORMAL_CHEAT_TOGGLE_DESC": "Sélectionnez le fichier exe de triche ou d'entraîneur dans le stockage",
+    "NORMAL_CHEAT_LABEL": "Chemin EXE",
+    "NORMAL_LANG_TOGGLE_LABEL": "Langue",
+    "NORMAL_LANG_TOGGLE_DESC": "Définir la langue de l'environnement du jeu",
+    "NORMAL_LANG_LABEL": "Code de langue",
+    "NORMAL_LANG_DEFAULT": "Par défaut",
+
+    "ADVANCED_TITLE": "Avancé",
+    "ADVANCED_DXVK_ASYNC_DESC": "Optimiser la couche de compatibilité ProtonGE pour réduire le temps d'image et le décalage d'entrée",
+    "ADVANCED_RADV_PERFTEST_DESC": "Optimiser le comportement du cache de shader de la couche de compatibilité ProtonGE",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "Spécifier le chemin de sauvegarde des données de jeu",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "Dossier préfixe",
+
+    "CUSTOM_TITLE": "Personnalisé",
+    "CUSTOM_OPTION_LABEL": "Étiquette",
+    "CUSTOM_OPTION_Fields": "Champ & Valeur",
+    "CUSTOM_EDIT_TITLE": "Modifier l'option",
+    "CUSTOM_NEW_TITLE": "Ajouter une nouvelle option"
+}
