@@ -72,7 +72,7 @@ export class Options {
   saveOptions(appid: number) {
     if (this.#isSteam) {
       SteamClient.Apps.SetAppLaunchOptions(appid, this.getOptionsString());
-      Backend.sendNotice(t("MESSAGE_SAVED", "Launch Options Saved."));
+      Backend.sendNotice(t("MESSAGE_SAVED", "Game launch options have been saved."));
     }
     else {
       // Never change anything for non-steam games

@@ -45,7 +45,10 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="DXVK_ASYNC"
-        description={t("ADVANCED_DXVK_ASYNC_DESC", "Enable shaders pre-calculate for ProtonGE below 7-45")}
+        description={t(
+          "ADVANCED_DXVK_ASYNC_DESC",
+          "Optimize the ProtonGE compatibility layer to reduce frame time and input lag",
+        )}
         bottomSeparator="standard"
         checked={options.hasFieldValue("DXVK_ASYNC", "1")}
         onChange={(enable: boolean) => {
@@ -57,7 +60,10 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="RADV_PERFTEST"
-        description={t("ADVANCED_RADV_PERFTEST_DESC", "Enable shaders pre-calculate for ProtonGE above 7-45")}
+        description={t(
+          "ADVANCED_RADV_PERFTEST_DESC",
+          "Optimize the shader cache behavior of the ProtonGE compatibility layer",
+        )}
         bottomSeparator="standard"
         checked={options.hasFieldValue("RADV_PERFTEST", "gpl")}
         onChange={(enable: boolean) => {
@@ -69,7 +75,10 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
 
       <ToggleField
         label="STEAM_COMPAT_DATA_PATH"
-        description={t("ADVANCED_STEAM_COMPAT_DATA_PATH_DESC", "Specify a folder as the shared prefix for the game")}
+        description={t(
+          "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC",
+          "Specify a folder as the shared prefix for the game",
+        )}
         bottomSeparator="none"
         checked={showPrefix}
         onChange={(enable: boolean) => {
