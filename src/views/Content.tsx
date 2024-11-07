@@ -15,6 +15,8 @@ import { QRCodeSVG } from "qrcode.react";
 import t from "../utils/translate";
 
 const Content = () => {
+  const translator = t("CREDIT", "");
+
   const navLink = (url: string) => {
     Navigation.CloseSideMenus();
     Navigation.NavigateToExternalWeb(url);
@@ -54,6 +56,15 @@ const Content = () => {
           <li>{t("CONTENT_NOTE4", "If you are unable to click the selected cheat panel, please turn the game to window mode.")}</li>
         </DialogBodyText>
       </Focusable>
+
+      {translator.length > 0 && (
+        <DialogBodyText>
+          <p>
+            <b>{t("TRANSLATION", "Translator") + ": "}</b>
+            {translator}
+          </p>
+        </DialogBodyText>
+      )}
 
       <PanelSectionRow>
         <Field
