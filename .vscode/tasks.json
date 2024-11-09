@@ -47,8 +47,10 @@
             "command": "ssh",
             "args": [
                 "${config:deckuser}@${config:deckip}",
-                "-p ${config:deckport}",
-                "-i ${config:deckkey}",
+                "-p",
+                "${config:deckport}",
+                "-i",
+                "${config:deckkey}",
                 "'mkdir -p ${config:deckdir}/homebrew/plugins'",
             ],
             "problemMatcher": []
@@ -85,8 +87,10 @@
             "command": "ssh",
             "args": [
                 "${config:deckuser}@${config:deckip}",
-                "-p ${config:deckport}",
-                "-i ${config:deckkey}",
+                "-p",
+                "${config:deckport}",
+                "-i",
+                "${config:deckkey}",
                 "'echo '${config:deckpass}' | sudo -S chmod -R ug+rw ${config:deckdir}/homebrew/'",
             ],
             "problemMatcher": []
