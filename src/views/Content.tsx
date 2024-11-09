@@ -12,7 +12,11 @@ import {
 import { HiQrCode } from "react-icons/hi2";
 import { QRCodeSVG } from "qrcode.react";
 
+import t from "../utils/translate";
+
 const Content = () => {
+  const translator = t("CREDIT", "");
+
   const navLink = (url: string) => {
     Navigation.CloseSideMenus();
     Navigation.NavigateToExternalWeb(url);
@@ -34,7 +38,7 @@ const Content = () => {
   };
 
   return (
-    <PanelSection title="information">
+    <PanelSection title={t("CONTENT_TITLE", "information")}>
       <Focusable
         focusWithinClassName="gpfocuswithin"
         onActivate={() => {}}
@@ -45,13 +49,22 @@ const Content = () => {
         }}
       >
         <DialogBodyText>
-          <p><b>CheatDeck only support the normal steam launcher for now.</b></p>
-          <li>Please enable developer mode in the steam system settings.</li>
-          <li>You can find the cheat settings in the game details menu.</li>
-          <li>Use the steam key to switch between game and cheat windows.</li>
-          <li>If you are unable to click the selected cheat panel, please turn the game to window mode.</li>
+          <p><b>{t("CONTENT_NOTE0", "CheatDeck only support the normal steam launcher for now.")}</b></p>
+          <li>{t("CONTENT_NOTE1", "Please enable developer mode in the steam system settings.")}</li>
+          <li>{t("CONTENT_NOTE2", "You can find the cheat settings in the game details menu.")}</li>
+          <li>{t("CONTENT_NOTE3", "Use the steam key to switch between game and cheat windows.")}</li>
+          <li>{t("CONTENT_NOTE4", "If you are unable to click the selected cheat panel, please turn the game to window mode.")}</li>
         </DialogBodyText>
       </Focusable>
+
+      {translator.length > 0 && (
+        <DialogBodyText>
+          <p>
+            <b>{t("TRANSLATION", "Translator") + ": "}</b>
+            {translator}
+          </p>
+        </DialogBodyText>
+      )}
 
       <PanelSectionRow>
         <Field
@@ -63,13 +76,13 @@ const Content = () => {
           padding="none"
           spacingBetweenLabelAndChild="none"
           childrenContainerWidth="max"
-          description="For more information, check the GitHub page."
+          description={t("CONTENT_GH_DESC", "For more information, check the GitHub page.")}
         >
           <Focusable style={{ display: "flex" }}>
             <DialogButton
               onClick={() => navLink("https://github.com/SheffeyG/CheatDeck")}
               onSecondaryButton={() => showQrModal("https://github.com/SheffeyG/CheatDeck")}
-              onSecondaryActionDescription="Show Link QR"
+              onSecondaryActionDescription={t("CONTENT_QR_DESC", "Show Link QR")}
               style={{
                 padding: "10px",
                 fontSize: "14px",
@@ -78,7 +91,7 @@ const Content = () => {
               GitHub
             </DialogButton>
             <DialogButton
-              onOKActionDescription="Show Link QR"
+              onOKActionDescription={t("CONTENT_QR_DESC", "Show Link QR")}
               onClick={() => showQrModal("https://github.com/SheffeyG/CheatDeck")}
               style={{
                 display: "flex",

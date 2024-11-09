@@ -1,0 +1,40 @@
+{
+    "TRANSLATION": "简体中文翻译",
+    "CREDIT": "sheffey",
+
+    "SAVE": "保存",
+    "DELETE": "删除",
+    "CANCEL": "取消",
+    "MESSAGE_SAVED": "游戏启动项已保存。",
+    "MESSAGE_NON_STEAM": "警告: 非 Steam 游戏! 设置将不会被保存。",
+
+    "CONTENT_TITLE": "说明",
+    "CONTENT_NOTE0": "CheatDeck 目前仅支持原生 Steam 游戏启动器。",
+    "CONTENT_NOTE1": "请在 SteamOS 设置中启用开发者模式；",
+    "CONTENT_NOTE2": "你可以在游戏详情菜单中找到 CheatDeck 设置；",
+    "CONTENT_NOTE3": "使用 STEAM 键来切换游戏窗口和修改器窗口；",
+    "CONTENT_NOTE4": "如无法点击修改器窗口，请在游戏中启用窗口模式。",
+    "CONTENT_GH_DESC": "查看 GitHub 页面以获取更多信息或帮助我们翻译该软件",
+    "CONTENT_QR_DESC": "显示链接二维码",
+
+    "NORMAL_TITLE": "常规",
+    "NORMAL_CHEAT_TOGGLE_LABEL": "启用修改器",
+    "NORMAL_CHEAT_TOGGLE_DESC": "从系统存储中选择需要启用的游戏修改器",
+    "NORMAL_CHEAT_LABEL": "EXE 路径",
+    "NORMAL_LANG_TOGGLE_LABEL": "语言",
+    "NORMAL_LANG_TOGGLE_DESC": "设置游戏环境语言",
+    "NORMAL_LANG_LABEL": "语言编码",
+    "NORMAL_LANG_DEFAULT": "默认",
+
+    "ADVANCED_TITLE": "高级",
+    "ADVANCED_DXVK_ASYNC_DESC": "优化 ProtonGE 兼容层减少帧时间和输入延迟",
+    "ADVANCED_RADV_PERFTEST_DESC": "优化 ProtonGE 兼容层着色器缓存行为",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "指定游戏数据保存路径",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "Prefix 路径",
+
+    "CUSTOM_TITLE": "自定义",
+    "CUSTOM_OPTION_LABEL": "标签",
+    "CUSTOM_OPTION_Fields": "字段 & 值",
+    "CUSTOM_EDIT_TITLE": "编辑启动项",
+    "CUSTOM_NEW_TITLE": "新建启动项"
+}

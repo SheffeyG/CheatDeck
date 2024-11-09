@@ -1,0 +1,41 @@
+{
+    "TRANSLATION": "Русский перевод",
+    "CREDIT": "",
+
+    "SAVE": "Сохранить",
+    "DELETE": "Удалить",
+    "CANCEL": "Отмена",
+    "MESSAGE_SAVED": "Параметры запуска игры сохранены.",
+    "MESSAGE_NON_STEAM": "Внимание: это НЕ игра Steam! Настройки не будут сохранены.",
+
+    "CONTENT_TITLE": "Информация",
+    "CONTENT_NOTE0": "CheatDeck пока поддерживает только обычный лаунчер Steam.",
+    "CONTENT_NOTE1": "Включите режим разработчика в настройках SteamOS;",
+    "CONTENT_NOTE2": "Настройки CheatDeck можно найти в меню подробной информации об игре;",
+    "CONTENT_NOTE3": "Используйте клавишу STEAM для переключения между окнами игры и читов;",
+    "CONTENT_NOTE4": "Если вы не можете щелкнуть выбранную панель читов, переключите игру в оконный режим.",
+    "CONTENT_GH_DESC": "Посетите страницу GitHub для получения дополнительной информации и помощи с переводом.",
+    "CONTENT_QR_DESC": "Показать QR-код ссылки",
+
+    "NORMAL_TITLE": "Обычные",
+    "NORMAL_CHEAT_TOGGLE_LABEL": "Включить читы",
+    "NORMAL_CHEAT_TOGGLE_DESC": "Выберите файл с читами или трейнером (exe) из хранилища",
+    "NORMAL_CHEAT_LABEL": "Путь к EXE-файлу",
+    "NORMAL_LANG_TOGGLE_LABEL": "Язык",
+    "NORMAL_LANG_TOGGLE_DESC": "Установить язык игровой среды",
+    "NORMAL_LANG_LABEL": "Код языка",
+    "NORMAL_LANG_DEFAULT": "По умолчанию",
+
+    "ADVANCED_TITLE": "Дополнительные",
+    "ADVANCED_DXVK_ASYNC_DESC": "Оптимизировать слой совместимости ProtonGE для уменьшения времени кадра и задержки ввода",
+    "ADVANCED_RADV_PERFTEST_DESC": "Оптимизировать поведение кэша шейдеров слоя совместимости ProtonGE",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "Указать путь сохранения данных игры",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "Папка префикса",
+
+    "CUSTOM_TITLE": "Пользовательские",
+    "CUSTOM_OPTION_LABEL": "Метка",
+    "CUSTOM_OPTION_Fields": "Поле и значение",
+    "CUSTOM_EDIT_TITLE": "Редактировать параметр",
+    "CUSTOM_NEW_TITLE": "Добавить новый параметр"
+}
+

@@ -1,0 +1,40 @@
+{
+    "TRANSLATION": "日本語翻訳",
+    "CREDIT": "",
+
+    "SAVE": "保存",
+    "DELETE": "削除",
+    "CANCEL": "キャンセル",
+    "MESSAGE_SAVED": "ゲームの起動オプションが保存されました。",
+    "MESSAGE_NON_STEAM": "警告: これはSteamゲームではありません！設定は保存されません。",
+
+    "CONTENT_TITLE": "情報",
+    "CONTENT_NOTE0": "CheatDeckは現在、通常のSteamランチャーのみをサポートしています。",
+    "CONTENT_NOTE1": "SteamOSの設定で開発者モードを有効にしてください。",
+    "CONTENT_NOTE2": "ゲームの詳細メニューでCheatDeckの設定を見つけることができます。",
+    "CONTENT_NOTE3": "STEAMキーを使用して、ゲームウィンドウとチートウィンドウを切り替えます。",
+    "CONTENT_NOTE4": "選択したチートパネルをクリックできない場合は、ゲームをウィンドウモードにしてください。",
+    "CONTENT_GH_DESC": "詳細情報と翻訳のヘルプについては、GitHubページをご覧ください。",
+    "CONTENT_QR_DESC": "リンクQRを表示",
+
+    "NORMAL_TITLE": "標準",
+    "NORMAL_CHEAT_TOGGLE_LABEL": "チートを有効にする",
+    "NORMAL_CHEAT_TOGGLE_DESC": "ストレージからチートまたはトレーナーexeファイルを選択します",
+    "NORMAL_CHEAT_LABEL": "EXEパス",
+    "NORMAL_LANG_TOGGLE_LABEL": "言語",
+    "NORMAL_LANG_TOGGLE_DESC": "ゲーム環境の言語を設定します",
+    "NORMAL_LANG_LABEL": "言語コード",
+    "NORMAL_LANG_DEFAULT": "デフォルト",
+
+    "ADVANCED_TITLE": "詳細設定",
+    "ADVANCED_DXVK_ASYNC_DESC": "ProtonGE互換性レイヤーを最適化して、フレーム時間と入力ラグを短縮します",
+    "ADVANCED_RADV_PERFTEST_DESC": "ProtonGE互換性レイヤーのシェーダーキャッシュ動作を最適化します",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "ゲームデータの保存パスを指定します",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "プレフィックスフォルダー",
+
+    "CUSTOM_TITLE": "カスタム",
+    "CUSTOM_OPTION_LABEL": "ラベル",
+    "CUSTOM_OPTION_Fields": "フィールドと値",
+    "CUSTOM_EDIT_TITLE": "オプションを編集",
+    "CUSTOM_NEW_TITLE": "新しいオプションを追加"
+}

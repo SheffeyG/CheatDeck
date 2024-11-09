@@ -9,6 +9,7 @@ import {
 import Normal from "./Normal";
 import Advanced from "./Advanced";
 import Custom from "./Custom";
+import t from "../utils/translate";
 
 const PageRouter: FC = () => {
   let { appid } = useParams<{ appid: number }>();
@@ -17,19 +18,19 @@ const PageRouter: FC = () => {
   }
   const pages = [
     {
-      title: "Normal",
+      title: t("NORMAL_TITLE", "Normal"),
       content: <Normal appid={appid} />,
       icon: <IconNormal />,
       hideTitle: false,
     },
     {
-      title: "Advanced",
+      title: t("ADVANCED_TITLE", "Advanced"),
       content: <Advanced appid={appid} />,
       icon: <IconAdvanced />,
       hideTitle: false,
     },
     {
-      title: "Custom",
+      title: t("CUSTOM_TITLE", "Custom"),
       content: <Custom appid={appid} />,
       icon: <IconCustom />,
       hideTitle: false,
