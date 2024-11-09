@@ -4,14 +4,15 @@ import t from "./translate";
 export class Options {
   #options: { [key: string]: string };
   #others: string;
-  #isSteam: boolean = true;
+  #isSteam: boolean;
 
   constructor(input: string) {
     this.#options = {};
 
     // Launch options from Heroic and Emudeck should nerver be changed,
     // maybe there are more launchers to be added.
-    this.#isSteam = !(input.includes("heroicgameslauncher") || input.includes("Emulation"));
+    this.#isSteam = !input.includes("heroicgameslauncher");
+    this.#isSteam &&= !input.includes("Emulation");
 
     const match = input.match(/(.*)%command%(.*)/);
 
