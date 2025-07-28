@@ -1,5 +1,4 @@
 import {
-  AppDetails,
   DialogButton,
   Dropdown,
   DropdownOption,
@@ -8,6 +7,7 @@ import {
   TextField,
   ToggleField,
 } from "@decky/ui";
+import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 import { FC, useEffect, useState } from "react";
 import { FaGamepad, FaLanguage, FaFolderOpen } from "react-icons/fa";
 

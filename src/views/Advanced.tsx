@@ -1,5 +1,4 @@
 import {
-  AppDetails,
   DialogButton,
   Field,
   Focusable,
@@ -7,6 +6,7 @@ import {
   ToggleField,
 } from "@decky/ui";
 import { FC, useEffect, useState } from "react";
+import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 
 // import logger from "../utils/logger"
 import { Backend } from "../utils/backend";

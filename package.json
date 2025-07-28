@@ -27,7 +27,7 @@
   "homepage": "https://github.com/SheffeyG/CheatDeck#readme",
   "devDependencies": {
     "@decky/rollup": "^1.0.1",
-    "@decky/ui": "^4.8.1",
+    "@decky/ui": "^4.10.4",
     "@eslint/js": "^9.13.0",
     "@stylistic/eslint-plugin": "^2.9.0",
     "@types/react": "18.3.3",

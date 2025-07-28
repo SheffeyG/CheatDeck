@@ -1,10 +1,10 @@
 import {
-  AppDetails,
   DialogButton,
   Focusable,
   ToggleField,
   showModal,
 } from "@decky/ui";
+import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 import { FC, useEffect, useState } from "react";
 import { BsPencilFill } from "react-icons/bs";
 import { MdAddBox } from "react-icons/md";
