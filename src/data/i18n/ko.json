@@ -34,7 +34,7 @@
 
     "CUSTOM_TITLE": "사용자 지정",
     "CUSTOM_OPTION_LABEL": "레이블",
-    "CUSTOM_OPTION_Fields": "필드 및 값",
+    "CUSTOM_OPTION_FIELDS": "필드 및 값",
     "CUSTOM_EDIT_TITLE": "옵션 편집",
     "CUSTOM_NEW_TITLE": "새 옵션 추가"
 }

@@ -34,7 +34,7 @@
 
     "CUSTOM_TITLE": "Personnalisé",
     "CUSTOM_OPTION_LABEL": "Étiquette",
-    "CUSTOM_OPTION_Fields": "Champ & Valeur",
+    "CUSTOM_OPTION_FIELDS": "Champ & Valeur",
     "CUSTOM_EDIT_TITLE": "Modifier l'option",
     "CUSTOM_NEW_TITLE": "Ajouter une nouvelle option"
 }

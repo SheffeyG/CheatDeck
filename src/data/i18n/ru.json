@@ -34,7 +34,7 @@
 
     "CUSTOM_TITLE": "Пользовательские",
     "CUSTOM_OPTION_LABEL": "Метка",
-    "CUSTOM_OPTION_Fields": "Поле и значение",
+    "CUSTOM_OPTION_FIELDS": "Поле и значение",
     "CUSTOM_EDIT_TITLE": "Редактировать параметр",
     "CUSTOM_NEW_TITLE": "Добавить новый параметр"
 }
