@@ -34,7 +34,7 @@
 
     "CUSTOM_TITLE": "自訂",
     "CUSTOM_OPTION_LABEL": "標籤",
-    "CUSTOM_OPTION_Fields": "欄位 & 值",
+    "CUSTOM_OPTION_FIELDS": "欄位 & 值",
     "CUSTOM_EDIT_TITLE": "編輯啟動項",
     "CUSTOM_NEW_TITLE": "新增啟動項"
 }

@@ -34,7 +34,7 @@
 
     "CUSTOM_TITLE": "カスタム",
     "CUSTOM_OPTION_LABEL": "ラベル",
-    "CUSTOM_OPTION_Fields": "フィールドと値",
+    "CUSTOM_OPTION_FIELDS": "フィールドと値",
     "CUSTOM_EDIT_TITLE": "オプションを編集",
     "CUSTOM_NEW_TITLE": "新しいオプションを追加"
 }

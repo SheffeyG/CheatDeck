@@ -34,7 +34,7 @@
 
     "CUSTOM_TITLE": "自定义",
     "CUSTOM_OPTION_LABEL": "标签",
-    "CUSTOM_OPTION_Fields": "字段 & 值",
+    "CUSTOM_OPTION_FIELDS": "字段 & 值",
     "CUSTOM_EDIT_TITLE": "编辑启动项",
     "CUSTOM_NEW_TITLE": "新建启动项"
 }
