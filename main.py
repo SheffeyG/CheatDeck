@@ -1,17 +1,20 @@
 #!/usr/bin/env python
+
 import logging
 import typing
-from settings import SettingsManager  # type: ignore
+
 import decky  # type: ignore
+from settings import SettingsManager  # type: ignore
 
 # Setup environment variables
 settingsDir = decky.DECKY_PLUGIN_SETTINGS_DIR
 loggingDir = decky.DECKY_PLUGIN_LOG_DIR
-logger = decky.logger
 
 # Setup backend logger
+logger = decky.logger
 logger.setLevel(logging.DEBUG)
 logger.info("[backend] Settings path: {}".format(settingsDir))
+
 settings = SettingsManager(name="settings", settings_directory=settingsDir)
 settings.read()
 

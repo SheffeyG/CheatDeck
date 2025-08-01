@@ -1,11 +1,11 @@
 {
   "name": "CheatDeck",
-  "author": "Sheffey",
+  "author": "SheffeyG",
   "flags": [],
   "api_version": 1,
   "publish": {
     "tags": [ "cheat", "trainer" ],
-    "description": "Launch games with cheat or trainer and manage your launch options.",
+    "description": "Launch games with cheats or trainers and customize your launch settings.",
     "image": "https://github.com/SheffeyG/CheatDeck/raw/main/docs/settings.jpg"
   }
 }
