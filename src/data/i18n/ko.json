@@ -43,5 +43,6 @@
     "CUSTOM_POSITION_BEFORE": "%command% 앞",
     "CUSTOM_POSITION_AFTER": "%command% 뒤",
     "CUSTOM_EDIT_TITLE": "옵션 편집",
-    "CUSTOM_NEW_TITLE": "새 옵션 추가"
+    "CUSTOM_NEW_TITLE": "새 옵션 추가",
+    "LAUNCH_OPTIONS_PREVIEW": "시작 옵션 미리보기"
 }

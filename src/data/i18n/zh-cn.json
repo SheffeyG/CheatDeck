@@ -43,5 +43,6 @@
     "CUSTOM_POSITION_BEFORE": "%command% 前",
     "CUSTOM_POSITION_AFTER": "%command% 后",
     "CUSTOM_EDIT_TITLE": "编辑启动项",
-    "CUSTOM_NEW_TITLE": "新建启动项"
+    "CUSTOM_NEW_TITLE": "新建启动项",
+    "LAUNCH_OPTIONS_PREVIEW": "启动参数预览"
 }

@@ -43,5 +43,6 @@
     "CUSTOM_POSITION_BEFORE": "%command% 前",
     "CUSTOM_POSITION_AFTER": "%command% 後",
     "CUSTOM_EDIT_TITLE": "編輯啟動項",
-    "CUSTOM_NEW_TITLE": "新增啟動項"
+    "CUSTOM_NEW_TITLE": "新增啟動項",
+    "LAUNCH_OPTIONS_PREVIEW": "啟動參數預覽"
 }

@@ -14,7 +14,7 @@ import { ModalEdit } from "./ModalEdit";
 import { ModalNew } from "./ModalNew";
 import { Options } from "../../utils/options";
 import logger from "../../utils/logger";
-import t from "../../utils/translate";
+import { SaveWithPreview } from "../../components/SaveWithPreview";
 
 const Custom: FC<{ appid: number }> = ({ appid }) => {
   // Custom Options from user's saved settings
@@ -94,14 +94,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
             justify-content: center !important;
             height: 1.5em !important;
           }
-          .CD_SaveButton {
-            align-self: center !important;
-            margin-top: 20px !important;
-            padding: 10px !important;
-            font-size: 14px !important;
-            text-align: center !important;
-            width: 80% !important;
-          }
+
         `}
       </style>
       {(cusOptList.length > 0) && (
@@ -162,12 +155,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
         <MdAddBox />
       </DialogButton>
       {(cusOptList.length > 0) && (
-        <DialogButton
-          className="CD_SaveButton"
-          onClick={() => options.saveOptions(appid)}
-        >
-          {t("SAVE", "Save")}
-        </DialogButton>
+        <SaveWithPreview options={options} appid={appid} />
       )}
     </>
   );

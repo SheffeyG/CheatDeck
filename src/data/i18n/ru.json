@@ -43,6 +43,7 @@
     "CUSTOM_POSITION_BEFORE": "Перед %command%",
     "CUSTOM_POSITION_AFTER": "После %command%",
     "CUSTOM_EDIT_TITLE": "Редактировать параметр",
-    "CUSTOM_NEW_TITLE": "Добавить новый параметр"
+    "CUSTOM_NEW_TITLE": "Добавить новый параметр",
+    "LAUNCH_OPTIONS_PREVIEW": "Предварительный просмотр параметров запуска"
 }
 

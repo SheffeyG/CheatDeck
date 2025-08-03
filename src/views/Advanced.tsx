@@ -13,6 +13,7 @@ import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
 import { FaFolderOpen } from "react-icons/fa";
 import t from "../utils/translate";
+import { SaveWithPreview } from "../components/SaveWithPreview";
 
 const Advanced: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
@@ -132,19 +133,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         </Field>
       )}
 
-      <DialogButton
-        onClick={() => options.saveOptions(appid)}
-        style={{
-          alignSelf: "center",
-          marginTop: "20px",
-          padding: "10px",
-          fontSize: "14px",
-          textAlign: "center",
-          width: "80%",
-        }}
-      >
-        {t("SAVE", "Save")}
-      </DialogButton>
+      <SaveWithPreview options={options} appid={appid} />
     </Focusable>
   );
 };

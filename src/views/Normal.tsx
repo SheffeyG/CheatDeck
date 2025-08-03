@@ -16,6 +16,7 @@ import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
 import { LangCodes } from "../data/default.json";
 import t from "../utils/translate";
+import { SaveWithPreview } from "../components/SaveWithPreview";
 
 const Normal: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
@@ -169,19 +170,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
         </Field>
       )}
 
-      <DialogButton
-        onClick={() => options.saveOptions(appid)}
-        style={{
-          alignSelf: "center",
-          marginTop: "20px",
-          padding: "10px",
-          fontSize: "14px",
-          textAlign: "center",
-          width: "80%",
-        }}
-      >
-        {t("SAVE", "Save")}
-      </DialogButton>
+      <SaveWithPreview options={options} appid={appid} />
     </Focusable>
   );
 };

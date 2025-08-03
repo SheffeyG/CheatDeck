@@ -43,5 +43,6 @@
     "CUSTOM_POSITION_BEFORE": "%command% より前",
     "CUSTOM_POSITION_AFTER": "%command% より後",
     "CUSTOM_EDIT_TITLE": "オプションを編集",
-    "CUSTOM_NEW_TITLE": "新しいオプションを追加"
+    "CUSTOM_NEW_TITLE": "新しいオプションを追加",
+    "LAUNCH_OPTIONS_PREVIEW": "起動オプションプレビュー"
 }
