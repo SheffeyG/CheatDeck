@@ -133,6 +133,65 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         </Field>
       )}
 
+      <ToggleField
+        label="Lossless Scaling"
+        description={t(
+          "ADVANCED_LOSSLESS_SCALING_DESC",
+          "Enable lossless scaling for the game",
+        )}
+        bottomSeparator="standard"
+        checked={options.hasFlag({ key: "~/lsfg" })}
+        onChange={(enable: boolean) => {
+          const updatedOptions = new Options(options.getOptionsString());
+          if (enable) {
+            updatedOptions.setFlag({ key: "~/lsfg" });
+          } else {
+            updatedOptions.removeFlag({ key: "~/lsfg" });
+          }
+          setOptions(updatedOptions);
+        }}
+      />
+
+      <ToggleField
+        label="Decky Framegen Patch"
+        description={t(
+          "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC",
+          "Patch the game to use Decky Framegen",
+        )}
+        bottomSeparator="standard"
+        checked={options.hasFlag({ key: "~/fgmod/fgmod" })}
+        onChange={(enable: boolean) => {
+          const updatedOptions = new Options(options.getOptionsString());
+          if (enable) {
+            updatedOptions.removeFlag({ key: "~/fgmod/fgmod-uninstaller.sh" });
+            updatedOptions.setFlag({ key: "~/fgmod/fgmod" });
+          } else {
+            updatedOptions.removeFlag({ key: "~/fgmod/fgmod" });
+          }
+          setOptions(updatedOptions);
+        }}
+      />
+
+      <ToggleField
+        label="Decky Framegen Unpatch"
+        description={t(
+          "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC",
+          "Unpatch the game for Decky Framegen",
+        )}
+        bottomSeparator="standard"
+        checked={options.hasFlag({ key: "~/fgmod/fgmod-uninstaller.sh" })}
+        onChange={(enable: boolean) => {
+          const updatedOptions = new Options(options.getOptionsString());
+          if (enable) {
+            updatedOptions.removeFlag({ key: "~/fgmod/fgmod" });
+            updatedOptions.setFlag({ key: "~/fgmod/fgmod-uninstaller.sh" });
+          } else {
+            updatedOptions.removeFlag({ key: "~/fgmod/fgmod-uninstaller.sh" });
+          }
+          setOptions(updatedOptions);
+        }}
+      />
+
       <SaveWithPreview options={options} appid={appid} />
     </Focusable>
   );
