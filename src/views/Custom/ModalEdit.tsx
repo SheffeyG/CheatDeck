@@ -70,11 +70,11 @@ export const ModalEdit: FC<{
           >
             <TextField
               style={{ padding: "10px", fontSize: "14px", width: "200px" }}
-              value={targetOpt.field}
+              value={targetOpt.key}
               onChange={(e) => {
                 setTargetOpt({
                   ...targetOpt,
-                  field: e.target.value,
+                  key: e.target.value,
                 });
               }}
             />

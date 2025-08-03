@@ -40,6 +40,47 @@ class Plugin:
         logger.info("[backend] Uninstalling CheatDeck!")
 
     @classmethod
+    async def _migration(cls):
+        logger.info("[backend] Starting data migration")
+        
+        try:
+            # Use getSetting instead of read() to safely get CustomOptions
+            custom_options = settings.getSetting("CustomOptions", [])
+            
+            # Check if custom_options is a valid list with content
+            if custom_options is not None and isinstance(custom_options, list) and len(custom_options) > 0:
+                first_option = custom_options[0]
+                # Check if first_option is a valid dict and missing 'type' field
+                if first_option is not None and isinstance(first_option, dict) and "type" not in first_option:
+                    logger.info("[backend] Migrating CustomOptions from legacy format")
+                    
+                    migrated_options = []
+                    for option in custom_options:
+                        # Skip None or invalid options
+                        if option is None or not isinstance(option, dict):
+                            logger.warning(f"[backend] Skipping invalid option: {option}")
+                            continue
+                            
+                        migrated_option = {
+                            "label": option.get("label", ""),
+                            "type": "env",
+                            "position": "before", 
+                            "key": option.get("field", ""),
+                            "value": option.get("value", "")
+                        }
+                        migrated_options.append(migrated_option)
+                    
+                    settings.setSetting("CustomOptions", migrated_options)
+                    logger.info("[backend] Data migration completed")
+                else:
+                    logger.info("[backend] CustomOptions already in new format, no migration needed")
+            else:
+                logger.info("[backend] No CustomOptions found, migration not needed")
+                        
+        except Exception as e:
+            logger.error(f"[backend] Migration failed: {e}", exc_info=True)
+
+    @classmethod
     async def settings_read(cls):
         logger.info("[backend] Reading settings")
         return settings.read()

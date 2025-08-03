@@ -8,7 +8,7 @@ import {
 } from "@decky/ui";
 import { FC, useState } from "react";
 
-import { CustomOption, getEmptyCusOpt, setCustomOptions } from "../../utils/custom";
+import { CustomOption, getEmptyCustomOption, setCustomOptions } from "../../utils/custom";
 import t from "../../utils/translate";
 
 export const ModalNew: FC<{
@@ -20,7 +20,7 @@ export const ModalNew: FC<{
   optList,
   onSave,
 }) => {
-  const [targetOpt, setTargetOpt] = useState<CustomOption>(getEmptyCusOpt());
+  const [targetOpt, setTargetOpt] = useState<CustomOption>(getEmptyCustomOption());
 
   const handleSave = async () => {
     const updatedOpts = [...optList];
@@ -64,11 +64,11 @@ export const ModalNew: FC<{
           >
             <TextField
               style={{ padding: "10px", fontSize: "14px", width: "200px" }}
-              value={targetOpt.field}
+              value={targetOpt.key}
               onChange={(e) => {
                 setTargetOpt({
                   ...targetOpt,
-                  field: e.target.value,
+                  key: e.target.value,
                 });
               }}
             />

@@ -13,6 +13,7 @@ import { CustomOption, getCustomOptions } from "../../utils/custom";
 import { ModalEdit } from "./ModalEdit";
 import { ModalNew } from "./ModalNew";
 import { Options } from "../../utils/options";
+import logger from "../../utils/logger";
 import t from "../../utils/translate";
 
 const Custom: FC<{ appid: number }> = ({ appid }) => {
@@ -111,11 +112,18 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
               <ToggleField
                 bottomSeparator="none"
                 label={<span className="CD_Label">{opt.label}</span>}
-                checked={options.hasFieldValue(opt.field, opt.value)}
+                checked={options.hasFieldValue(opt.key, opt.value || "")}
                 onChange={(enable: boolean) => {
-                  const updatedOptions = new Options(options.getOptionsString());
-                  updatedOptions.setFieldValue(opt.field, enable ? opt.value : "");
-                  setOptions(updatedOptions);
+                  setOptions(prevOptions => {
+                    const updatedOptions = new Options(prevOptions.getOptionsString());
+                    updatedOptions.setFieldValue(opt.key, enable ? (opt.value || "") : "");
+                    
+                    // Log the final state after modification
+                    const finalOptionsString = updatedOptions.getOptionsString();
+                    logger.info(`[Custom UI] Final options after toggle: "${finalOptionsString}"`);
+                    
+                    return updatedOptions;
+                  });
                 }}
               />
             </Focusable>
