@@ -1,14 +1,16 @@
 import {
   DialogButton,
   DialogHeader,
+  Dropdown,
   Field,
   Focusable,
   ModalRoot,
   TextField,
+  ToggleField,
 } from "@decky/ui";
 import { FC, useState } from "react";
 
-import { CustomOption, getEmptyCustomOption, setCustomOptions } from "../../utils/custom";
+import { CustomOption, getEmptyCustomOption, setCustomOptions, ParamType } from "../../utils/custom";
 import t from "../../utils/translate";
 
 export const ModalNew: FC<{
@@ -21,6 +23,12 @@ export const ModalNew: FC<{
   onSave,
 }) => {
   const [targetOpt, setTargetOpt] = useState<CustomOption>(getEmptyCustomOption());
+
+  const paramTypeOptions = [
+    { label: t("CUSTOM_TYPE_ENV", "Environment Variable (KEY=VALUE)"), data: "env" as ParamType },
+    { label: t("CUSTOM_TYPE_FLAG", "Flag Parameter (--flag)"), data: "flag" as ParamType },
+    { label: t("CUSTOM_TYPE_KEYVALUE", "Key-Value Parameter (--key value)"), data: "keyvalue" as ParamType },
+  ];
 
   const handleSave = async () => {
     const updatedOpts = [...optList];
@@ -55,6 +63,51 @@ export const ModalNew: FC<{
           </Focusable>
         </Field>
         <Field
+          label={t("CUSTOM_OPTION_TYPE", "Type")}
+          padding="none"
+          bottomSeparator="none"
+        >
+          <Focusable
+            style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
+          >
+            <Dropdown
+              rgOptions={paramTypeOptions}
+              selectedOption={targetOpt.type}
+              onChange={(selected) => {
+                setTargetOpt({
+                  ...targetOpt,
+                  type: selected.data,
+                  value: selected.data === 'flag' ? undefined : targetOpt.value,
+                  position: selected.data === 'env' ? 'before' : targetOpt.position
+                });
+              }}
+            />
+          </Focusable>
+        </Field>
+        <Field
+          label={t("CUSTOM_OPTION_POSITION", "Position")}
+          padding="none"
+          bottomSeparator="none"
+        >
+          <Focusable
+            style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
+          >
+            <ToggleField
+              label={targetOpt.position === 'before' ? t("CUSTOM_POSITION_BEFORE", "Before %command%") : t("CUSTOM_POSITION_AFTER", "After %command%")}
+              checked={targetOpt.position === 'after'}
+              disabled={targetOpt.type === 'env'}
+              onChange={(checked) => {
+                if (targetOpt.type !== 'env') {
+                  setTargetOpt({
+                    ...targetOpt,
+                    position: checked ? 'after' : 'before'
+                  });
+                }
+              }}
+            />
+          </Focusable>
+        </Field>
+        <Field
           label={t("CUSTOM_OPTION_Fields", "Field & Value")}
           padding="none"
           bottomSeparator="none"
@@ -63,7 +116,7 @@ export const ModalNew: FC<{
             style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
           >
             <TextField
-              style={{ padding: "10px", fontSize: "14px", width: "200px" }}
+              style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === 'flag' ? "435px" : "200px" }}
               value={targetOpt.key}
               onChange={(e) => {
                 setTargetOpt({
@@ -72,19 +125,23 @@ export const ModalNew: FC<{
                 });
               }}
             />
-            <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
-              <b>=</b>
-            </div>
-            <TextField
-              style={{ padding: "10px", fontSize: "14px", width: "200px" }}
-              value={targetOpt.value}
-              onChange={(e) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  value: e.target.value,
-                });
-              }}
-            />
+            {targetOpt.type !== 'flag' && (
+              <>
+                <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
+                  <b>{targetOpt.type === 'env' ? '=' : ' '}</b>
+                </div>
+                <TextField
+                  style={{ padding: "10px", fontSize: "14px", width: "200px" }}
+                  value={targetOpt.value || ''}
+                  onChange={(e) => {
+                    setTargetOpt({
+                      ...targetOpt,
+                      value: e.target.value,
+                    });
+                  }}
+                />
+              </>
+            )}
           </Focusable>
         </Field>
         <Focusable style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>

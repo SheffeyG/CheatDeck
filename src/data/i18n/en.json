@@ -34,7 +34,14 @@
 
     "CUSTOM_TITLE": "Custom",
     "CUSTOM_OPTION_LABEL": "Label",
+    "CUSTOM_OPTION_TYPE": "Type",
+    "CUSTOM_OPTION_POSITION": "Position",
     "CUSTOM_OPTION_Fields": "Field & Value",
+    "CUSTOM_TYPE_ENV": "Environment Variable (KEY=VALUE)",
+    "CUSTOM_TYPE_FLAG": "Flag Parameter (--flag)",
+    "CUSTOM_TYPE_KEYVALUE": "Key-Value Parameter (--key value)",
+    "CUSTOM_POSITION_BEFORE": "Before %command%",
+    "CUSTOM_POSITION_AFTER": "After %command%",
     "CUSTOM_EDIT_TITLE": "Edit Option",
     "CUSTOM_NEW_TITLE": "Add a New Option"
 }
