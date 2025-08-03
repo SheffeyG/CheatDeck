@@ -11,6 +11,13 @@ export interface ParsedParam {
   order: number;
 }
 
+export interface FlagParams {
+  key: string;
+  position?: 'before' | 'after';
+}
+
+
+
 export class Options {
   #parsedParams: ParsedParam[] = [];
   #isSteam: boolean;
@@ -30,11 +37,11 @@ export class Options {
     const afterCommand = match ? match[2].trim() : '';
 
     const params: ParsedParam[] = [];
-    
+
     if (beforeCommand) {
       params.push(...this.parseTokens(beforeCommand, 'before'));
     }
-    
+
     if (afterCommand) {
       params.push(...this.parseTokens(afterCommand, 'after'));
     }
@@ -133,6 +140,23 @@ export class Options {
     return tokens;
   }
 
+  hasFlag({ key, position = 'before' }: FlagParams): boolean {
+    return this.#parsedParams.some(p => p.key === key && p.type === 'flag' && p.position === position);
+  }
+
+  setFlag({ key, position = 'before' }: FlagParams): void {
+    this.#parsedParams.push({
+      type: 'flag',
+      key,
+      position,
+      order: this.#parsedParams.filter(p => p.position === position).length
+    });
+  }
+
+  removeFlag({ key, position = 'before' }: FlagParams): void {
+    this.#parsedParams = this.#parsedParams.filter(p => p.key !== key || p.position !== position);
+  }
+
   // Keep existing API fully compatible
   hasField(key: string): boolean {
     return this.#parsedParams.some(p => p.key === key);
@@ -170,7 +194,7 @@ export class Options {
         // For non-dash keys, if value is provided, treat as env variable
         type = 'env';
       }
-      
+
       this.#parsedParams.push({
         type,
         key,
@@ -203,12 +227,12 @@ export class Options {
     if (afterString) result += ' ' + afterString;
 
     result = result.trim();
-    
+
     // If the result is only %command%, return empty string
     if (result === '%command%') {
       return '';
     }
-    
+
     return result;
   }
 
