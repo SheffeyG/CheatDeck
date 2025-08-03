@@ -112,11 +112,29 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
               <ToggleField
                 bottomSeparator="none"
                 label={<span className="CD_Label">{opt.label}</span>}
-                checked={options.hasFieldValue(opt.key, opt.value || "")}
+                checked={
+                  opt.type === 'flag' 
+                    ? options.getParameters().some(p => p.key === opt.key)
+                    : options.hasFieldValue(opt.key, opt.value || "")
+                }
                 onChange={(enable: boolean) => {
                   setOptions(prevOptions => {
                     const updatedOptions = new Options(prevOptions.getOptionsString());
-                    updatedOptions.setFieldValue(opt.key, enable ? (opt.value || "") : "");
+                    
+                    if (opt.type === 'flag') {
+                      if (enable) {
+                        updatedOptions.setParameter({
+                          type: 'flag',
+                          key: opt.key,
+                          position: opt.position,
+                          order: 0
+                        });
+                      } else {
+                        updatedOptions.removeParameter(opt.key);
+                      }
+                    } else {
+                      updatedOptions.setFieldValue(opt.key, enable ? (opt.value || "") : "");
+                    }
                     
                     // Log the final state after modification
                     const finalOptionsString = updatedOptions.getOptionsString();

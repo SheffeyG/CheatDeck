@@ -202,7 +202,14 @@ export class Options {
     result += '%command%';
     if (afterString) result += ' ' + afterString;
 
-    return result.trim();
+    result = result.trim();
+    
+    // If the result is only %command%, return empty string
+    if (result === '%command%') {
+      return '';
+    }
+    
+    return result;
   }
 
   private paramsToString(params: ParsedParam[]): string {
