@@ -275,15 +275,130 @@ export class Options {
     return [...this.#parsedParams];
   }
 
+  // Set a parameter using key+position as unique identifier
   setParameter(param: ParsedParam): void {
-    this.#parsedParams = this.#parsedParams.filter(p => p.key !== param.key);
-    this.#parsedParams.push({
-      ...param,
-      order: param.order ?? this.#parsedParams.filter(p => p.position === param.position).length
-    });
+    // Remove existing parameter with same key AND position (this is the key change!)
+    this.#parsedParams = this.#parsedParams.filter(p => 
+      !(p.key === param.key && p.position === param.position)
+    );
+    this.#parsedParams.push(param);
   }
 
   removeParameter(key: string): void {
     this.#parsedParams = this.#parsedParams.filter(p => p.key !== key);
+  }
+
+  // Remove parameter at specific position
+  removeParameterAtPosition(key: string, position: 'before' | 'after'): void {
+    this.#parsedParams = this.#parsedParams.filter(p => p.key !== key || p.position !== position);
+  }
+
+  // Remove custom parameters by parsing the value and removing each at specific position
+  removeCustomParameter(customValue: string, position: 'before' | 'after'): void {
+    try {
+      const parsedParams = this.parseMultipleCustomValues(customValue);
+      parsedParams.forEach(parsed => {
+        this.removeParameterAtPosition(parsed.key, position);
+      });
+    } catch (error) {
+      // Ignore parse errors during removal
+    }
+  }
+
+  // Smart parsing for custom parameter values (supports multiple parameters)
+  parseCustomValue(value: string): { type: ParamType; key: string; value?: string } {
+    const parsed = this.parseMultipleCustomValues(value);
+    if (parsed.length === 0) {
+      throw new Error('Parameter value cannot be empty');
+    }
+    // Return first parameter for backward compatibility
+    return parsed[0];
+  }
+
+  // Parse multiple parameters from a single input string
+  parseMultipleCustomValues(value: string): Array<{ type: ParamType; key: string; value?: string }> {
+    if (!value.trim()) {
+      return [];
+    }
+
+    // Use tokenization to split parameters correctly
+    const tokens = this.tokenize(value.trim());
+    const results: Array<{ type: ParamType; key: string; value?: string }> = [];
+    let i = 0;
+
+    while (i < tokens.length) {
+      const current = tokens[i];
+      const next = tokens[i + 1];
+
+      // Environment variable: contains = and doesn't start with -
+      if (current.includes('=') && !current.startsWith('-')) {
+        const [key, ...valueParts] = current.split('=');
+        results.push({
+          type: 'env',
+          key: key.trim(),
+          value: valueParts.join('=').trim()
+        });
+        i++;
+        continue;
+      }
+
+      // Key-value parameter: starts with - and next token doesn't start with - or =
+      if (current.startsWith('-') && next && !next.startsWith('-') && !next.includes('=')) {
+        results.push({
+          type: 'keyvalue',
+          key: current.trim(),
+          value: next.trim()
+        });
+        i += 2;
+        continue;
+      }
+
+      // Flag parameter: everything else
+      results.push({
+        type: 'flag',
+        key: current.trim()
+      });
+      i++;
+    }
+
+    return results;
+  }
+
+  // Apply a custom parameter from simplified format (supports multiple parameters)
+  applyCustomParameter(customValue: string, position: 'before' | 'after'): void {
+    const parsedParams = this.parseMultipleCustomValues(customValue);
+    
+    // Remove conflicting parameters at the same position (same key)
+    parsedParams.forEach(parsed => {
+      this.removeParameterAtPosition(parsed.key, position);
+    });
+    
+    // Add new parameters
+    parsedParams.forEach((parsed, index) => {
+      this.setParameter({
+        ...parsed,
+        position,
+        order: this.#parsedParams.filter(p => p.position === position).length + index
+      });
+    });
+  }
+
+  // Check if a custom parameter is currently applied (checks all parameters for multi-param input)
+  hasCustomParameter(customValue: string, position?: 'before' | 'after'): boolean {
+    try {
+      const parsedParams = this.parseMultipleCustomValues(customValue);
+      if (parsedParams.length === 0) return false;
+      
+      // Check if all parsed parameters exist with exact match
+      return parsedParams.every(parsed => 
+        this.#parsedParams.some(p => 
+          p.key === parsed.key && 
+          p.value === parsed.value &&
+          (position === undefined || p.position === position)
+        )
+      );
+    } catch {
+      return false;
+    }
   }
 }

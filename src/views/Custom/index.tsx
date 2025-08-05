@@ -105,28 +105,17 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
               <ToggleField
                 bottomSeparator="none"
                 label={<span className="CD_Label">{opt.label}</span>}
-                checked={
-                  opt.type === 'flag' 
-                    ? options.getParameters().some(p => p.key === opt.key)
-                    : options.hasFieldValue(opt.key, opt.value || "")
-                }
+                checked={options.hasCustomParameter(opt.value, opt.position)}
                 onChange={(enable: boolean) => {
                   setOptions(prevOptions => {
                     const updatedOptions = new Options(prevOptions.getOptionsString());
                     
-                    if (opt.type === 'flag') {
-                      if (enable) {
-                        updatedOptions.setParameter({
-                          type: 'flag',
-                          key: opt.key,
-                          position: opt.position,
-                          order: 0
-                        });
-                      } else {
-                        updatedOptions.removeParameter(opt.key);
-                      }
+                    if (enable) {
+                      // Apply the custom parameter using smart parsing
+                      updatedOptions.applyCustomParameter(opt.value, opt.position);
                     } else {
-                      updatedOptions.setFieldValue(opt.key, enable ? (opt.value || "") : "");
+                      // Remove the custom parameter at the specific position
+                      updatedOptions.removeCustomParameter(opt.value, opt.position);
                     }
                     
                     // Log the final state after modification

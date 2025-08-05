@@ -44,41 +44,75 @@ class Plugin:
         logger.info("[backend] Starting data migration")
         
         try:
-            # Use getSetting instead of read() to safely get CustomOptions
             custom_options = settings.getSetting("CustomOptions", [])
             
-            # Check if custom_options is a valid list with content
-            if custom_options is not None and isinstance(custom_options, list) and len(custom_options) > 0:
-                first_option = custom_options[0]
-                # Check if first_option is a valid dict and missing 'type' field
-                if first_option is not None and isinstance(first_option, dict) and "type" not in first_option:
-                    logger.info("[backend] Migrating CustomOptions from legacy format")
-                    
-                    migrated_options = []
-                    for option in custom_options:
-                        # Skip None or invalid options
-                        if option is None or not isinstance(option, dict):
-                            logger.warning(f"[backend] Skipping invalid option: {option}")
-                            continue
-                            
-                        migrated_option = {
-                            "label": option.get("label", ""),
-                            "type": "env",
-                            "position": "before", 
-                            "key": option.get("field", ""),
-                            "value": option.get("value", "")
-                        }
-                        migrated_options.append(migrated_option)
-                    
-                    settings.setSetting("CustomOptions", migrated_options)
-                    logger.info("[backend] Data migration completed")
-                else:
-                    logger.info("[backend] CustomOptions already in new format, no migration needed")
-            else:
+            # Check if migration is needed
+            if not custom_options or not isinstance(custom_options, list):
                 logger.info("[backend] No CustomOptions found, migration not needed")
+                return
+                
+            needs_migration = any(
+                isinstance(opt, dict) and (opt.get("field") is not None or opt.get("key") is not None)
+                for opt in custom_options
+            )
+            
+            if not needs_migration:
+                logger.info("[backend] CustomOptions already in current format")
+                return
+                
+            logger.info("[backend] Migrating CustomOptions to current format")
+            migrated_options = []
+            
+            for option in custom_options:
+                if not isinstance(option, dict):
+                    continue
+                    
+                migrated = cls._migrate_option(option)
+                if migrated:
+                    migrated_options.append(migrated)
+            
+            settings.setSetting("CustomOptions", migrated_options)
+            logger.info(f"[backend] Successfully migrated {len(migrated_options)} options")
                         
         except Exception as e:
             logger.error(f"[backend] Migration failed: {e}", exc_info=True)
+    
+    @classmethod
+    def _migrate_option(cls, option: dict) -> dict:
+        """Migrate a single option using simple field-based detection"""
+        try:
+            migrated = {
+                "label": option.get("label", ""),
+                "position": option.get("position", "before"),
+                "value": ""
+            }
+            
+            # Simple field-based detection
+            if option.get("field") is not None:
+                # Old format: field + value
+                field = option.get("field", "")
+                value = option.get("value", "")
+                migrated["value"] = f"{field}={value}" if field and value else field or value
+                
+            elif option.get("key") is not None:
+                # Intermediate format: key + value with smart combination
+                key = option.get("key", "")
+                value = option.get("value", "")
+                
+                if key and value:
+                    # Smart combination: space for dash-prefixed, equals for others
+                    migrated["value"] = f"{key} {value}" if key.startswith("-") else f"{key}={value}"
+                else:
+                    migrated["value"] = key
+            else:
+                # Already new format or unknown
+                migrated["value"] = option.get("value", "")
+            
+            return migrated
+            
+        except Exception as e:
+            logger.error(f"[backend] Failed to migrate option {option}: {e}")
+            return None
 
     @classmethod
     async def settings_read(cls):
