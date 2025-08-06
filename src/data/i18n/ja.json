@@ -31,6 +31,9 @@
     "ADVANCED_RADV_PERFTEST_DESC": "ProtonGE互換性レイヤーのシェーダーキャッシュ動作を最適化します",
     "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "ゲームデータの保存パスを指定します",
     "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "プレフィックスフォルダー",
+    "ADVANCED_LOSSLESS_SCALING_DESC": "ゲームの Lossless Scaling を有効にします（Lossless-Scalingプラグインが必要）",
+    "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "Decky Framegenを使用するためにゲームにパッチを適用します（Decky-Framegenプラグインが必要）",
+    "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "Decky Framegenのゲームパッチを削除します（Decky-Framegenプラグインが必要）",
 
     "CUSTOM_TITLE": "カスタム",
     "CUSTOM_OPTION_LABEL": "ラベル",

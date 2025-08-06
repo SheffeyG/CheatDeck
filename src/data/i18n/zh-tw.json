@@ -31,6 +31,9 @@
     "ADVANCED_RADV_PERFTEST_DESC": "最佳化 ProtonGE 相容層著色器快取行為",
     "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "指定遊戲資料儲存路徑",
     "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "Prefix 路徑",
+    "ADVANCED_LOSSLESS_SCALING_DESC": "為遊戲啟用 Lossless Scaling（需要 Lossless-Scaling 插件）",
+    "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "為遊戲應用 Decky Framegen 補丁（需要 Decky-Framegen 插件）",
+    "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "移除遊戲的 Decky Framegen 補丁（需要 Decky-Framegen 插件）",
 
     "CUSTOM_TITLE": "自訂",
     "CUSTOM_OPTION_LABEL": "標籤",

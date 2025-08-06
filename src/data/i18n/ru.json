@@ -31,6 +31,9 @@
     "ADVANCED_RADV_PERFTEST_DESC": "Оптимизировать поведение кэша шейдеров слоя совместимости ProtonGE",
     "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "Указать путь сохранения данных игры",
     "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "Папка префикса",
+    "ADVANCED_LOSSLESS_SCALING_DESC": "Включить Lossless Scaling для игры (требуется плагин Lossless-Scaling)",
+    "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "Применить патч игры для использования Decky Framegen (требуется плагин Decky-Framegen)",
+    "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "Удалить патч игры для Decky Framegen (требуется плагин Decky-Framegen)",
 
     "CUSTOM_TITLE": "Пользовательские",
     "CUSTOM_OPTION_LABEL": "Метка",

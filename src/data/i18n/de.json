@@ -31,6 +31,9 @@
     "ADVANCED_RADV_PERFTEST_DESC": "Optimieren Sie das Shader-Cache-Verhalten der ProtonGE-Kompatibilitätsschicht",
     "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "Geben Sie den Speicherpfad für Spieldaten an",
     "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "Präfix-Ordner",
+    "ADVANCED_LOSSLESS_SCALING_DESC": "Lossless Scaling für das Spiel aktivieren (erfordert das Lossless-Scaling Plugin)",
+    "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "Das Spiel für Decky Framegen patchen (erfordert das Decky-Framegen Plugin)",
+    "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "Das Spiel für Decky Framegen entpatchen (erfordert das Decky-Framegen Plugin)",
 
     "CUSTOM_TITLE": "Benutzerdefiniert",
     "CUSTOM_OPTION_LABEL": "Bezeichnung",

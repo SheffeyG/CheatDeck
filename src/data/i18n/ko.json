@@ -31,6 +31,9 @@
     "ADVANCED_RADV_PERFTEST_DESC": "ProtonGE 호환성 레이어의 셰이더 캐시 동작을 최적화합니다.",
     "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "게임 데이터 저장 경로를 지정하십시오.",
     "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "접두사 폴더",
+    "ADVANCED_LOSSLESS_SCALING_DESC": "게임의 Lossless Scaling을 활성화합니다 (Lossless-Scaling 플러그인 필요)",
+    "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "Decky Framegen을 사용하도록 게임에 패치를 적용합니다 (Decky-Framegen 플러그인 필요)",
+    "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "게임의 Decky Framegen 패치를 제거합니다 (Decky-Framegen 플러그인 필요)",
 
     "CUSTOM_TITLE": "사용자 지정",
     "CUSTOM_OPTION_LABEL": "레이블",
