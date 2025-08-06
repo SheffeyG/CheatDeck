@@ -28,8 +28,8 @@ importers:
         specifier: ^1.0.1
         version: 1.0.1
       '@decky/ui':
-        specifier: ^4.8.1
-        version: 4.8.1
+        specifier: ^4.10.4
+        version: 4.10.4
       '@eslint/js':
         specifier: ^9.13.0
         version: 9.13.0
@@ -72,8 +72,8 @@ packages:
   '@decky/rollup@1.0.1':
     resolution: {integrity: sha512-dx1VJwD7ul14PA/aZvOwAfY/GujHzqZJ+MFb4OIUVi63/z4KWMSuZrK6QWo0S4LrNW3RzB3ua6LT0WcJaNY9gw==}
 
-  '@decky/ui@4.8.1':
-    resolution: {integrity: sha512-lM4jdeyHjIbxHWxDBhbk+GQvdIT50p6RW9DC+oWSWXlaNWU/iG+8aUAcnfxygFkTP43EkCgjFASsYTfB55CMXA==}
+  '@decky/ui@4.10.4':
+    resolution: {integrity: sha512-swgC4IVtQzZVw8dtP/iztpNYUl1eR0dxWfiMpswY8YglDsBn4ntspbL91Ic4WgxvkOEMSpsIs+zkVtjHE9zi3A==}
 
   '@eslint-community/eslint-utils@4.4.0':
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
@@ -1659,7 +1659,7 @@ snapshots:
       tslib: 2.8.0
       typescript: 5.6.3
 
-  '@decky/ui@4.8.1': {}
+  '@decky/ui@4.10.4': {}
 
   '@eslint-community/eslint-utils@4.4.0(eslint@9.13.0)':
     dependencies:
