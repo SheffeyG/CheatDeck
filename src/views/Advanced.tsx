@@ -5,12 +5,12 @@ import {
   TextField,
   ToggleField,
 } from "@decky/ui";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 
 // import logger from "../utils/logger"
 import { Backend } from "../utils/backend";
-import { Options } from "../utils/options";
+import { escapeString, unescapeString, Options } from "../utils/options";
 import { FaFolderOpen } from "react-icons/fa";
 import t from "../utils/translate";
 import { SaveWithPreview } from "../components/SaveWithPreview";
@@ -37,9 +37,14 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
     const filePickerRes = await Backend.openFilePicker(defaultDir, false);
     const prefixPath = filePickerRes.path;
     const newOptions = new Options(options.getOptionsString());
-    newOptions.setFieldValue("STEAM_COMPAT_DATA_PATH", `"${prefixPath}"`);
+    newOptions.setFieldValue("STEAM_COMPAT_DATA_PATH", escapeString(prefixPath));
     setOptions(newOptions);
   };
+
+  const showedPrefixPath = useMemo(() => {
+    const savedPath = options.getFieldValue("STEAM_COMPAT_DATA_PATH") ?? "";
+    return unescapeString(savedPath);
+  }, [options]);
 
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
@@ -113,7 +118,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
                 width: "400px",
               }}
               disabled={true}
-              value={options.getFieldValue("STEAM_COMPAT_DATA_PATH")}
+              value={showedPrefixPath}
             />
             <DialogButton
               onClick={handleBrowse}

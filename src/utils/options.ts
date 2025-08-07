@@ -16,7 +16,29 @@ export interface FlagParams {
   position?: 'before' | 'after';
 }
 
+export function escapeString(input: string): string {
+  const escapeMap: { [key: string]: string } = {
+    ' ': '\\ ',
+    '"': '\\"',
+    '\\': '\\\\',
+    '\n': '\\n',
+    '\r': '\\r',
+    '\t': '\\t'
+  };
+  return input.replace(/[ "\\\n\r\t]/g, (char) => escapeMap[char] || char);
+}
 
+export function unescapeString(input: string): string {
+  const unescapeMap: { [key: string]: string } = {
+    '\\ ': ' ',
+    '\\"': '"',
+    '\\\\': '\\',
+    '\\n': '\n',
+    '\\r': '\r',
+    '\\t': '\t'
+  };
+  return input.replace(/\\[\s"\\nrt]/g, (match) => unescapeMap[match] || match);
+}
 
 export class Options {
   #parsedParams: ParsedParam[] = [];
@@ -278,7 +300,7 @@ export class Options {
   // Set a parameter using key+position as unique identifier
   setParameter(param: ParsedParam): void {
     // Remove existing parameter with same key AND position (this is the key change!)
-    this.#parsedParams = this.#parsedParams.filter(p => 
+    this.#parsedParams = this.#parsedParams.filter(p =>
       !(p.key === param.key && p.position === param.position)
     );
     this.#parsedParams.push(param);
@@ -367,12 +389,12 @@ export class Options {
   // Apply a custom parameter from simplified format (supports multiple parameters)
   applyCustomParameter(customValue: string, position: 'before' | 'after'): void {
     const parsedParams = this.parseMultipleCustomValues(customValue);
-    
+
     // Remove conflicting parameters at the same position (same key)
     parsedParams.forEach(parsed => {
       this.removeParameterAtPosition(parsed.key, position);
     });
-    
+
     // Add new parameters
     parsedParams.forEach((parsed, index) => {
       this.setParameter({
@@ -388,11 +410,11 @@ export class Options {
     try {
       const parsedParams = this.parseMultipleCustomValues(customValue);
       if (parsedParams.length === 0) return false;
-      
+
       // Check if all parsed parameters exist with exact match
-      return parsedParams.every(parsed => 
-        this.#parsedParams.some(p => 
-          p.key === parsed.key && 
+      return parsedParams.every(parsed =>
+        this.#parsedParams.some(p =>
+          p.key === parsed.key &&
           p.value === parsed.value &&
           (position === undefined || p.position === position)
         )

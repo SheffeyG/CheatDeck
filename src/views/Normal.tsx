@@ -8,12 +8,12 @@ import {
   ToggleField,
 } from "@decky/ui";
 import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { FaGamepad, FaLanguage, FaFolderOpen } from "react-icons/fa";
 
 // import logger from "../utils/logger"
 import { Backend } from "../utils/backend";
-import { Options } from "../utils/options";
+import { escapeString, unescapeString, Options } from "../utils/options";
 import { LangCodes } from "../data/default.json";
 import t from "../utils/translate";
 import { SaveWithPreview } from "../components/SaveWithPreview";
@@ -43,12 +43,18 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
     const defaultDir = cheatDir ?? await Backend.getEnv("DECKY_USER_HOME");
     const filePickerRes = await Backend.openFilePicker(defaultDir, true, ["exe", "bat"]);
     const cheatPath = filePickerRes.path;
+    const cheatFolder = cheatPath.replace(/\/[^/]+$/, "");
     const newOptions = new Options(options.getOptionsString());
-    newOptions.setFieldValue("PROTON_REMOTE_DEBUG_CMD", `"${cheatPath}"`);
-    // `PRESSURE_VESSEL_FILESYSTEMS_RW` value should be a dir
-    newOptions.setFieldValue("PRESSURE_VESSEL_FILESYSTEMS_RW", `"${cheatPath.replace(/\/[^/]+$/, "")}"`);
+    newOptions.setFieldValue("PROTON_REMOTE_DEBUG_CMD", escapeString(cheatPath));
+    // Make sure the parent directory is set for filesystem access
+    newOptions.setFieldValue("PRESSURE_VESSEL_FILESYSTEMS_RW", escapeString(cheatFolder));
     setOptions(newOptions);
   };
+
+  const showedCheatPath = useMemo(() => {
+    const savedPath = options.getFieldValue("PROTON_REMOTE_DEBUG_CMD") ?? "";
+    return unescapeString(savedPath);
+  }, [options]);
 
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
@@ -91,7 +97,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
                 width: "400px",
               }}
               disabled={true}
-              value={options.getFieldValue("PROTON_REMOTE_DEBUG_CMD")}
+              value={showedCheatPath}
             />
             <DialogButton
               onClick={handleBrowse}
@@ -151,7 +157,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
               onChange={(e) => {
                 e.persist();
                 const updatedOptions = new Options(options.getOptionsString());
-                updatedOptions.setFieldValue("LANG", `"${e.target.value}"`);
+                updatedOptions.setFieldValue("LANG", e.target.value);
                 setOptions(updatedOptions);
               }}
             />
@@ -161,7 +167,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
               onChange={(v) => {
                 // logger.info(`selected: ${JSON.stringify(v)}`);
                 const updatedOptions = new Options(options.getOptionsString());
-                updatedOptions.setFieldValue("LANG", `"${v.data}"`);
+                updatedOptions.setFieldValue("LANG", v.data);
                 setOptions(updatedOptions);
               }}
               strDefaultLabel={t("NORMAL_LANG_DEFAULT", "Default")}
