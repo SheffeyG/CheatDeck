@@ -29,7 +29,7 @@ export const ModalEdit: FC<{
     optList[optIndex],
   );
 
-  const paramTypeOptions: { label: string; data: ParamType; }[] = [
+  const paramTypeOptions: { label: string; data: ParamType }[] = [
     { label: t("CUSTOM_TYPE_ENV", "Environment Variable"), data: "env" },
     { label: t("CUSTOM_TYPE_CMD", "Prefix Commands"), data: "pre_cmd" },
     { label: t("CUSTOM_TYPE_FLAG", "Flag & Arguments"), data: "flag_args" },
@@ -89,20 +89,20 @@ export const ModalEdit: FC<{
         >
           <Focusable style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}>
             <TextField
-              style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === 'pre_cmd' ? "435px" : "200px" }}
+              style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === "pre_cmd" ? "435px" : "200px" }}
               value={targetOpt.key}
               onChange={(e) => {
                 setTargetOpt({ ...targetOpt, key: e.target.value });
               }}
             />
-            {targetOpt.type !== 'pre_cmd' && (
+            {targetOpt.type !== "pre_cmd" && (
               <>
                 <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
-                  <b>{targetOpt.type === 'env' ? '=' : ' '}</b>
+                  <b>{targetOpt.type === "env" ? "=" : " "}</b>
                 </div>
                 <TextField
                   style={{ padding: "10px", fontSize: "14px", width: "200px" }}
-                  value={targetOpt.value || ''}
+                  value={targetOpt.value || ""}
                   onChange={(e) => {
                     setTargetOpt({ ...targetOpt, value: e.target.value });
                   }}

@@ -35,6 +35,6 @@ export const getEmptyCustomOption = (): CustomOption => {
     id: uuidv4(),
     label: "",
     type: "env",
-    key: ""
+    key: "",
   };
 };

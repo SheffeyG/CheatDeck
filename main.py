@@ -51,35 +51,41 @@ class Plugin:
             custom_options = settings.getSetting("CustomOptions", [])
 
             # Check if custom_options is a valid list with content
-            if custom_options is None or not isinstance(custom_options, list) or len(custom_options) == 0:
-                logger.info("[backend] No CustomOptions found, migration not needed")
-            else: # Check if first_option is a valid dict and missing 'type' field
-                first_option = custom_options[0]
-                if first_option and isinstance(first_option, dict) and "type" in first_option:
-                    logger.info("[backend] CustomOptions already in new format, no migration needed")
-                else:
-                    logger.info("[backend] Migrating CustomOptions from legacy format")
+            if not custom_options or not isinstance(custom_options, list):
+                logger.info("[backend] No CustomOptions found, stop migration.")
+                return False
 
-                    migrated_options = []
-                    for option in custom_options:
-                        # Skip None or invalid options
-                        if option is None or not isinstance(option, dict):
-                            logger.warning(f"[backend] Skipping invalid option: {option}")
-                            continue
+            # Check if first_option is a valid dict and missing "type" field
+            first_option = custom_options[0]
+            if isinstance(first_option, dict) and "type" in first_option:
+                logger.info("[backend] CustomOptions already in new format.")
+                return False
 
-                        migrated_option = {
-                            "label": option.get("label", ""),
-                            "type": "env",
-                            "key": option.get("field", ""),
-                            "value": option.get("value", "")
-                        }
-                        migrated_options.append(migrated_option)
+            logger.info("[backend] Migrating CustomOptions from legacy format")
 
-                    settings.setSetting("CustomOptions", migrated_options)
-                    logger.info("[backend] Data migration completed")
+            migrated_options = []
+            for option in custom_options:
+                # Skip None or invalid options
+                if option is None or not isinstance(option, dict):
+                    logger.warning(f"[backend] Skipping invalid option: {option}")
+                    continue
+
+                migrated_option = {
+                    "label": option.get("label", ""),
+                    "type": "env",
+                    "key": option.get("field", ""),
+                    "value": option.get("value", ""),
+                }
+                migrated_options.append(migrated_option)
+
+            settings.setSetting("CustomOptions", migrated_options)
+            logger.info("[backend] Data migration completed")
+
+            return True
 
         except Exception as e:
             logger.error(f"[backend] Migration failed: {e}", exc_info=True)
+            return False
 
     @classmethod
     async def settings_read(cls):

@@ -9,8 +9,8 @@ import {
   PanelSectionRow,
   showModal,
 } from "@decky/ui";
-import { HiQrCode } from "react-icons/hi2";
 import { QRCodeSVG } from "qrcode.react";
+import { HiQrCode } from "react-icons/hi2";
 
 import t from "../utils/translate";
 

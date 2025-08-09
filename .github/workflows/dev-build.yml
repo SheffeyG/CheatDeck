@@ -15,20 +15,54 @@ permissions:
   contents: write
 
 jobs:
+  lint-frontend:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+      - name: Set up Node.js with pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          cache: pnpm
+      - name: Lint frontend source
+        run: |
+          pnpm i
+          pnpm run lint:frontend
+
+  lint-backend:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          check-latest: true
+      - name: Install flake8
+        run: pip install flake8
+      - name: Lint backend source
+        run: flake8 --max-line-length=120 main.py
+
   build-plugin:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
+      - name: Set up PNPM
+        uses: pnpm/action-setup@v4
         with:
           version: latest
-
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js with pnpm cache
+        uses: actions/setup-node@v4
         with:
           node-version: latest
           cache: pnpm
-
       - name: Build plugin
         run: |
           pnpm install --no-frozen-lockfile
@@ -40,7 +74,6 @@ jobs:
           cp package.json output/${{ github.event.repository.name }}
           cp README.md output/${{ github.event.repository.name }}
           cp LICENSE output/${{ github.event.repository.name }}
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -57,12 +90,10 @@ jobs:
         with:
           name: ${{ github.event.repository.name }}
           path: release
-
       - name: Package plugin
         run: |
           cd release
           zip -r ${{ github.event.repository.name }} *
-
       - name: Publish to Github release
         uses: softprops/action-gh-release@v2
         with:

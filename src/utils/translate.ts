@@ -1,5 +1,3 @@
-import logger from "./logger";
-
 import * as de from "../data/i18n/de.json";
 import * as en from "../data/i18n/en.json";
 import * as fr from "../data/i18n/fr.json";
@@ -8,6 +6,7 @@ import * as ko from "../data/i18n/ko.json";
 import * as ru from "../data/i18n/ru.json";
 import * as zhCn from "../data/i18n/zh-cn.json";
 import * as zhTw from "../data/i18n/zh-tw.json";
+import logger from "./logger";
 
 type Language = { [key: string]: string };
 type Languages = { [key: string]: Language };

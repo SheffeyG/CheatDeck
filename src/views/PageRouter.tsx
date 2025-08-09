@@ -1,15 +1,15 @@
-import { FC } from "react";
 import { SidebarNavigation, useParams } from "@decky/ui";
+import { FC } from "react";
 import {
-  BsFillDice2Fill as IconNormal,
-  BsExclamationSquareFill as IconAdvanced,
   BsCSquareFill as IconCustom,
+  BsExclamationSquareFill as IconAdvanced,
+  BsFillDice2Fill as IconNormal,
 } from "react-icons/bs";
 
-import Normal from "./Normal";
+import t from "../utils/translate";
 import Advanced from "./Advanced";
 import Custom from "./Custom";
-import t from "../utils/translate";
+import Normal from "./Normal";
 
 const PageRouter: FC = () => {
   let { appid } = useParams<{ appid: number }>();

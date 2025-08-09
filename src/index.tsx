@@ -1,15 +1,15 @@
 import {
+  routerHook,
+} from "@decky/api";
+import {
   definePlugin,
   staticClasses,
 } from "@decky/ui";
-import {
-  routerHook,
-} from "@decky/api";
 import { FaWrench } from "react-icons/fa";
 
+import contextMenuPatch, { LibraryContextMenu } from "./utils/patch";
 import Content from "./views/Content";
 import PageRouter from "./views/PageRouter";
-import contextMenuPatch, { LibraryContextMenu } from "./utils/patch";
 
 export default definePlugin(() => {
   routerHook.addRoute("/cheatdeck/:appid", PageRouter, {

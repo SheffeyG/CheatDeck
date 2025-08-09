@@ -1,20 +1,20 @@
 import {
   DialogButton,
   Focusable,
-  ToggleField,
   showModal,
+  ToggleField,
 } from "@decky/ui";
 import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 import { FC, useEffect, useState } from "react";
 import { BsPencilFill } from "react-icons/bs";
 import { MdAddBox } from "react-icons/md";
 
+import { SaveWithPreview } from "../../components/SaveWithPreview";
 import { CustomOption, getCustomOptions } from "../../utils/custom";
+import logger from "../../utils/logger";
+import { Options } from "../../utils/options";
 import { ModalEdit } from "./ModalEdit";
 import { ModalNew } from "./ModalNew";
-import { Options } from "../../utils/options";
-import logger from "../../utils/logger";
-import { SaveWithPreview } from "../../components/SaveWithPreview";
 
 const Custom: FC<{ appid: number }> = ({ appid }) => {
   // Custom Options from user's saved settings
@@ -105,19 +105,21 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
                 label={<span className="CD_Label">{opt.label}</span>}
                 checked={opt.value ? options.hasKeyValue(opt.key, opt.value) : options.hasKey(opt.key)}
                 onChange={(enable: boolean) => {
-                  setOptions(prevOptions => {
+                  setOptions((prevOptions) => {
                     const updatedOptions = new Options(prevOptions.getOptionsString());
 
                     if (enable) {
                       updatedOptions.setParameter({
                         type: opt.type,
                         key: opt.key,
-                        ...(opt.value !== undefined ? { value: opt.value } : {})
+                        ...(opt.value !== undefined ? { value: opt.value } : {}),
                       });
                     } else {
-                      opt.type === 'pre_cmd'
-                        ? updatedOptions.removeParamByType('pre_cmd')
-                        : updatedOptions.removeParamByKey(opt.key);
+                      if (opt.type === "pre_cmd") {
+                        updatedOptions.removeParamByType("pre_cmd");
+                      } else {
+                        updatedOptions.removeParamByKey(opt.key);
+                      }
                     }
 
                     // Log the final state after modification

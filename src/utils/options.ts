@@ -27,16 +27,16 @@ export class Options {
   private parseParameters(input: string): ParsedParam[] {
     const match = input.match(/(.*)%command%(.*)/);
     const beforeCommand = match ? match[1].trim() : input;
-    const afterCommand = match ? match[2].trim() : '';
+    const afterCommand = match ? match[2].trim() : "";
 
     const params: ParsedParam[] = [];
 
     if (beforeCommand) {
-      params.push(...this.parseTokens(beforeCommand, 'before'));
+      params.push(...this.parseTokens(beforeCommand, "before"));
     }
 
     if (afterCommand) {
-      params.push(...this.parseTokens(afterCommand, 'after'));
+      params.push(...this.parseTokens(afterCommand, "after"));
     }
 
     return params;
@@ -57,11 +57,7 @@ export class Options {
       if (current.includes("=") && !current.startsWith("-") && position === "before") {
         const [key, ...valueParts] = current.split("="); // Edge case: "ENV=a=b"
         const value = valueParts.join("=").replace(/^["']|["']$/g, "");
-        params.push({
-          type: "env",
-          key: key.trim(),
-          value: value,
-        });
+        params.push({ type: "env", key: key.trim(), value: value });
         i++;
         continue;
       }
@@ -69,17 +65,10 @@ export class Options {
       if (current.startsWith("-") && position === "after") {
         if (next && !next.startsWith("-")) { // flag with argument
           const value = next.replace(/^["']|["']$/g, "");
-          params.push({
-            type: "flag_args",
-            key: current,
-            value: value,
-          });
+          params.push({ type: "flag_args", key: current, value: value });
           i += 2;
         } else { // flag without argument
-          params.push({
-            type: "flag_args",
-            key: current,
-          });
+          params.push({ type: "flag_args", key: current });
           i++;
         }
         continue;
@@ -95,10 +84,7 @@ export class Options {
 
     // Let's say all the rest is pre_cmd parameter, put them all in key
     if (others.length > 0) {
-      params.push({
-        type: "pre_cmd",
-        key: others.join(" ")
-      });
+      params.push({ type: "pre_cmd", key: others.join(" ") });
     }
 
     return params;
@@ -106,24 +92,24 @@ export class Options {
 
   private tokenize(text: string): string[] {
     const tokens: string[] = [];
-    let current = '';
+    let current = "";
     let inQuotes = false;
-    let quoteChar = '';
+    let quoteChar = "";
 
     for (let i = 0; i < text.length; i++) {
       const char = text[i];
 
-      if ((char === '"' || char === "'") && !inQuotes) {
+      if ((char === "\"" || char === "'") && !inQuotes) {
         inQuotes = true;
         quoteChar = char;
         current += char;
       } else if (char === quoteChar && inQuotes) {
         inQuotes = false;
         current += char;
-      } else if (char === ' ' && !inQuotes) {
+      } else if (char === " " && !inQuotes) {
         if (current.trim()) {
           tokens.push(current.trim());
-          current = '';
+          current = "";
         }
       } else {
         current += char;
@@ -177,12 +163,10 @@ export class Options {
     const flagArgsString = this.#parsedParams.filter(param => param.type === "flag_args")
       .map(param => param.value ? `${param.key} ${param.value}` : param.key);
 
-    let result = [...envString, ...preCmdString, "%command%", ...flagArgsString].join(" ");
+    const result = [...envString, ...preCmdString, "%command%", ...flagArgsString].join(" ");
 
     // If the result is only %command%, return empty string
-    if (result.trim() === "%command%") {
-      return "";
-    }
+    if (result.trim() === "%command%") return "";
 
     return result;
   }

@@ -3,7 +3,6 @@
  * https://github.com/SteamGridDB/decky-steamgriddb/blob/main/src/patches/contextMenuPatch.tsx
  */
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
@@ -85,8 +84,7 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
           if (!isOpeningAppContextMenu(menuItems)) return ret2;
           try {
             handleItemDupes(menuItems);
-          }
-          catch (error) {
+          } catch (error) {
             // wrong context menu (probably)
             return ret2;
           }
@@ -98,8 +96,7 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
         afterPatch(ret.type.prototype, "shouldComponentUpdate", ([nextProps]: any, shouldUpdate: any) => {
           try {
             handleItemDupes(nextProps.children);
-          }
-          catch (error) {
+          } catch (error) {
             // wrong context menu (probably)
             return shouldUpdate;
           }
@@ -112,8 +109,7 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
         });
         return ret;
       });
-    }
-    else {
+    } else {
       spliceMenuItem(component.props.children, appid);
     }
 

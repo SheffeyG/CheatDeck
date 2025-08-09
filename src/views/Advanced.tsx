@@ -5,15 +5,14 @@ import {
   TextField,
   ToggleField,
 } from "@decky/ui";
-import { FC, useEffect, useState } from "react";
 import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
+import { FC, useEffect, useState } from "react";
+import { FaFolderOpen } from "react-icons/fa";
 
-// import logger from "../utils/logger"
+import { SaveWithPreview } from "../components/SaveWithPreview";
 import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
-import { FaFolderOpen } from "react-icons/fa";
 import t from "../utils/translate";
-import { SaveWithPreview } from "../components/SaveWithPreview";
 
 const Advanced: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
@@ -149,7 +148,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           "Enable lossless scaling for the game",
         )}
         bottomSeparator="standard"
-        checked={options.hasKey("~/lsfg" )}
+        checked={options.hasKey("~/lsfg")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
           if (enable) {

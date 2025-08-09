@@ -13,7 +13,7 @@ interface SaveWithPreviewProps {
 export const SaveWithPreview: FC<SaveWithPreviewProps> = ({
   options,
   appid,
-  showPreview = true
+  showPreview = true,
 }) => {
   const optionsString = options.getOptionsString();
 
@@ -33,8 +33,9 @@ export const SaveWithPreview: FC<SaveWithPreviewProps> = ({
             textAlign: "left",
             fontFamily: "monospace",
             color: "#ccc",
-            minHeight: "20px"
-          }}>
+            minHeight: "20px",
+          }}
+          >
             {optionsString}
           </Focusable>
         </Field>

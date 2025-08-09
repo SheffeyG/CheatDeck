@@ -9,14 +9,13 @@ import {
 } from "@decky/ui";
 import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 import { FC, useEffect, useState } from "react";
-import { FaGamepad, FaLanguage, FaFolderOpen } from "react-icons/fa";
+import { FaFolderOpen, FaGamepad, FaLanguage } from "react-icons/fa";
 
-// import logger from "../utils/logger"
+import { SaveWithPreview } from "../components/SaveWithPreview";
+import { LangCodes } from "../data/default.json";
 import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
-import { LangCodes } from "../data/default.json";
 import t from "../utils/translate";
-import { SaveWithPreview } from "../components/SaveWithPreview";
 
 const Normal: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
@@ -94,7 +93,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
                 width: "400px",
               }}
               disabled={true}
-              value={options.getKeyValue("PROTON_REMOTE_DEBUG_CMD")?.replace(/^'|'$/g, '')}
+              value={options.getKeyValue("PROTON_REMOTE_DEBUG_CMD")?.replace(/^'|'$/g, "")}
             />
             <DialogButton
               onClick={handleBrowse}
