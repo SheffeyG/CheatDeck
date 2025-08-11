@@ -1,5 +1,10 @@
+/**
+ * From decky plugin SteamGridDB
+ * https://github.com/SteamGridDB/decky-steamgriddb/blob/main/src/patches/contextMenuPatch.tsx
+ */
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// From plugin SteamGridDB
 
 import {
   afterPatch,
@@ -29,6 +34,35 @@ const spliceMenuItem = (children: any[], appid: number) => {
   ));
 };
 
+// Check if correct menu by looking at the code of the onSelected function
+// Should be enough to ignore the screenshots and other menus.
+const isOpeningAppContextMenu = (items: any[]) => {
+  if (items.length === 0 || items.length === undefined) {
+    return false;
+  }
+  return items.findIndex(item => findInReactTree(item, x => x?.onSelected
+    && x.onSelected.toString().includes("AddToNewCollection"),
+  )) !== -1;
+};
+
+const handleItemDupes = (items: any[]) => {
+  const idx = items.findIndex((x: any) => x?.key === "cheat-deck");
+  if (idx != -1) items.splice(idx, 1);
+};
+
+const patchMenuItems = (menuItems: any[], appid: number) => {
+  let updatedAppid: number = appid;
+  // find the first menu component that has the correct appid assigned to _owner
+  const parentOverview = menuItems.find((x: any) => x?._owner?.pendingProps?.overview?.appid
+    && x._owner.pendingProps.overview.appid !== appid,
+  );
+  // if found then use that appid
+  if (parentOverview) {
+    updatedAppid = parentOverview._owner.pendingProps.overview.appid;
+  }
+  spliceMenuItem(menuItems, updatedAppid);
+};
+
 /**
  * Patches the game context menu.
  * @param LibraryContextMenu The game context menu.
@@ -39,38 +73,44 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
     outer?: Patch;
     inner?: Patch;
     unpatch: () => void;
-  } = { unpatch: () => {
-    return null;
-  } };
+  } = { unpatch: () => { return null; } };
   patches.outer = afterPatch(LibraryContextMenu.prototype, "render", (_: Record<string, unknown>[], component: any) => {
     const appid: number = component._owner.pendingProps.overview.appid;
 
     if (!patches.inner) {
-      patches.inner = afterPatch(component.type.prototype, "shouldComponentUpdate", ([nextProps]: any, shouldUpdate: any) => {
-        try {
-          const idx = nextProps.children.findIndex((x: any) => x?.key === "cheat-deck");
-          if (idx != -1) nextProps.children.splice(idx, 1);
-        }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        catch (error) {
-          // wrong context menu (probably)
-          return component;
-        }
-
-        if (shouldUpdate === true) {
-          let updatedAppid: number = appid;
-          // find the first menu component that has the correct appid assigned to _owner
-          const parentOverview = nextProps.children.find((x: any) => x?._owner?.pendingProps?.overview?.appid
-            && x._owner.pendingProps.overview.appid !== appid,
-          );
-          // if found then use that appid
-          if (parentOverview) {
-            updatedAppid = parentOverview._owner.pendingProps.overview.appid;
+      patches.inner = afterPatch(component, "type", (_: any, ret: any) => {
+        // initial render
+        afterPatch(ret.type.prototype, "render", (_: any, ret2: any) => {
+          const menuItems = ret2.props.children[0]; // always the first child
+          if (!isOpeningAppContextMenu(menuItems)) return ret2;
+          try {
+            handleItemDupes(menuItems);
           }
-          spliceMenuItem(nextProps.children, updatedAppid);
-        }
+          catch (error) {
+            // wrong context menu (probably)
+            return ret2;
+          }
+          patchMenuItems(menuItems, appid);
+          return ret2;
+        });
 
-        return shouldUpdate;
+        // when steam decides to regresh app overview
+        afterPatch(ret.type.prototype, "shouldComponentUpdate", ([nextProps]: any, shouldUpdate: any) => {
+          try {
+            handleItemDupes(nextProps.children);
+          }
+          catch (error) {
+            // wrong context menu (probably)
+            return shouldUpdate;
+          }
+
+          if (shouldUpdate === true) {
+            patchMenuItems(nextProps.children, appid);
+          }
+
+          return shouldUpdate;
+        });
+        return ret;
       });
     }
     else {

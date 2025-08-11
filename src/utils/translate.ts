@@ -24,7 +24,7 @@ const languages: Languages = {
 };
 
 function getCurrentLangCode(): string {
-  const steamLang = window.LocalizationManager.m_rgLocalesToUse[0];
+  const steamLang = window.LocalizationManager?.m_rgLocalesToUse?.[0] ?? "en";
   const langCode = steamLang.replace(
     /-([a-z])/g, (_, letter: string) => letter.toUpperCase(),
   );

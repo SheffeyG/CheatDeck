@@ -1,13 +1,12 @@
 {
   "name": "cheatdeck",
   "type": "module",
-  "version": "0.4.1",
-  "description": "Launch games with cheat or trainer and manage your launch options.",
+  "version": "0.5.0",
+  "description": "Launch games with cheats or trainers and customize your launch settings.",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "lint:frontend": "eslint",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint:frontend": "eslint"
   },
   "repository": {
     "type": "git",
@@ -19,7 +18,7 @@
     "steam-deck",
     "deck"
   ],
-  "author": "sheffey",
+  "author": "SheffeyG",
   "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/SheffeyG/CheatDeck/issues"
@@ -27,7 +26,7 @@
   "homepage": "https://github.com/SheffeyG/CheatDeck#readme",
   "devDependencies": {
     "@decky/rollup": "^1.0.1",
-    "@decky/ui": "^4.8.1",
+    "@decky/ui": "^4.10.4",
     "@eslint/js": "^9.13.0",
     "@stylistic/eslint-plugin": "^2.9.0",
     "@types/react": "18.3.3",

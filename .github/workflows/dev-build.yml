@@ -1,85 +1,75 @@
 name: dev-build
-run-name: Build plugin for development
+run-name: Build plugin and publish release
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+      - dev
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
 
 jobs:
-  lint-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup latest Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: latest
-
-      - name: Setup PNPM@9
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Lint frontend source
-        run: |
-          pnpm i
-          pnpm run lint:frontend
-
-  lint-backend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup latest Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          check-latest: true
-
-      - name: Install flake8
-        run: pip install flake8
-
-      - name: Lint backend source
-        run: flake8 main.py
-
   build-plugin:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup latest Node.js
-        uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v4
         with:
           node-version: latest
-
-      - name: Setup PNPM@9
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Build frontend from source
-        run: |
-          pnpm i
-          pnpm run build
-
-      - name: Download Decky Plugin CLI
-        run: |
-          mkdir $(pwd)/cli
-          curl -L -o $(pwd)/cli/decky "https://github.com/SteamDeckHomebrew/cli/releases/latest/download/decky-linux-x86_64"
-          chmod +x $(pwd)/cli/decky
+          cache: pnpm
 
       - name: Build plugin
         run: |
-          $(pwd)/cli/decky plugin build $(pwd)
-          unzip out/${{ github.event.repository.name }}.zip -d out/${{ github.event.repository.name }}
+          pnpm install --no-frozen-lockfile
+          pnpm run build
+          mkdir -p output/${{ github.event.repository.name }}/dist
+          cp dist/index.js output/${{ github.event.repository.name }}/dist
+          cp main.py output/${{ github.event.repository.name }}
+          cp plugin.json output/${{ github.event.repository.name }}
+          cp package.json output/${{ github.event.repository.name }}
+          cp README.md output/${{ github.event.repository.name }}
+          cp LICENSE output/${{ github.event.repository.name }}
 
-      - name: Upload plugin
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}
-          path: out/${{ github.event.repository.name }}/*
+          path: output/*
+
+  publish-release:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    needs: build-plugin
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}
+          path: release
+
+      - name: Package plugin
+        run: |
+          cd release
+          zip -r ${{ github.event.repository.name }} *
+
+      - name: Publish to Github release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          draft: false
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref, 'pre') }}
+          files: release/${{ github.event.repository.name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
