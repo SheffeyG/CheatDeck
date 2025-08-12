@@ -2,16 +2,14 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Backend } from "./backend";
 import logger from "./logger";
-
-export type ParamType = 'env' | 'flag' | 'keyvalue';
+import { ParamType } from "./options";
 
 export interface CustomOption {
   id: string;
   label: string;
   type: ParamType;
-  position: 'before' | 'after';
   key: string;
-  value?: string;  // flag type has no value
+  value?: string;
 }
 
 export const getCustomOptions = async (): Promise<CustomOption[]> => {
@@ -37,8 +35,6 @@ export const getEmptyCustomOption = (): CustomOption => {
     id: uuidv4(),
     label: "",
     type: "env",
-    position: "before",
-    key: "",
-    value: ""
+    key: ""
   };
 };

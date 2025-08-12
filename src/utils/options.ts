@@ -1,22 +1,15 @@
 import { Backend } from "./backend";
+import logger from "./logger";
 import t from "./translate";
 
-export type ParamType = 'env' | 'flag' | 'keyvalue';
+export type ParamType = "env" | "pre_cmd" | "flag_args";
+export type Position = "before" | "after";
 
 export interface ParsedParam {
   type: ParamType;
   key: string;
   value?: string;
-  position: 'before' | 'after';
-  order: number;
 }
-
-export interface FlagParams {
-  key: string;
-  position?: 'before' | 'after';
-}
-
-
 
 export class Options {
   #parsedParams: ParsedParam[] = [];
@@ -49,62 +42,64 @@ export class Options {
     return params;
   }
 
-  private parseTokens(text: string, position: 'before' | 'after'): ParsedParam[] {
+  private parseTokens(text: string, position: Position): ParsedParam[] {
     if (!text) return [];
 
     const tokens = this.tokenize(text);
     const params: ParsedParam[] = [];
-    let order = 0;
+    const others: string[] = [];
     let i = 0;
 
     while (i < tokens.length) {
       const current = tokens[i];
       const next = tokens[i + 1];
 
-      if (current.includes('=') && !current.startsWith('-')) {
-        const [key, ...valueParts] = current.split('=');
-        const value = valueParts.join('=').replace(/^["']|["']$/g, '');
+      if (current.includes("=") && !current.startsWith("-") && position === "before") {
+        const [key, ...valueParts] = current.split("="); // Edge case: "ENV=a=b"
+        const value = valueParts.join("=").replace(/^["']|["']$/g, "");
         params.push({
-          type: 'env',
+          type: "env",
           key: key.trim(),
-          value,
-          position,
-          order: order++
+          value: value,
         });
         i++;
         continue;
       }
 
-      if (current.startsWith('-')) {
-        if (next && !next.startsWith('-') && !next.includes('=')) {
-          const value = next.replace(/^["']|["']$/g, '');
+      if (current.startsWith("-") && position === "after") {
+        if (next && !next.startsWith("-")) { // flag with argument
+          const value = next.replace(/^["']|["']$/g, "");
           params.push({
-            type: 'keyvalue',
+            type: "flag_args",
             key: current,
-            value,
-            position,
-            order: order++
+            value: value,
           });
           i += 2;
-        } else {
+        } else { // flag without argument
           params.push({
-            type: 'flag',
+            type: "flag_args",
             key: current,
-            position,
-            order: order++
           });
           i++;
         }
         continue;
       }
 
-      params.push({
-        type: 'flag',
-        key: current,
-        position,
-        order: order++
-      });
+      if (position === "before") {
+        others.push(current);
+      } else {
+        logger.error("Unexcepted token after '%command%':", current);
+      }
       i++;
+    }
+
+    // Let's say the rest is pre_cmd parameter, put them all in key
+    if (others.length > 0) {
+      console.log("<" + others + ">");
+      params.push({
+        type: "pre_cmd",
+        key: others.join(" ")
+      });
     }
 
     return params;
@@ -140,122 +135,49 @@ export class Options {
     return tokens;
   }
 
-  hasFlag({ key, position = 'before' }: FlagParams): boolean {
-    return this.#parsedParams.some(p => p.key === key && p.type === 'flag' && p.position === position);
+  // New methods for future extension
+  getParameters(): ParsedParam[] {
+    return [...this.#parsedParams];
   }
 
-  setFlag({ key, position = 'before' }: FlagParams): void {
-    this.#parsedParams.push({
-      type: 'flag',
-      key,
-      position,
-      order: this.#parsedParams.filter(p => p.position === position).length
-    });
+  setParameter(param: ParsedParam): void {
+    this.removeParameter(param.key);
+    this.#parsedParams.push(param);
   }
 
-  removeFlag({ key, position = 'before' }: FlagParams): void {
-    this.#parsedParams = this.#parsedParams.filter(p => p.key !== key || p.position !== position);
+  removeParameter(key: string): void {
+    this.#parsedParams = this.#parsedParams.filter(p => p.key !== key);
   }
 
-  // Keep existing API fully compatible
-  hasField(key: string): boolean {
+  hasKey(key: string): boolean {
     return this.#parsedParams.some(p => p.key === key);
   }
 
-  hasFieldValue(key: string, value: string): boolean {
+  hasKeyValue(key: string, value: string): boolean {
     return this.#parsedParams.some(p => p.key === key && p.value === value);
   }
 
-  getFieldValue(key: string): string | undefined {
+  getKeyValue(key: string): string | undefined {
     const param = this.#parsedParams.find(p => p.key === key);
     return param?.value;
   }
 
-  setFieldValue(key: string, value: string): string {
-    const existingParam = this.#parsedParams.find(p => p.key === key);
-    const oldValue = existingParam?.value || '';
-
-    if (value.trim() === '') {
-      this.#parsedParams = this.#parsedParams.filter(p => p.key !== key);
-    } else if (existingParam) {
-      if (existingParam.type === 'flag') {
-        existingParam.type = key.startsWith('-') ? 'keyvalue' : 'env';
-      }
-      existingParam.value = value;
-    } else {
-      // Determine type based on key format and whether value is provided
-      let type: ParamType;
-      if (key.includes('=')) {
-        // Should not happen in setFieldValue, but handle it
-        type = 'env';
-      } else if (key.startsWith('-')) {
-        type = 'keyvalue';
-      } else {
-        // For non-dash keys, if value is provided, treat as env variable
-        type = 'env';
-      }
-
-      this.#parsedParams.push({
-        type,
-        key,
-        value,
-        position: 'before',
-        order: this.#parsedParams.filter(p => p.position === 'before').length
-      });
-    }
-
-    return oldValue;
-  }
-
   getOptionsString(): string {
-    const sortedParams = [...this.#parsedParams].sort((a, b) => {
-      if (a.position !== b.position) {
-        return a.position === 'before' ? -1 : 1;
-      }
-      return a.order - b.order;
-    });
+    const envString = this.#parsedParams.filter(param => param.type === "env")
+      .map(param => `${param.key}="${param.value}"`);
+    const preCmdString = this.#parsedParams.filter(param => param.type === "pre_cmd")
+      .map(param => param.key);
+    const flagArgsString = this.#parsedParams.filter(param => param.type === "flag_args")
+      .map(param => param.value ? `${param.key} ${param.value}` : param.key);
 
-    const beforeParams = sortedParams.filter(p => p.position === 'before');
-    const afterParams = sortedParams.filter(p => p.position === 'after');
-
-    const beforeString = this.paramsToString(beforeParams);
-    const afterString = this.paramsToString(afterParams);
-
-    let result = '';
-    if (beforeString) result += beforeString + ' ';
-    result += '%command%';
-    if (afterString) result += ' ' + afterString;
-
-    result = result.trim();
+    let result = [...envString, ...preCmdString, "%command%", ...flagArgsString].join(" ");
 
     // If the result is only %command%, return empty string
-    if (result === '%command%') {
-      return '';
+    if (result.trim() === "%command%") {
+      return "";
     }
 
     return result;
-  }
-
-  private paramsToString(params: ParsedParam[]): string {
-    return params.map(param => {
-      switch (param.type) {
-        case 'env':
-          return `${param.key}=${this.quoteValue(param.value || '')}`;
-        case 'keyvalue':
-          return `${param.key} ${this.quoteValue(param.value || '')}`;
-        case 'flag':
-          return param.key;
-        default:
-          return param.key;
-      }
-    }).join(' ');
-  }
-
-  private quoteValue(value: string): string {
-    if (value.includes(' ') || value.includes('&') || value.includes('|')) {
-      return `"${value}"`;
-    }
-    return value;
   }
 
   saveOptions(appid: number) {
@@ -268,22 +190,5 @@ export class Options {
         "Warning: This is NOT a steam game! Settings will never be saved.",
       ));
     }
-  }
-
-  // New methods for future extension
-  getParameters(): ParsedParam[] {
-    return [...this.#parsedParams];
-  }
-
-  setParameter(param: ParsedParam): void {
-    this.#parsedParams = this.#parsedParams.filter(p => p.key !== param.key);
-    this.#parsedParams.push({
-      ...param,
-      order: param.order ?? this.#parsedParams.filter(p => p.position === param.position).length
-    });
-  }
-
-  removeParameter(key: string): void {
-    this.#parsedParams = this.#parsedParams.filter(p => p.key !== key);
   }
 }

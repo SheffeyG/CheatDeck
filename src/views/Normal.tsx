@@ -18,6 +18,30 @@ import { LangCodes } from "../data/default.json";
 import t from "../utils/translate";
 import { SaveWithPreview } from "../components/SaveWithPreview";
 
+export function escapeString(input: string): string {
+  const escapeMap: { [key: string]: string } = {
+    " ": "\\ ",
+    "\"": "\\\"",
+    "\\": "\\\\",
+    "\n": "\\n",
+    "\r": "\\r",
+    "\t": "\\t",
+  };
+  return input.replace(/[ "\\\n\r\t]/g, char => escapeMap[char] || char);
+}
+
+export function unescapeString(input: string): string {
+  const unescapeMap: { [key: string]: string } = {
+    "\\ ": " ",
+    "\\\"": "\"",
+    "\\\\": "\\",
+    "\\n": "\n",
+    "\\r": "\r",
+    "\\t": "\t",
+  };
+  return input.replace(/\\[\s"\\nrt]/g, match => unescapeMap[match] || match);
+}
+
 const Normal: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
   const [showCheat, setShowChat] = useState(false);
@@ -30,8 +54,8 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
       const optionsString = detail.strLaunchOptions;
       const savedOptions = new Options(optionsString);
       setOptions(savedOptions);
-      setShowChat(savedOptions.hasField("PROTON_REMOTE_DEBUG_CMD"));
-      setShowLang(savedOptions.hasField("LANG"));
+      setShowChat(savedOptions.hasKey("PROTON_REMOTE_DEBUG_CMD"));
+      setShowLang(savedOptions.hasKey("LANG"));
     });
     setTimeout(() => {
       unregister();
@@ -39,14 +63,17 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
   }, []);
 
   const handleBrowse = async () => {
-    const cheatDir = options.getFieldValue("PRESSURE_VESSEL_FILESYSTEMS_RW");
-    const defaultDir = cheatDir ?? await Backend.getEnv("DECKY_USER_HOME");
-    const filePickerRes = await Backend.openFilePicker(defaultDir, true, ["exe", "bat"]);
-    const cheatPath = filePickerRes.path;
+    const savedCheatDir = options.getKeyValue("PRESSURE_VESSEL_FILESYSTEMS_RW");
+    const defaultPath = savedCheatDir ?? await Backend.getEnv("DECKY_USER_HOME");
+    const filePickerRes = await Backend.openFilePicker(defaultPath, true, ["exe", "bat"]);
+    const selectedCheatPath = filePickerRes.path;
+    const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, "");
+
     const newOptions = new Options(options.getOptionsString());
-    newOptions.setFieldValue("PROTON_REMOTE_DEBUG_CMD", `"${cheatPath}"`);
-    // `PRESSURE_VESSEL_FILESYSTEMS_RW` value should be a dir
-    newOptions.setFieldValue("PRESSURE_VESSEL_FILESYSTEMS_RW", `"${cheatPath.replace(/\/[^/]+$/, "")}"`);
+    // Escape the path to handle spaces and special characters for PROTON_REMOTE_DEBUG_CMD
+    newOptions.setParameter({ type: "env", key: "PROTON_REMOTE_DEBUG_CMD", value: escapeString(selectedCheatPath) });
+    // Make sure proton has read/write access to the parent directory
+    newOptions.setParameter({ type: "env", key: "PRESSURE_VESSEL_FILESYSTEMS_RW", value: selectedCheatDir });
     setOptions(newOptions);
   };
 
@@ -63,8 +90,8 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
           setShowChat(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.setFieldValue("PROTON_REMOTE_DEBUG_CMD", "");
-            updatedOptions.setFieldValue("PRESSURE_VESSEL_FILESYSTEMS_RW", "");
+            updatedOptions.removeParameter("PROTON_REMOTE_DEBUG_CMD");
+            updatedOptions.removeParameter("PRESSURE_VESSEL_FILESYSTEMS_RW");
             setOptions(updatedOptions);
           }
         }}
@@ -91,7 +118,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
                 width: "400px",
               }}
               disabled={true}
-              value={options.getFieldValue("PROTON_REMOTE_DEBUG_CMD")}
+              value={unescapeString(options.getKeyValue("PROTON_REMOTE_DEBUG_CMD") ?? "")}
             />
             <DialogButton
               onClick={handleBrowse}
@@ -121,7 +148,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
           setShowLang(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.setFieldValue("LANG", "");
+            updatedOptions.removeParameter("LANG");
             setOptions(updatedOptions);
           }
         }}
@@ -147,11 +174,11 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
                 width: "200px",
                 marginRight: ".5em",
               }}
-              value={options.getFieldValue("LANG")}
+              value={options.getKeyValue("LANG")}
               onChange={(e) => {
                 e.persist();
                 const updatedOptions = new Options(options.getOptionsString());
-                updatedOptions.setFieldValue("LANG", `"${e.target.value}"`);
+                updatedOptions.setParameter({ type: "env", key: "LANG", value: e.target.value });
                 setOptions(updatedOptions);
               }}
             />
@@ -161,7 +188,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
               onChange={(v) => {
                 // logger.info(`selected: ${JSON.stringify(v)}`);
                 const updatedOptions = new Options(options.getOptionsString());
-                updatedOptions.setFieldValue("LANG", `"${v.data}"`);
+                updatedOptions.setParameter({ type: "env", key: "LANG", value: v.data });
                 setOptions(updatedOptions);
               }}
               strDefaultLabel={t("NORMAL_LANG_DEFAULT", "Default")}

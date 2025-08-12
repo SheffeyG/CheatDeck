@@ -105,34 +105,25 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
               <ToggleField
                 bottomSeparator="none"
                 label={<span className="CD_Label">{opt.label}</span>}
-                checked={
-                  opt.type === 'flag' 
-                    ? options.getParameters().some(p => p.key === opt.key)
-                    : options.hasFieldValue(opt.key, opt.value || "")
-                }
+                checked={ opt.value ? options.hasKeyValue(opt.key, opt.value) : options.hasKey(opt.key) }
                 onChange={(enable: boolean) => {
                   setOptions(prevOptions => {
                     const updatedOptions = new Options(prevOptions.getOptionsString());
-                    
-                    if (opt.type === 'flag') {
-                      if (enable) {
-                        updatedOptions.setParameter({
-                          type: 'flag',
-                          key: opt.key,
-                          position: opt.position,
-                          order: 0
-                        });
-                      } else {
-                        updatedOptions.removeParameter(opt.key);
-                      }
+
+                    if (enable) {
+                      updatedOptions.setParameter({
+                        type: opt.type,
+                        key: opt.key,
+                        ...(opt.value !== undefined ? { value: opt.value } : {})
+                      });
                     } else {
-                      updatedOptions.setFieldValue(opt.key, enable ? (opt.value || "") : "");
+                      updatedOptions.removeParameter(opt.key);
                     }
-                    
+
                     // Log the final state after modification
                     const finalOptionsString = updatedOptions.getOptionsString();
                     logger.info(`[Custom UI] Final options after toggle: "${finalOptionsString}"`);
-                    
+
                     return updatedOptions;
                   });
                 }}

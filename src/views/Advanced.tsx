@@ -23,7 +23,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
     const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
       const optionsString = detail.strLaunchOptions;
       const savedOptions = new Options(optionsString);
-      setShowPrefix(savedOptions.hasField("STEAM_COMPAT_DATA_PATH"));
+      setShowPrefix(savedOptions.hasKey("STEAM_COMPAT_DATA_PATH"));
       setOptions(savedOptions);
     });
     setTimeout(() => {
@@ -32,12 +32,13 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
   }, []);
 
   const handleBrowse = async () => {
-    const prefixDir = options.getFieldValue("STEAM_COMPAT_DATA_PATH");
-    const defaultDir = prefixDir ?? await Backend.getEnv("DECKY_USER_HOME");
-    const filePickerRes = await Backend.openFilePicker(defaultDir, false);
-    const prefixPath = filePickerRes.path;
+    const savedCompatDataPath = options.getKeyValue("STEAM_COMPAT_DATA_PATH");
+    const defaultPath = savedCompatDataPath ?? await Backend.getEnv("DECKY_USER_HOME");
+    const filePickerRes = await Backend.openFilePicker(defaultPath, false);
+    const selectedCompatDataPath = filePickerRes.path;
+
     const newOptions = new Options(options.getOptionsString());
-    newOptions.setFieldValue("STEAM_COMPAT_DATA_PATH", `"${prefixPath}"`);
+    newOptions.setParameter({ type: "env", key: "STEAM_COMPAT_DATA_PATH", value: selectedCompatDataPath });
     setOptions(newOptions);
   };
 
@@ -51,10 +52,14 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           "Optimize the ProtonGE compatibility layer to reduce frame time and input lag",
         )}
         bottomSeparator="standard"
-        checked={options.hasFieldValue("DXVK_ASYNC", "1")}
+        checked={options.hasKeyValue("DXVK_ASYNC", "1")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
-          updatedOptions.setFieldValue("DXVK_ASYNC", enable ? "1" : "");
+          if (enable) {
+            updatedOptions.setParameter({ type: "env", key: "DXVK_ASYNC", value: "1" });
+          } else {
+            updatedOptions.removeParameter("DXVK_ASYNC");
+          }
           setOptions(updatedOptions);
         }}
       />
@@ -66,10 +71,14 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           "Optimize the shader cache behavior of the ProtonGE compatibility layer",
         )}
         bottomSeparator="standard"
-        checked={options.hasFieldValue("RADV_PERFTEST", "gpl")}
+        checked={options.hasKeyValue("RADV_PERFTEST", "gpl")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
-          updatedOptions.setFieldValue("RADV_PERFTEST", enable ? "gpl" : "");
+          if (enable) {
+            updatedOptions.setParameter({ type: "env", key: "RADV_PERFTEST", value: "gpl" });
+          } else {
+            updatedOptions.removeParameter("RADV_PERFTEST");
+          }
           setOptions(updatedOptions);
         }}
       />
@@ -86,7 +95,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           setShowPrefix(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.setFieldValue("STEAM_COMPAT_DATA_PATH", "");
+            updatedOptions.removeParameter("STEAM_COMPAT_DATA_PATH");
             setOptions(updatedOptions);
           }
         }}
@@ -113,7 +122,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
                 width: "400px",
               }}
               disabled={true}
-              value={options.getFieldValue("STEAM_COMPAT_DATA_PATH")}
+              value={options.getKeyValue("STEAM_COMPAT_DATA_PATH")}
             />
             <DialogButton
               onClick={handleBrowse}
@@ -140,13 +149,13 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           "Enable lossless scaling for the game",
         )}
         bottomSeparator="standard"
-        checked={options.hasFlag({ key: "~/lsfg" })}
+        checked={options.hasKey("~/lsfg" )}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
           if (enable) {
-            updatedOptions.setFlag({ key: "~/lsfg" });
+            updatedOptions.setParameter({ type: "pre_cmd", key: "~/lsfg" });
           } else {
-            updatedOptions.removeFlag({ key: "~/lsfg" });
+            updatedOptions.removeParameter("~/lsfg");
           }
           setOptions(updatedOptions);
         }}
@@ -159,14 +168,13 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           "Patch the game to use Decky Framegen",
         )}
         bottomSeparator="standard"
-        checked={options.hasFlag({ key: "~/fgmod/fgmod" })}
+        checked={options.hasKey("~/fgmod/fgmod")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
           if (enable) {
-            updatedOptions.removeFlag({ key: "~/fgmod/fgmod-uninstaller.sh" });
-            updatedOptions.setFlag({ key: "~/fgmod/fgmod" });
+            updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod" });
           } else {
-            updatedOptions.removeFlag({ key: "~/fgmod/fgmod" });
+            updatedOptions.removeParameter("~/fgmod/fgmod");
           }
           setOptions(updatedOptions);
         }}
@@ -179,14 +187,13 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           "Unpatch the game for Decky Framegen",
         )}
         bottomSeparator="standard"
-        checked={options.hasFlag({ key: "~/fgmod/fgmod-uninstaller.sh" })}
+        checked={options.hasKey("~/fgmod/fgmod-uninstaller.sh")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
           if (enable) {
-            updatedOptions.removeFlag({ key: "~/fgmod/fgmod" });
-            updatedOptions.setFlag({ key: "~/fgmod/fgmod-uninstaller.sh" });
+            updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod-uninstaller.sh" });
           } else {
-            updatedOptions.removeFlag({ key: "~/fgmod/fgmod-uninstaller.sh" });
+            updatedOptions.removeParameter("~/fgmod/fgmod-uninstaller.sh");
           }
           setOptions(updatedOptions);
         }}

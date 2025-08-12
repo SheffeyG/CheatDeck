@@ -10,10 +10,10 @@ interface SaveWithPreviewProps {
   showPreview?: boolean;
 }
 
-export const SaveWithPreview: FC<SaveWithPreviewProps> = ({ 
-  options, 
-  appid, 
-  showPreview = true 
+export const SaveWithPreview: FC<SaveWithPreviewProps> = ({
+  options,
+  appid,
+  showPreview = true
 }) => {
   const optionsString = options.getOptionsString();
 
@@ -25,11 +25,12 @@ export const SaveWithPreview: FC<SaveWithPreviewProps> = ({
           bottomSeparator="none"
           focusable
         >
-          <Focusable style={{ 
-            background: "rgba(255,255,255,0.1)", 
-            padding: "10px", 
+          <Focusable style={{
+            background: "rgba(255,255,255,0.1)",
+            padding: "10px",
             borderRadius: "4px",
             fontSize: "12px",
+            textAlign: "left",
             fontFamily: "monospace",
             color: "#ccc",
             minHeight: "20px"
@@ -38,7 +39,7 @@ export const SaveWithPreview: FC<SaveWithPreviewProps> = ({
           </Focusable>
         </Field>
       )}
-      
+
       <DialogButton
         onClick={() => options.saveOptions(appid)}
         style={{

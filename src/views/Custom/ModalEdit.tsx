@@ -6,11 +6,11 @@ import {
   Focusable,
   ModalRoot,
   TextField,
-  ToggleField,
 } from "@decky/ui";
 import { FC, useState } from "react";
 
-import { CustomOption, setCustomOptions, ParamType } from "../../utils/custom";
+import { CustomOption, setCustomOptions } from "../../utils/custom";
+import { ParamType } from "../../utils/options";
 import t from "../../utils/translate";
 
 export const ModalEdit: FC<{
@@ -29,10 +29,10 @@ export const ModalEdit: FC<{
     optList[optIndex],
   );
 
-  const paramTypeOptions = [
-    { label: t("CUSTOM_TYPE_ENV", "Environment Variable (KEY=VALUE)"), data: "env" as ParamType },
-    { label: t("CUSTOM_TYPE_FLAG", "Flag Parameter (--flag)"), data: "flag" as ParamType },
-    { label: t("CUSTOM_TYPE_KEYVALUE", "Key-Value Parameter (--key value)"), data: "keyvalue" as ParamType },
+  const paramTypeOptions: { label: string; data: ParamType; }[] = [
+    { label: t("CUSTOM_TYPE_ENV", "Environment Variable"), data: "env" },
+    { label: t("CUSTOM_TYPE_CMD", "Prefix Commands"), data: "pre_cmd" },
+    { label: t("CUSTOM_TYPE_FLAG", "Flag & Arguments"), data: "flag_args" },
   ];
 
   const handleSave = async (action = "Save") => {
@@ -60,10 +60,7 @@ export const ModalEdit: FC<{
               style={{ padding: "10px", fontSize: "14px", width: "435px" }}
               value={targetOpt.label}
               onChange={(e) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  label: e.target.value,
-                });
+                setTargetOpt({ ...targetOpt, label: e.target.value });
               }}
             />
           </Focusable>
@@ -80,35 +77,7 @@ export const ModalEdit: FC<{
               rgOptions={paramTypeOptions}
               selectedOption={targetOpt.type}
               onChange={(selected) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  type: selected.data,
-                  value: selected.data === 'flag' ? undefined : targetOpt.value,
-                  position: selected.data === 'env' ? 'before' : targetOpt.position
-                });
-              }}
-            />
-          </Focusable>
-        </Field>
-        <Field
-          label={t("CUSTOM_OPTION_POSITION", "Position")}
-          padding="none"
-          bottomSeparator="none"
-        >
-          <Focusable
-            style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
-          >
-            <ToggleField
-              label={targetOpt.position === 'before' ? t("CUSTOM_POSITION_BEFORE", "Before %command%") : t("CUSTOM_POSITION_AFTER", "After %command%")}
-              checked={targetOpt.position === 'after'}
-              disabled={targetOpt.type === 'env'}
-              onChange={(checked) => {
-                if (targetOpt.type !== 'env') {
-                  setTargetOpt({
-                    ...targetOpt,
-                    position: checked ? 'after' : 'before'
-                  });
-                }
+                setTargetOpt({ ...targetOpt, type: selected.data });
               }}
             />
           </Focusable>
@@ -118,20 +87,15 @@ export const ModalEdit: FC<{
           padding="none"
           bottomSeparator="none"
         >
-          <Focusable
-            style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
-          >
+          <Focusable style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}>
             <TextField
-              style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === 'flag' ? "435px" : "200px" }}
+              style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === 'pre_cmd' ? "435px" : "200px" }}
               value={targetOpt.key}
               onChange={(e) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  key: e.target.value,
-                });
+                setTargetOpt({ ...targetOpt, key: e.target.value });
               }}
             />
-            {targetOpt.type !== 'flag' && (
+            {targetOpt.type !== 'pre_cmd' && (
               <>
                 <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
                   <b>{targetOpt.type === 'env' ? '=' : ' '}</b>
@@ -140,10 +104,7 @@ export const ModalEdit: FC<{
                   style={{ padding: "10px", fontSize: "14px", width: "200px" }}
                   value={targetOpt.value || ''}
                   onChange={(e) => {
-                    setTargetOpt({
-                      ...targetOpt,
-                      value: e.target.value,
-                    });
+                    setTargetOpt({ ...targetOpt, value: e.target.value });
                   }}
                 />
               </>
