@@ -93,9 +93,8 @@ export class Options {
       i++;
     }
 
-    // Let's say the rest is pre_cmd parameter, put them all in key
+    // Let's say all the rest is pre_cmd parameter, put them all in key
     if (others.length > 0) {
-      console.log("<" + others + ">");
       params.push({
         type: "pre_cmd",
         key: others.join(" ")
@@ -135,18 +134,26 @@ export class Options {
     return tokens;
   }
 
-  // New methods for future extension
   getParameters(): ParsedParam[] {
     return [...this.#parsedParams];
   }
 
   setParameter(param: ParsedParam): void {
-    this.removeParameter(param.key);
+    if (param.type === "pre_cmd") {
+      // For pre_cmd, remove the whole pre_cmd type parameters
+      this.removeParamByType("pre_cmd");
+    } else {
+      this.removeParamByKey(param.key);
+    }
     this.#parsedParams.push(param);
   }
 
-  removeParameter(key: string): void {
+  removeParamByKey(key: string): void {
     this.#parsedParams = this.#parsedParams.filter(p => p.key !== key);
+  }
+
+  removeParamByType(type: ParamType): void {
+    this.#parsedParams = this.#parsedParams.filter(p => p.type !== type);
   }
 
   hasKey(key: string): boolean {

@@ -58,7 +58,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           if (enable) {
             updatedOptions.setParameter({ type: "env", key: "DXVK_ASYNC", value: "1" });
           } else {
-            updatedOptions.removeParameter("DXVK_ASYNC");
+            updatedOptions.removeParamByKey("DXVK_ASYNC");
           }
           setOptions(updatedOptions);
         }}
@@ -77,7 +77,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           if (enable) {
             updatedOptions.setParameter({ type: "env", key: "RADV_PERFTEST", value: "gpl" });
           } else {
-            updatedOptions.removeParameter("RADV_PERFTEST");
+            updatedOptions.removeParamByKey("RADV_PERFTEST");
           }
           setOptions(updatedOptions);
         }}
@@ -95,7 +95,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           setShowPrefix(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.removeParameter("STEAM_COMPAT_DATA_PATH");
+            updatedOptions.removeParamByKey("STEAM_COMPAT_DATA_PATH");
             setOptions(updatedOptions);
           }
         }}
@@ -155,7 +155,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           if (enable) {
             updatedOptions.setParameter({ type: "pre_cmd", key: "~/lsfg" });
           } else {
-            updatedOptions.removeParameter("~/lsfg");
+            updatedOptions.removeParamByKey("~/lsfg");
           }
           setOptions(updatedOptions);
         }}
@@ -174,7 +174,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           if (enable) {
             updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod" });
           } else {
-            updatedOptions.removeParameter("~/fgmod/fgmod");
+            updatedOptions.removeParamByKey("~/fgmod/fgmod");
           }
           setOptions(updatedOptions);
         }}
@@ -193,7 +193,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           if (enable) {
             updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod-uninstaller.sh" });
           } else {
-            updatedOptions.removeParameter("~/fgmod/fgmod-uninstaller.sh");
+            updatedOptions.removeParamByKey("~/fgmod/fgmod-uninstaller.sh");
           }
           setOptions(updatedOptions);
         }}

@@ -90,8 +90,8 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
           setShowChat(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.removeParameter("PROTON_REMOTE_DEBUG_CMD");
-            updatedOptions.removeParameter("PRESSURE_VESSEL_FILESYSTEMS_RW");
+            updatedOptions.removeParamByKey("PROTON_REMOTE_DEBUG_CMD");
+            updatedOptions.removeParamByKey("PRESSURE_VESSEL_FILESYSTEMS_RW");
             setOptions(updatedOptions);
           }
         }}
@@ -148,7 +148,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
           setShowLang(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.removeParameter("LANG");
+            updatedOptions.removeParamByKey("LANG");
             setOptions(updatedOptions);
           }
         }}
