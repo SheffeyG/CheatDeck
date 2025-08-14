@@ -18,30 +18,6 @@ import { LangCodes } from "../data/default.json";
 import t from "../utils/translate";
 import { SaveWithPreview } from "../components/SaveWithPreview";
 
-export function escapeString(input: string): string {
-  const escapeMap: { [key: string]: string } = {
-    " ": "\\ ",
-    "\"": "\\\"",
-    "\\": "\\\\",
-    "\n": "\\n",
-    "\r": "\\r",
-    "\t": "\\t",
-  };
-  return input.replace(/[ "\\\n\r\t]/g, char => escapeMap[char] || char);
-}
-
-export function unescapeString(input: string): string {
-  const unescapeMap: { [key: string]: string } = {
-    "\\ ": " ",
-    "\\\"": "\"",
-    "\\\\": "\\",
-    "\\n": "\n",
-    "\\r": "\r",
-    "\\t": "\t",
-  };
-  return input.replace(/\\[\s"\\nrt]/g, match => unescapeMap[match] || match);
-}
-
 const Normal: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
   const [showCheat, setShowChat] = useState(false);
@@ -70,8 +46,8 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
     const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, "");
 
     const newOptions = new Options(options.getOptionsString());
-    // Escape the path to handle spaces and special characters for PROTON_REMOTE_DEBUG_CMD
-    newOptions.setParameter({ type: "env", key: "PROTON_REMOTE_DEBUG_CMD", value: escapeString(selectedCheatPath) });
+    // Use double quotes to escape the path inside the cmd string
+    newOptions.setParameter({ type: "env", key: "PROTON_REMOTE_DEBUG_CMD", value: `'${selectedCheatPath}'` });
     // Make sure proton has read/write access to the parent directory
     newOptions.setParameter({ type: "env", key: "PRESSURE_VESSEL_FILESYSTEMS_RW", value: selectedCheatDir });
     setOptions(newOptions);
@@ -118,7 +94,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
                 width: "400px",
               }}
               disabled={true}
-              value={unescapeString(options.getKeyValue("PROTON_REMOTE_DEBUG_CMD") ?? "")}
+              value={options.getKeyValue("PROTON_REMOTE_DEBUG_CMD")?.replace(/^'|'$/g, '')}
             />
             <DialogButton
               onClick={handleBrowse}
