@@ -2,15 +2,17 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Backend } from "./backend";
 import logger from "./logger";
+import { ParamType } from "./options";
 
 export interface CustomOption {
   id: string;
   label: string;
-  field: string;
-  value: string;
+  type: ParamType;
+  key: string;
+  value?: string;
 }
 
-export const getCustomOptions = async () => {
+export const getCustomOptions = async (): Promise<CustomOption[]> => {
   const savedOpt = await Backend.getSetting("CustomOptions", []) as CustomOption[];
 
   const optsWithId = savedOpt.map(option => ({
@@ -22,19 +24,17 @@ export const getCustomOptions = async () => {
   return optsWithId;
 };
 
-export const setCustomOptions = async (data: CustomOption[]) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const setCustomOptions = async (data: CustomOption[]): Promise<void> => {
   const optsWithoutId = data.map(({ id, ...rest }) => rest);
-  const optList = await Backend.setSetting("CustomOptions", optsWithoutId);
-  logger.info(`Set user settings:\n${JSON.stringify(optList, null, 2)}`);
+  await Backend.setSetting("CustomOptions", optsWithoutId);
+  logger.info(`Saved user settings:\n${JSON.stringify(optsWithoutId, null, 2)}`);
 };
 
-export const getEmptyCusOpt = () => {
-  const emptyOpt: CustomOption = {
+export const getEmptyCustomOption = (): CustomOption => {
+  return {
     id: uuidv4(),
     label: "",
-    field: "",
-    value: "",
+    type: "env",
+    key: ""
   };
-  return emptyOpt;
 };

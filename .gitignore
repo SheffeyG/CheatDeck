@@ -53,3 +53,5 @@ out/*
 cli/
 cli/*
 cli/decky
+
+Makefile

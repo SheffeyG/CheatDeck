@@ -34,7 +34,15 @@
 
     "CUSTOM_TITLE": "Benutzerdefiniert",
     "CUSTOM_OPTION_LABEL": "Bezeichnung",
-    "CUSTOM_OPTION_FIELDS": "Feld & Wert",
+    "CUSTOM_OPTION_TYPE": "Typ",
+    "CUSTOM_OPTION_POSITION": "Position",
+    "CUSTOM_OPTION_Fields": "Feld & Wert",
+    "CUSTOM_TYPE_ENV": "Umgebungsvariable (KEY=VALUE)",
+    "CUSTOM_TYPE_FLAG": "Flag-Parameter (--flag)",
+    "CUSTOM_TYPE_KEYVALUE": "Schlüssel-Wert-Parameter (--key value)",
+    "CUSTOM_POSITION_BEFORE": "Vor %command%",
+    "CUSTOM_POSITION_AFTER": "Nach %command%",
     "CUSTOM_EDIT_TITLE": "Option bearbeiten",
-    "CUSTOM_NEW_TITLE": "Neue Option hinzufügen"
+    "CUSTOM_NEW_TITLE": "Neue Option hinzufügen",
+    "LAUNCH_OPTIONS_PREVIEW": "Startoptionen Vorschau"
 }

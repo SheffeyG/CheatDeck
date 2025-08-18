@@ -13,7 +13,8 @@ import { CustomOption, getCustomOptions } from "../../utils/custom";
 import { ModalEdit } from "./ModalEdit";
 import { ModalNew } from "./ModalNew";
 import { Options } from "../../utils/options";
-import t from "../../utils/translate";
+import logger from "../../utils/logger";
+import { SaveWithPreview } from "../../components/SaveWithPreview";
 
 const Custom: FC<{ appid: number }> = ({ appid }) => {
   // Custom Options from user's saved settings
@@ -93,29 +94,38 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
             justify-content: center !important;
             height: 1.5em !important;
           }
-          .CD_SaveButton {
-            align-self: center !important;
-            margin-top: 20px !important;
-            padding: 10px !important;
-            font-size: 14px !important;
-            text-align: center !important;
-            width: 80% !important;
-          }
         `}
       </style>
       {(cusOptList.length > 0) && (
         cusOptList.map((opt: CustomOption) => (
-          // eslint-disable-next-line react/jsx-key
-          <Focusable className="CD_EntryContainer">
+          <Focusable className="CD_EntryContainer" key={opt.id}>
             <Focusable className="CD_ToggleContainer">
               <ToggleField
                 bottomSeparator="none"
                 label={<span className="CD_Label">{opt.label}</span>}
-                checked={options.hasFieldValue(opt.field, opt.value)}
+                checked={opt.value ? options.hasKeyValue(opt.key, opt.value) : options.hasKey(opt.key)}
                 onChange={(enable: boolean) => {
-                  const updatedOptions = new Options(options.getOptionsString());
-                  updatedOptions.setFieldValue(opt.field, enable ? opt.value : "");
-                  setOptions(updatedOptions);
+                  setOptions(prevOptions => {
+                    const updatedOptions = new Options(prevOptions.getOptionsString());
+
+                    if (enable) {
+                      updatedOptions.setParameter({
+                        type: opt.type,
+                        key: opt.key,
+                        ...(opt.value !== undefined ? { value: opt.value } : {})
+                      });
+                    } else {
+                      opt.type === 'pre_cmd'
+                        ? updatedOptions.removeParamByType('pre_cmd')
+                        : updatedOptions.removeParamByKey(opt.key);
+                    }
+
+                    // Log the final state after modification
+                    const finalOptionsString = updatedOptions.getOptionsString();
+                    logger.info(`[Custom UI] Final options after toggle: "${finalOptionsString}"`);
+
+                    return updatedOptions;
+                  });
                 }}
               />
             </Focusable>
@@ -136,12 +146,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
         <MdAddBox />
       </DialogButton>
       {(cusOptList.length > 0) && (
-        <DialogButton
-          className="CD_SaveButton"
-          onClick={() => options.saveOptions(appid)}
-        >
-          {t("SAVE", "Save")}
-        </DialogButton>
+        <SaveWithPreview options={options} appid={appid} />
       )}
     </>
   );

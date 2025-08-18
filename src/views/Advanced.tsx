@@ -13,6 +13,7 @@ import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
 import { FaFolderOpen } from "react-icons/fa";
 import t from "../utils/translate";
+import { SaveWithPreview } from "../components/SaveWithPreview";
 
 const Advanced: FC<{ appid: number }> = ({ appid }) => {
   const [options, setOptions] = useState(new Options(""));
@@ -22,7 +23,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
     const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
       const optionsString = detail.strLaunchOptions;
       const savedOptions = new Options(optionsString);
-      setShowPrefix(savedOptions.hasField("STEAM_COMPAT_DATA_PATH"));
+      setShowPrefix(savedOptions.hasKey("STEAM_COMPAT_DATA_PATH"));
       setOptions(savedOptions);
     });
     setTimeout(() => {
@@ -31,12 +32,13 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
   }, []);
 
   const handleBrowse = async () => {
-    const prefixDir = options.getFieldValue("STEAM_COMPAT_DATA_PATH");
-    const defaultDir = prefixDir ?? await Backend.getEnv("DECKY_USER_HOME");
-    const filePickerRes = await Backend.openFilePicker(defaultDir, false);
-    const prefixPath = filePickerRes.path;
+    const savedCompatDataPath = options.getKeyValue("STEAM_COMPAT_DATA_PATH");
+    const defaultPath = savedCompatDataPath ?? await Backend.getEnv("DECKY_USER_HOME");
+    const filePickerRes = await Backend.openFilePicker(defaultPath, false);
+    const selectedCompatDataPath = filePickerRes.path;
+
     const newOptions = new Options(options.getOptionsString());
-    newOptions.setFieldValue("STEAM_COMPAT_DATA_PATH", `"${prefixPath}"`);
+    newOptions.setParameter({ type: "env", key: "STEAM_COMPAT_DATA_PATH", value: selectedCompatDataPath });
     setOptions(newOptions);
   };
 
@@ -50,10 +52,14 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           "Optimize the ProtonGE compatibility layer to reduce frame time and input lag",
         )}
         bottomSeparator="standard"
-        checked={options.hasFieldValue("DXVK_ASYNC", "1")}
+        checked={options.hasKeyValue("DXVK_ASYNC", "1")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
-          updatedOptions.setFieldValue("DXVK_ASYNC", enable ? "1" : "");
+          if (enable) {
+            updatedOptions.setParameter({ type: "env", key: "DXVK_ASYNC", value: "1" });
+          } else {
+            updatedOptions.removeParamByKey("DXVK_ASYNC");
+          }
           setOptions(updatedOptions);
         }}
       />
@@ -65,10 +71,14 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           "Optimize the shader cache behavior of the ProtonGE compatibility layer",
         )}
         bottomSeparator="standard"
-        checked={options.hasFieldValue("RADV_PERFTEST", "gpl")}
+        checked={options.hasKeyValue("RADV_PERFTEST", "gpl")}
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
-          updatedOptions.setFieldValue("RADV_PERFTEST", enable ? "gpl" : "");
+          if (enable) {
+            updatedOptions.setParameter({ type: "env", key: "RADV_PERFTEST", value: "gpl" });
+          } else {
+            updatedOptions.removeParamByKey("RADV_PERFTEST");
+          }
           setOptions(updatedOptions);
         }}
       />
@@ -85,7 +95,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
           setShowPrefix(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.setFieldValue("STEAM_COMPAT_DATA_PATH", "");
+            updatedOptions.removeParamByKey("STEAM_COMPAT_DATA_PATH");
             setOptions(updatedOptions);
           }
         }}
@@ -112,7 +122,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
                 width: "400px",
               }}
               disabled={true}
-              value={options.getFieldValue("STEAM_COMPAT_DATA_PATH")}
+              value={options.getKeyValue("STEAM_COMPAT_DATA_PATH")}
             />
             <DialogButton
               onClick={handleBrowse}
@@ -132,19 +142,64 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         </Field>
       )}
 
-      <DialogButton
-        onClick={() => options.saveOptions(appid)}
-        style={{
-          alignSelf: "center",
-          marginTop: "20px",
-          padding: "10px",
-          fontSize: "14px",
-          textAlign: "center",
-          width: "80%",
+      <ToggleField
+        label="Lossless Scaling"
+        description={t(
+          "ADVANCED_LOSSLESS_SCALING_DESC",
+          "Enable lossless scaling for the game",
+        )}
+        bottomSeparator="standard"
+        checked={options.hasKey("~/lsfg" )}
+        onChange={(enable: boolean) => {
+          const updatedOptions = new Options(options.getOptionsString());
+          if (enable) {
+            updatedOptions.setParameter({ type: "pre_cmd", key: "~/lsfg" });
+          } else {
+            updatedOptions.removeParamByKey("~/lsfg");
+          }
+          setOptions(updatedOptions);
         }}
-      >
-        {t("SAVE", "Save")}
-      </DialogButton>
+      />
+
+      <ToggleField
+        label="Decky Framegen Patch"
+        description={t(
+          "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC",
+          "Patch the game to use Decky Framegen",
+        )}
+        bottomSeparator="standard"
+        checked={options.hasKey("~/fgmod/fgmod")}
+        onChange={(enable: boolean) => {
+          const updatedOptions = new Options(options.getOptionsString());
+          if (enable) {
+            updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod" });
+          } else {
+            updatedOptions.removeParamByKey("~/fgmod/fgmod");
+          }
+          setOptions(updatedOptions);
+        }}
+      />
+
+      <ToggleField
+        label="Decky Framegen Unpatch"
+        description={t(
+          "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC",
+          "Unpatch the game for Decky Framegen",
+        )}
+        bottomSeparator="standard"
+        checked={options.hasKey("~/fgmod/fgmod-uninstaller.sh")}
+        onChange={(enable: boolean) => {
+          const updatedOptions = new Options(options.getOptionsString());
+          if (enable) {
+            updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod-uninstaller.sh" });
+          } else {
+            updatedOptions.removeParamByKey("~/fgmod/fgmod-uninstaller.sh");
+          }
+          setOptions(updatedOptions);
+        }}
+      />
+
+      <SaveWithPreview options={options} appid={appid} />
     </Focusable>
   );
 };

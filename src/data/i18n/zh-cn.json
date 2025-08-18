@@ -34,7 +34,15 @@
 
     "CUSTOM_TITLE": "自定义",
     "CUSTOM_OPTION_LABEL": "标签",
-    "CUSTOM_OPTION_FIELDS": "字段 & 值",
+    "CUSTOM_OPTION_TYPE": "类型",
+    "CUSTOM_OPTION_POSITION": "位置",
+    "CUSTOM_OPTION_Fields": "字段 & 值",
+    "CUSTOM_TYPE_ENV": "环境变量 (KEY=VALUE)",
+    "CUSTOM_TYPE_FLAG": "标志参数 (--flag)",
+    "CUSTOM_TYPE_KEYVALUE": "键值参数 (--key value)",
+    "CUSTOM_POSITION_BEFORE": "%command% 前",
+    "CUSTOM_POSITION_AFTER": "%command% 后",
     "CUSTOM_EDIT_TITLE": "编辑启动项",
-    "CUSTOM_NEW_TITLE": "新建启动项"
+    "CUSTOM_NEW_TITLE": "新建启动项",
+    "LAUNCH_OPTIONS_PREVIEW": "启动参数预览"
 }

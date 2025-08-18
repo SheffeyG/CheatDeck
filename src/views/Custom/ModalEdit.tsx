@@ -1,6 +1,7 @@
 import {
   DialogButton,
   DialogHeader,
+  Dropdown,
   Field,
   Focusable,
   ModalRoot,
@@ -9,6 +10,7 @@ import {
 import { FC, useState } from "react";
 
 import { CustomOption, setCustomOptions } from "../../utils/custom";
+import { ParamType } from "../../utils/options";
 import t from "../../utils/translate";
 
 export const ModalEdit: FC<{
@@ -26,6 +28,12 @@ export const ModalEdit: FC<{
   const [targetOpt, setTargetOpt] = useState<CustomOption>(
     optList[optIndex],
   );
+
+  const paramTypeOptions: { label: string; data: ParamType; }[] = [
+    { label: t("CUSTOM_TYPE_ENV", "Environment Variable"), data: "env" },
+    { label: t("CUSTOM_TYPE_CMD", "Prefix Commands"), data: "pre_cmd" },
+    { label: t("CUSTOM_TYPE_FLAG", "Flag & Arguments"), data: "flag_args" },
+  ];
 
   const handleSave = async (action = "Save") => {
     const updatedOpts = [...optList];
@@ -52,45 +60,55 @@ export const ModalEdit: FC<{
               style={{ padding: "10px", fontSize: "14px", width: "435px" }}
               value={targetOpt.label}
               onChange={(e) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  label: e.target.value,
-                });
+                setTargetOpt({ ...targetOpt, label: e.target.value });
               }}
             />
           </Focusable>
         </Field>
         <Field
-          label={t("CUSTOM_OPTION_FIELDS", "Field & Value")}
+          label={t("CUSTOM_OPTION_TYPE", "Type")}
           padding="none"
           bottomSeparator="none"
         >
           <Focusable
             style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
           >
-            <TextField
-              style={{ padding: "10px", fontSize: "14px", width: "200px" }}
-              value={targetOpt.field}
-              onChange={(e) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  field: e.target.value,
-                });
+            <Dropdown
+              rgOptions={paramTypeOptions}
+              selectedOption={targetOpt.type}
+              onChange={(selected) => {
+                setTargetOpt({ ...targetOpt, type: selected.data });
               }}
             />
-            <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
-              <b>=</b>
-            </div>
+          </Focusable>
+        </Field>
+        <Field
+          label={t("CUSTOM_OPTION_Fields", "Field & Value")}
+          padding="none"
+          bottomSeparator="none"
+        >
+          <Focusable style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}>
             <TextField
-              style={{ padding: "10px", fontSize: "14px", width: "200px" }}
-              value={targetOpt.value}
+              style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === 'pre_cmd' ? "435px" : "200px" }}
+              value={targetOpt.key}
               onChange={(e) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  value: e.target.value,
-                });
+                setTargetOpt({ ...targetOpt, key: e.target.value });
               }}
             />
+            {targetOpt.type !== 'pre_cmd' && (
+              <>
+                <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
+                  <b>{targetOpt.type === 'env' ? '=' : ' '}</b>
+                </div>
+                <TextField
+                  style={{ padding: "10px", fontSize: "14px", width: "200px" }}
+                  value={targetOpt.value || ''}
+                  onChange={(e) => {
+                    setTargetOpt({ ...targetOpt, value: e.target.value });
+                  }}
+                />
+              </>
+            )}
           </Focusable>
         </Field>
         <Focusable style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>

@@ -1,6 +1,7 @@
 import {
   DialogButton,
   DialogHeader,
+  Dropdown,
   Field,
   Focusable,
   ModalRoot,
@@ -8,7 +9,8 @@ import {
 } from "@decky/ui";
 import { FC, useState } from "react";
 
-import { CustomOption, getEmptyCusOpt, setCustomOptions } from "../../utils/custom";
+import { CustomOption, getEmptyCustomOption, setCustomOptions } from "../../utils/custom";
+import { ParamType } from "../../utils/options";
 import t from "../../utils/translate";
 
 export const ModalNew: FC<{
@@ -20,7 +22,13 @@ export const ModalNew: FC<{
   optList,
   onSave,
 }) => {
-  const [targetOpt, setTargetOpt] = useState<CustomOption>(getEmptyCusOpt());
+  const [targetOpt, setTargetOpt] = useState<CustomOption>(getEmptyCustomOption());
+
+  const paramTypeOptions: { label: string; data: ParamType; }[] = [
+    { label: t("CUSTOM_TYPE_ENV", "Environment Variable"), data: "env" },
+    { label: t("CUSTOM_TYPE_CMD", "Prefix Commands"), data: "pre_cmd" },
+    { label: t("CUSTOM_TYPE_FLAG", "Flag & Arguments"), data: "flag_args" },
+  ];
 
   const handleSave = async () => {
     const updatedOpts = [...optList];
@@ -55,7 +63,24 @@ export const ModalNew: FC<{
           </Focusable>
         </Field>
         <Field
-          label={t("CUSTOM_OPTION_FIELDS", "Field & Value")}
+          label={t("CUSTOM_OPTION_TYPE", "Type")}
+          padding="none"
+          bottomSeparator="none"
+        >
+          <Focusable
+            style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
+          >
+            <Dropdown
+              rgOptions={paramTypeOptions}
+              selectedOption={targetOpt.type}
+              onChange={(selected) => {
+                setTargetOpt({ ...targetOpt, type: selected.data });
+              }}
+            />
+          </Focusable>
+        </Field>
+        <Field
+          label={t("CUSTOM_OPTION_Fields", "Field & Value")}
           padding="none"
           bottomSeparator="none"
         >
@@ -63,28 +88,32 @@ export const ModalNew: FC<{
             style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
           >
             <TextField
-              style={{ padding: "10px", fontSize: "14px", width: "200px" }}
-              value={targetOpt.field}
+              style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === 'pre_cmd' ? "435px" : "200px" }}
+              value={targetOpt.key}
               onChange={(e) => {
                 setTargetOpt({
                   ...targetOpt,
-                  field: e.target.value,
+                  key: e.target.value,
                 });
               }}
             />
-            <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
-              <b>=</b>
-            </div>
-            <TextField
-              style={{ padding: "10px", fontSize: "14px", width: "200px" }}
-              value={targetOpt.value}
-              onChange={(e) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  value: e.target.value,
-                });
-              }}
-            />
+            {targetOpt.type !== 'pre_cmd' && (
+              <>
+                <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
+                  <b>{targetOpt.type === 'env' ? '=' : ' '}</b>
+                </div>
+                <TextField
+                  style={{ padding: "10px", fontSize: "14px", width: "200px" }}
+                  value={targetOpt.value || ''}
+                  onChange={(e) => {
+                    setTargetOpt({
+                      ...targetOpt,
+                      value: e.target.value,
+                    });
+                  }}
+                />
+              </>
+            )}
           </Focusable>
         </Field>
         <Focusable style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
