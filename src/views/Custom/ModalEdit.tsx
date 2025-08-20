@@ -83,7 +83,7 @@ export const ModalEdit: FC<{
           </Focusable>
         </Field>
         <Field
-          label={t("CUSTOM_OPTION_Fields", "Field & Value")}
+          label={t("CUSTOM_OPTION_FIELDS", "Field & Value")}
           padding="none"
           bottomSeparator="none"
         >
