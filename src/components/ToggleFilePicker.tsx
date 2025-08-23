@@ -30,6 +30,7 @@ export const ToggleFilePicker: FC<ToggleFilePickerProps> = ({
       icon={icon}
       checked={checked}
       onChange={onToggle}
+      bottomSeparator={checked ? "none" : "thick"}
     />
     {checked && (
       <Field

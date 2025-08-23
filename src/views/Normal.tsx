@@ -89,7 +89,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
         description={t("NORMAL_LANG_TOGGLE_DESC", "Try to specify the game language")}
         icon={<FaLanguage />}
         checked={showLang}
-        bottomSeparator="none"
+        bottomSeparator={showLang ? "none" : "thick"}
         onChange={(enable: boolean) => {
           setShowLang(enable);
           if (!enable) {
