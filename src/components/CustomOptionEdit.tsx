@@ -9,11 +9,11 @@ import {
 } from "@decky/ui";
 import { FC, useState } from "react";
 
-import { CustomOption, setCustomOptions } from "../../utils/custom";
-import { ParamType } from "../../utils/options";
-import t from "../../utils/translate";
+import { CustomOption, setCustomOptions } from "../utils/custom";
+import { ParamType } from "../utils/options";
+import t from "../utils/translate";
 
-export const ModalEdit: FC<{
+export const CustomOptionEdit: FC<{
   closeModal?: () => void;
   id?: string;
   optList: CustomOption[];
