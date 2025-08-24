@@ -1,4 +1,10 @@
-import { DialogButton, Field, Focusable, TextField, ToggleField } from "@decky/ui";
+import {
+  DialogButton,
+  Field,
+  Focusable,
+  TextField,
+  ToggleField,
+} from "@decky/ui";
 import { FC, ReactNode } from "react";
 import { FaFolderOpen } from "react-icons/fa";
 
@@ -30,13 +36,13 @@ export const ToggleFilePicker: FC<ToggleFilePickerProps> = ({
       icon={icon}
       checked={checked}
       onChange={onToggle}
-      bottomSeparator={checked ? "none" : "thick"}
+      bottomSeparator={checked ? "none" : "standard"}
     />
     {checked && (
       <Field
         label={fieldLabel}
         padding="none"
-        bottomSeparator="thick"
+        bottomSeparator="standard"
       >
         <Focusable
           style={{

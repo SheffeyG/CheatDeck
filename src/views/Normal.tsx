@@ -89,7 +89,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
         description={t("NORMAL_LANG_TOGGLE_DESC", "Try to specify the game language")}
         icon={<FaLanguage />}
         checked={showLang}
-        bottomSeparator={showLang ? "none" : "thick"}
+        bottomSeparator={showLang ? "none" : "standard"}
         onChange={(enable: boolean) => {
           setShowLang(enable);
           if (!enable) {
@@ -103,7 +103,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
         <Field
           label={t("NORMAL_LANG_LABEL", "Language Code")}
           padding="none"
-          bottomSeparator="thick"
+          bottomSeparator="standard"
         >
           <Focusable
             style={{
