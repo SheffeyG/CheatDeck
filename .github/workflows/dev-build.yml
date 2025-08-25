@@ -1,5 +1,5 @@
 name: dev-build
-run-name: Build plugin and publish release
+
 on:
   push:
     branches:
@@ -69,11 +69,11 @@ jobs:
           pnpm run build
           mkdir -p output/${{ github.event.repository.name }}/dist
           cp dist/index.js output/${{ github.event.repository.name }}/dist
-          cp main.py output/${{ github.event.repository.name }}
-          cp plugin.json output/${{ github.event.repository.name }}
-          cp package.json output/${{ github.event.repository.name }}
-          cp README.md output/${{ github.event.repository.name }}
-          cp LICENSE output/${{ github.event.repository.name }}
+          cp main.py       output/${{ github.event.repository.name }}
+          cp plugin.json   output/${{ github.event.repository.name }}
+          cp package.json  output/${{ github.event.repository.name }}
+          cp README.md     output/${{ github.event.repository.name }}
+          cp LICENSE       output/${{ github.event.repository.name }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
