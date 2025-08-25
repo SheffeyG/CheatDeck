@@ -1,7 +1,7 @@
 {
   "name": "cheatdeck",
   "type": "module",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Launch games with cheats or trainers and customize your launch settings.",
   "scripts": {
     "build": "rollup -c",
