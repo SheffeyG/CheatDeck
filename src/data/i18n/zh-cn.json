@@ -20,17 +20,26 @@
     "NORMAL_TITLE": "常规",
     "NORMAL_CHEAT_TOGGLE_LABEL": "启用修改器",
     "NORMAL_CHEAT_TOGGLE_DESC": "从系统存储中选择需要启用的游戏修改器",
-    "NORMAL_CHEAT_LABEL": "EXE 路径",
+    "NORMAL_CHEAT_LABEL": "文件路径",
     "NORMAL_LANG_TOGGLE_LABEL": "语言",
     "NORMAL_LANG_TOGGLE_DESC": "设置游戏环境语言",
     "NORMAL_LANG_LABEL": "语言编码",
     "NORMAL_LANG_DEFAULT": "默认",
 
     "ADVANCED_TITLE": "高级",
+    "ADVANCED_DXVK_ASYNC_LABEL": "DXVK 着色器异步编译",
     "ADVANCED_DXVK_ASYNC_DESC": "优化 ProtonGE 兼容层减少帧时间和输入延迟",
+    "ADVANCED_RADV_PERFTEST_LABEL": "RADV 性能测试",
     "ADVANCED_RADV_PERFTEST_DESC": "优化 ProtonGE 兼容层着色器缓存行为",
-    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "指定游戏数据保存路径",
-    "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "Prefix 路径",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "兼容层数据重定向",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "手动指定兼容层数据保存路径，包括游戏数据存档路径",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_NOTE": "数据路径",
+    "ADVANCED_LOSSLESS_SCALING_LABEL": "无损缩放",
+    "ADVANCED_LOSSLESS_SCALING_DESC": "启用第三方无损缩放补丁（需要安装 Lossless-Scaling 插件）",
+    "ADVANCED_DECKY_FRAMEGEN_PATCH_LABEL": "启用帧生成补丁",
+    "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "启用第三方帧生成补丁（需要安装 Decky-Framegen 插件）",
+    "ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL": "卸载帧生成补丁",
+    "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "卸载第三方帧生成补丁 (需要安装 Decky-Framegen 插件)",
 
     "CUSTOM_TITLE": "自定义",
     "CUSTOM_OPTION_LABEL": "标签",
@@ -40,6 +49,5 @@
     "CUSTOM_TYPE_CMD": "前置命令",
     "CUSTOM_TYPE_FLAG": "标志参数",
     "CUSTOM_EDIT_TITLE": "编辑启动项",
-    "CUSTOM_NEW_TITLE": "新建启动项",
-    "LAUNCH_OPTIONS_PREVIEW": "启动参数预览"
+    "CUSTOM_NEW_TITLE": "新建启动项"
 }

@@ -43,7 +43,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
 
       <ToggleField
-        label="DXVK_ASYNC"
+        label={t("ADVANCED_DXVK_ASYNC_LABEL", "DXVK_ASYNC")}
         description={t(
           "ADVANCED_DXVK_ASYNC_DESC",
           "Optimize the ProtonGE compatibility layer to reduce frame time and input lag",
@@ -62,7 +62,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       />
 
       <ToggleField
-        label="RADV_PERFTEST"
+        label={t("ADVANCED_RADV_PERFTEST_LABEL", "RADV_PERFTEST")}
         description={t(
           "ADVANCED_RADV_PERFTEST_DESC",
           "Optimize the shader cache behavior of the ProtonGE compatibility layer",
@@ -81,7 +81,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       />
 
       <ToggleFilePicker
-        label="STEAM_COMPAT_DATA_PATH"
+        label={t("ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL", "STEAM_COMPAT_DATA_PATH")}
         description={t(
           "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC",
           "Specify a folder as the shared prefix for the game",
@@ -97,14 +97,14 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         }}
         value={options.getKeyValue("STEAM_COMPAT_DATA_PATH")}
         onBrowse={handleBrowse}
-        fieldLabel={t("ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL", "Prefix Folder")}
+        fieldLabel={t("ADVANCED_STEAM_COMPAT_DATA_PATH_NOTE", "Data Path")}
       />
 
       <ToggleField
-        label="Lossless Scaling"
+        label={t("ADVANCED_LOSSLESS_SCALING_LABEL", "Lossless Scaling")}
         description={t(
           "ADVANCED_LOSSLESS_SCALING_DESC",
-          "Enable lossless scaling for the game",
+          "Patch the game to use Framegen (requires the Lossless-Scaling plugin)",
         )}
         bottomSeparator="standard"
         checked={options.hasKey("~/lsfg")}
@@ -120,10 +120,10 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       />
 
       <ToggleField
-        label="Decky Framegen Patch"
+        label={t("ADVANCED_DECKY_FRAMEGEN_PATCH_LABEL", "Decky Framegen Patch")}
         description={t(
           "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC",
-          "Patch the game to use Decky Framegen",
+          "Patch the game to use Framegen (requires the Decky-Framegen plugin)",
         )}
         bottomSeparator="standard"
         checked={options.hasKey("~/fgmod/fgmod")}
@@ -139,10 +139,10 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       />
 
       <ToggleField
-        label="Decky Framegen Unpatch"
+        label={t("ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL", "Decky Framegen Unpatch")}
         description={t(
           "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC",
-          "Unpatch the game for Decky Framegen",
+          "Unpatch the game for Decky Framegen (requires the Decky-Framegen plugin)",
         )}
         bottomSeparator="standard"
         checked={options.hasKey("~/fgmod/fgmod-uninstaller.sh")}

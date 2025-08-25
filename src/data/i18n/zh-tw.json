@@ -1,6 +1,6 @@
 {
     "TRANSLATION": "繁體中文翻譯",
-    "CREDIT": "sheffey",
+    "CREDIT": "",
 
     "SAVE": "儲存",
     "DELETE": "刪除",
@@ -37,6 +37,5 @@
     "CUSTOM_OPTION_TYPE": "類型",
     "CUSTOM_OPTION_FIELDS": "欄位 & 值",
     "CUSTOM_EDIT_TITLE": "編輯啟動項",
-    "CUSTOM_NEW_TITLE": "新增啟動項",
-    "LAUNCH_OPTIONS_PREVIEW": "啟動參數預覽"
+    "CUSTOM_NEW_TITLE": "新增啟動項"
 }

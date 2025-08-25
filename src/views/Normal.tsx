@@ -12,7 +12,7 @@ import { FaGamepad, FaLanguage } from "react-icons/fa";
 
 import { SaveWithPreview } from "../components/SaveWithPreview";
 import { ToggleFilePicker } from "../components/ToggleFilePicker";
-import { LangCodes } from "../data/default.json";
+import { LangCodes } from "../data/langcode.json";
 import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
 import t from "../utils/translate";

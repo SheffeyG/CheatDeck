@@ -8,8 +8,8 @@ import * as zhCn from "../data/i18n/zh-cn.json";
 import * as zhTw from "../data/i18n/zh-tw.json";
 import logger from "./logger";
 
-type Language = { [key: string]: string };
-type Languages = { [key: string]: Language };
+type Lang = { [key: string]: string };
+type Languages = { [key: string]: Lang };
 
 const languages: Languages = {
   de,
@@ -33,7 +33,7 @@ function getCurrentLangCode(): string {
 
 function translate() {
   const langCode: string = getCurrentLangCode();
-  const lang: Language = languages[langCode] ?? languages.en;
+  const lang: Lang = languages[langCode] ?? languages.en;
   return function (label: string, defaultString: string): string {
     return lang[label] ?? defaultString;
   };

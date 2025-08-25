@@ -27,10 +27,19 @@
     "NORMAL_LANG_DEFAULT": "Default",
 
     "ADVANCED_TITLE": "Advanced",
+    "ADVANCED_DXVK_ASYNC_LABEL": "DXVK_ASYNC",
     "ADVANCED_DXVK_ASYNC_DESC": "Optimize the ProtonGE compatibility layer to reduce frame time and input lag",
+    "ADVANCED_RADV_PERFTEST_LABEL": "RADV_PERFTEST",
     "ADVANCED_RADV_PERFTEST_DESC": "Optimize the shader cache behavior of the ProtonGE compatibility layer",
-    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "Specify the game data save path",
-    "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "Prefix Folder",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL": "STEAM_COMPAT_DATA_PATH",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC": "Change the game compatibility layer path, including the game data save path.",
+    "ADVANCED_STEAM_COMPAT_DATA_PATH_NOTE": "Data Path",
+    "ADVANCED_LOSSLESS_SCALING_LABEL": "Lossless Scaling",
+    "ADVANCED_LOSSLESS_SCALING_DESC": "Patch the game to use third-party scaling (which requires the Lossless-Scaling plugin).",
+    "ADVANCED_DECKY_FRAMEGEN_PATCH_LABEL": "Decky Framegen Patch",
+    "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "Patch the game to use third-party framegen (which requires the Decky-Framegen plugin).",
+    "ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL": "Decky Framegen Unpatch",
+    "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "Disable the third-party frame generation patch (requires the Decky-Framegen plugin).",
 
     "CUSTOM_TITLE": "Custom",
     "CUSTOM_OPTION_LABEL": "Label",
@@ -40,6 +49,5 @@
     "CUSTOM_TYPE_CMD": "Prefix Commands",
     "CUSTOM_TYPE_FLAG": "Flag & Parameter",
     "CUSTOM_EDIT_TITLE": "Edit Option",
-    "CUSTOM_NEW_TITLE": "Add a New Option",
-    "LAUNCH_OPTIONS_PREVIEW": "Launch Options Preview"
+    "CUSTOM_NEW_TITLE": "Add a New Option"
 }
