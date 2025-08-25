@@ -1,5 +1,4 @@
 import {
-  DialogButton,
   Dropdown,
   DropdownOption,
   Field,
@@ -9,10 +8,11 @@ import {
 } from "@decky/ui";
 import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 import { FC, useEffect, useState } from "react";
-import { FaFolderOpen, FaGamepad, FaLanguage } from "react-icons/fa";
+import { FaGamepad, FaLanguage } from "react-icons/fa";
 
 import { SaveWithPreview } from "../components/SaveWithPreview";
-import { LangCodes } from "../data/default.json";
+import { ToggleFilePicker } from "../components/ToggleFilePicker";
+import { LangCodes } from "../data/langcode.json";
 import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
 import t from "../utils/translate";
@@ -45,23 +45,32 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
     const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, "");
 
     const newOptions = new Options(options.getOptionsString());
-    // Use double quotes to escape the path inside the cmd string
-    newOptions.setParameter({ type: "env", key: "PROTON_REMOTE_DEBUG_CMD", value: `'${selectedCheatPath}'` });
+    newOptions.setParameter({
+      type: "env",
+      key: "PROTON_REMOTE_DEBUG_CMD",
+      value: `'${selectedCheatPath}'`, // single quotes to avoid issues with spaces
+    });
     // Make sure proton has read/write access to the parent directory
-    newOptions.setParameter({ type: "env", key: "PRESSURE_VESSEL_FILESYSTEMS_RW", value: selectedCheatDir });
+    newOptions.setParameter({
+      type: "env",
+      key: "PRESSURE_VESSEL_FILESYSTEMS_RW",
+      value: selectedCheatDir,
+    });
     setOptions(newOptions);
   };
 
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
 
-      <ToggleField
+      <ToggleFilePicker
         label={t("NORMAL_CHEAT_TOGGLE_LABEL", "Enable Cheat")}
-        description={t("NORMAL_CHEAT_TOGGLE_DESC", "Select the cheat or trainer exe file from storage")}
+        description={t(
+          "NORMAL_CHEAT_TOGGLE_DESC",
+          "Select the cheat or trainer exe file from storage",
+        )}
         icon={<FaGamepad />}
-        bottomSeparator="none"
         checked={showCheat}
-        onChange={(enable: boolean) => {
+        onToggle={(enable: boolean) => {
           setShowChat(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
@@ -70,55 +79,17 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
             setOptions(updatedOptions);
           }
         }}
+        value={options.getKeyValue("PROTON_REMOTE_DEBUG_CMD")?.replace(/^'|'$/g, "")}
+        onBrowse={handleBrowse}
+        fieldLabel={t("NORMAL_CHEAT_LABEL", "EXE Path")}
       />
-      {showCheat && (
-        <Field
-          key={1}
-          label={t("NORMAL_CHEAT_LABEL", "EXE Path")}
-          padding="none"
-          bottomSeparator="thick"
-        >
-          <Focusable
-            style={{
-              boxShadow: "none",
-              display: "flex",
-              justifyContent: "right",
-              padding: "10px 0",
-            }}
-          >
-            <TextField
-              style={{
-                padding: "10px",
-                fontSize: "14px",
-                width: "400px",
-              }}
-              disabled={true}
-              value={options.getKeyValue("PROTON_REMOTE_DEBUG_CMD")?.replace(/^'|'$/g, "")}
-            />
-            <DialogButton
-              onClick={handleBrowse}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "10px",
-                maxWidth: "40px",
-                minWidth: "auto",
-                marginLeft: ".5em",
-              }}
-            >
-              <FaFolderOpen />
-            </DialogButton>
-          </Focusable>
-        </Field>
-      )}
 
       <ToggleField
         label={t("NORMAL_LANG_TOGGLE_LABEL", "Language")}
         description={t("NORMAL_LANG_TOGGLE_DESC", "Try to specify the game language")}
         icon={<FaLanguage />}
         checked={showLang}
-        bottomSeparator="none"
+        bottomSeparator={showLang ? "none" : "standard"}
         onChange={(enable: boolean) => {
           setShowLang(enable);
           if (!enable) {
@@ -132,7 +103,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
         <Field
           label={t("NORMAL_LANG_LABEL", "Language Code")}
           padding="none"
-          bottomSeparator="thick"
+          bottomSeparator="standard"
         >
           <Focusable
             style={{
@@ -173,6 +144,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
       )}
 
       <SaveWithPreview options={options} appid={appid} />
+
     </Focusable>
   );
 };

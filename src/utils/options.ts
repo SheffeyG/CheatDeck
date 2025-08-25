@@ -163,10 +163,10 @@ export class Options {
     const flagArgsString = this.#parsedParams.filter(param => param.type === "flag_args")
       .map(param => param.value ? `${param.key} ${param.value}` : param.key);
 
-    const result = [...envString, ...preCmdString, "%command%", ...flagArgsString].join(" ");
+    const result = [...envString, ...preCmdString, "%command%", ...flagArgsString].join(" ").trim();
 
     // If the result is only %command%, return empty string
-    if (result.trim() === "%command%") return "";
+    if (result === "%command%") return "";
 
     return result;
   }

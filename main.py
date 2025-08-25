@@ -88,22 +88,22 @@ class Plugin:
             return False
 
     @classmethod
-    async def settings_read(cls):
+    async def read_settings(cls):
         logger.info("[backend] Reading settings")
         return settings.read()
 
     @classmethod
-    async def settings_commit(cls):
+    async def commit_settings(cls):
         logger.info("[backend] Saving settings")
         return settings.commit()
 
     @classmethod
-    async def settings_getSetting(cls, data: GetSettingOptions):
+    async def get_setting(cls, data: GetSettingOptions):
         logger.info("[backend] Get {}".format(data["key"]))
         return settings.getSetting(data["key"], data["defaults"])
 
     @classmethod
-    async def settings_setSetting(cls, data: SetSettingOptions):
+    async def set_setting(cls, data: SetSettingOptions):
         logger.info("[backend] Set {}: {}".format(data["key"], data["value"]))
         return settings.setSetting(data["key"], data["value"])
 

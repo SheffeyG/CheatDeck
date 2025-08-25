@@ -9,12 +9,11 @@ import { FC, useEffect, useState } from "react";
 import { BsPencilFill } from "react-icons/bs";
 import { MdAddBox } from "react-icons/md";
 
-import { SaveWithPreview } from "../../components/SaveWithPreview";
-import { CustomOption, getCustomOptions } from "../../utils/custom";
-import logger from "../../utils/logger";
-import { Options } from "../../utils/options";
-import { ModalEdit } from "./ModalEdit";
-import { ModalNew } from "./ModalNew";
+import { CustomOptionEdit } from "../components/CustomOptionEdit";
+import { CustomOptionNew } from "../components/CustomOptionNew";
+import { SaveWithPreview } from "../components/SaveWithPreview";
+import { CustomOption, getCustomOptions } from "../utils/custom";
+import { Options } from "../utils/options";
 
 const Custom: FC<{ appid: number }> = ({ appid }) => {
   // Custom Options from user's saved settings
@@ -122,10 +121,6 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
                       }
                     }
 
-                    // Log the final state after modification
-                    const finalOptionsString = updatedOptions.getOptionsString();
-                    logger.info(`[Custom UI] Final options after toggle: "${finalOptionsString}"`);
-
                     return updatedOptions;
                   });
                 }}
@@ -133,7 +128,9 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
             </Focusable>
             <DialogButton
               className="CD_DialogButton"
-              onClick={() => { showModal(<ModalEdit id={opt.id} optList={cusOptList} onSave={updateOptList} />, window); }}
+              onClick={() => {
+                showModal(<CustomOptionEdit id={opt.id} optList={cusOptList} onSave={updateOptList} />);
+              }}
             >
               <BsPencilFill className="CD_IconTranslate" />
             </DialogButton>
@@ -143,7 +140,9 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
 
       <DialogButton
         className="CD_AddButton"
-        onClick={() => { showModal(<ModalNew optList={cusOptList} onSave={updateOptList} />); }}
+        onClick={() => {
+          showModal(<CustomOptionNew optList={cusOptList} onSave={updateOptList} />);
+        }}
       >
         <MdAddBox />
       </DialogButton>

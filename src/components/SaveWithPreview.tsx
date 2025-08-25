@@ -1,4 +1,4 @@
-import { DialogButton, Field, Focusable } from "@decky/ui";
+import { DialogButton, Focusable } from "@decky/ui";
 import { FC } from "react";
 
 import { Options } from "../utils/options";
@@ -18,42 +18,43 @@ export const SaveWithPreview: FC<SaveWithPreviewProps> = ({
   const optionsString = options.getOptionsString();
 
   return (
-    <>
-      {showPreview && (
-        <Field
-          label={t("LAUNCH_OPTIONS_PREVIEW", "Launch Options Preview")}
-          bottomSeparator="none"
-          focusable
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      width: "95%",
+      marginTop: "20px",
+      alignSelf: "center",
+      gap: "4px",
+    }}
+    >
+      {showPreview && optionsString.length > 0 && (
+        <Focusable style={{
+          background: "rgba(255,255,255,0.1)",
+          padding: "10px",
+          borderRadius: "2px",
+          fontSize: "12px",
+          textAlign: "left",
+          fontFamily: "monospace",
+          color: "#ccc",
+          minHeight: "20px",
+          boxSizing: "border-box",
+        }}
         >
-          <Focusable style={{
-            background: "rgba(255,255,255,0.1)",
-            padding: "10px",
-            borderRadius: "4px",
-            fontSize: "12px",
-            textAlign: "left",
-            fontFamily: "monospace",
-            color: "#ccc",
-            minHeight: "20px",
-          }}
-          >
-            {optionsString}
-          </Focusable>
-        </Field>
+          {optionsString}
+        </Focusable>
       )}
 
       <DialogButton
         onClick={() => options.saveOptions(appid)}
         style={{
-          alignSelf: "center",
-          marginTop: "20px",
           padding: "10px",
           fontSize: "14px",
           textAlign: "center",
-          width: "80%",
+          boxSizing: "border-box",
         }}
       >
         {t("SAVE", "Save")}
       </DialogButton>
-    </>
+    </div>
   );
 };

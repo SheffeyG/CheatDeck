@@ -35,15 +35,8 @@
     "CUSTOM_TITLE": "Пользовательские",
     "CUSTOM_OPTION_LABEL": "Метка",
     "CUSTOM_OPTION_TYPE": "Тип",
-    "CUSTOM_OPTION_POSITION": "Позиция",
-    "CUSTOM_OPTION_Fields": "Поле и значение",
-    "CUSTOM_TYPE_ENV": "Переменная окружения (KEY=VALUE)",
-    "CUSTOM_TYPE_FLAG": "Флаг-параметр (--flag)",
-    "CUSTOM_TYPE_KEYVALUE": "Ключ-значение параметр (--key value)",
-    "CUSTOM_POSITION_BEFORE": "Перед %command%",
-    "CUSTOM_POSITION_AFTER": "После %command%",
+    "CUSTOM_OPTION_FIELDS": "Поле и значение",
     "CUSTOM_EDIT_TITLE": "Редактировать параметр",
-    "CUSTOM_NEW_TITLE": "Добавить новый параметр",
-    "LAUNCH_OPTIONS_PREVIEW": "Предварительный просмотр параметров запуска"
+    "CUSTOM_NEW_TITLE": "Добавить новый параметр"
 }
 

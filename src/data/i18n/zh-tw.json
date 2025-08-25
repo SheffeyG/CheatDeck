@@ -1,6 +1,6 @@
 {
     "TRANSLATION": "繁體中文翻譯",
-    "CREDIT": "sheffey",
+    "CREDIT": "",
 
     "SAVE": "儲存",
     "DELETE": "刪除",
@@ -35,14 +35,7 @@
     "CUSTOM_TITLE": "自訂",
     "CUSTOM_OPTION_LABEL": "標籤",
     "CUSTOM_OPTION_TYPE": "類型",
-    "CUSTOM_OPTION_POSITION": "位置",
-    "CUSTOM_OPTION_Fields": "欄位 & 值",
-    "CUSTOM_TYPE_ENV": "環境變數 (KEY=VALUE)",
-    "CUSTOM_TYPE_FLAG": "旗標參數 (--flag)",
-    "CUSTOM_TYPE_KEYVALUE": "鍵值參數 (--key value)",
-    "CUSTOM_POSITION_BEFORE": "%command% 前",
-    "CUSTOM_POSITION_AFTER": "%command% 後",
+    "CUSTOM_OPTION_FIELDS": "欄位 & 值",
     "CUSTOM_EDIT_TITLE": "編輯啟動項",
-    "CUSTOM_NEW_TITLE": "新增啟動項",
-    "LAUNCH_OPTIONS_PREVIEW": "啟動參數預覽"
+    "CUSTOM_NEW_TITLE": "新增啟動項"
 }

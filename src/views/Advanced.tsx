@@ -1,15 +1,9 @@
-import {
-  DialogButton,
-  Field,
-  Focusable,
-  TextField,
-  ToggleField,
-} from "@decky/ui";
+import { Focusable, ToggleField } from "@decky/ui";
 import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 import { FC, useEffect, useState } from "react";
-import { FaFolderOpen } from "react-icons/fa";
 
 import { SaveWithPreview } from "../components/SaveWithPreview";
+import { ToggleFilePicker } from "../components/ToggleFilePicker";
 import { Backend } from "../utils/backend";
 import { Options } from "../utils/options";
 import t from "../utils/translate";
@@ -37,7 +31,11 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
     const selectedCompatDataPath = filePickerRes.path;
 
     const newOptions = new Options(options.getOptionsString());
-    newOptions.setParameter({ type: "env", key: "STEAM_COMPAT_DATA_PATH", value: selectedCompatDataPath });
+    newOptions.setParameter({
+      type: "env",
+      key: "STEAM_COMPAT_DATA_PATH",
+      value: selectedCompatDataPath,
+    });
     setOptions(newOptions);
   };
 
@@ -45,7 +43,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
 
       <ToggleField
-        label="DXVK_ASYNC"
+        label={t("ADVANCED_DXVK_ASYNC_LABEL", "DXVK_ASYNC")}
         description={t(
           "ADVANCED_DXVK_ASYNC_DESC",
           "Optimize the ProtonGE compatibility layer to reduce frame time and input lag",
@@ -64,7 +62,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       />
 
       <ToggleField
-        label="RADV_PERFTEST"
+        label={t("ADVANCED_RADV_PERFTEST_LABEL", "RADV_PERFTEST")}
         description={t(
           "ADVANCED_RADV_PERFTEST_DESC",
           "Optimize the shader cache behavior of the ProtonGE compatibility layer",
@@ -82,15 +80,14 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         }}
       />
 
-      <ToggleField
-        label="STEAM_COMPAT_DATA_PATH"
+      <ToggleFilePicker
+        label={t("ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL", "STEAM_COMPAT_DATA_PATH")}
         description={t(
           "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC",
           "Specify a folder as the shared prefix for the game",
         )}
-        bottomSeparator="none"
         checked={showPrefix}
-        onChange={(enable: boolean) => {
+        onToggle={(enable: boolean) => {
           setShowPrefix(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
@@ -98,54 +95,16 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
             setOptions(updatedOptions);
           }
         }}
+        value={options.getKeyValue("STEAM_COMPAT_DATA_PATH")}
+        onBrowse={handleBrowse}
+        fieldLabel={t("ADVANCED_STEAM_COMPAT_DATA_PATH_NOTE", "Data Path")}
       />
-      {showPrefix && (
-        <Field
-          key={1}
-          label={t("ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL", "Prefix Folder")}
-          padding="none"
-          bottomSeparator="thick"
-        >
-          <Focusable
-            style={{
-              boxShadow: "none",
-              display: "flex",
-              justifyContent: "right",
-              padding: "10px 0",
-            }}
-          >
-            <TextField
-              style={{
-                padding: "10px",
-                fontSize: "14px",
-                width: "400px",
-              }}
-              disabled={true}
-              value={options.getKeyValue("STEAM_COMPAT_DATA_PATH")}
-            />
-            <DialogButton
-              onClick={handleBrowse}
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "10px",
-                maxWidth: "40px",
-                minWidth: "auto",
-                marginLeft: ".5em",
-              }}
-            >
-              <FaFolderOpen />
-            </DialogButton>
-          </Focusable>
-        </Field>
-      )}
 
       <ToggleField
-        label="Lossless Scaling"
+        label={t("ADVANCED_LOSSLESS_SCALING_LABEL", "Lossless Scaling")}
         description={t(
           "ADVANCED_LOSSLESS_SCALING_DESC",
-          "Enable lossless scaling for the game",
+          "Patch the game to use Framegen (requires the Lossless-Scaling plugin)",
         )}
         bottomSeparator="standard"
         checked={options.hasKey("~/lsfg")}
@@ -161,10 +120,10 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       />
 
       <ToggleField
-        label="Decky Framegen Patch"
+        label={t("ADVANCED_DECKY_FRAMEGEN_PATCH_LABEL", "Decky Framegen Patch")}
         description={t(
           "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC",
-          "Patch the game to use Decky Framegen",
+          "Patch the game to use Framegen (requires the Decky-Framegen plugin)",
         )}
         bottomSeparator="standard"
         checked={options.hasKey("~/fgmod/fgmod")}
@@ -180,10 +139,10 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       />
 
       <ToggleField
-        label="Decky Framegen Unpatch"
+        label={t("ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL", "Decky Framegen Unpatch")}
         description={t(
           "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC",
-          "Unpatch the game for Decky Framegen",
+          "Unpatch the game for Decky Framegen (requires the Decky-Framegen plugin)",
         )}
         bottomSeparator="standard"
         checked={options.hasKey("~/fgmod/fgmod-uninstaller.sh")}
@@ -199,6 +158,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
       />
 
       <SaveWithPreview options={options} appid={appid} />
+
     </Focusable>
   );
 };

@@ -9,30 +9,25 @@ import {
 
 export type FilePickerFilter = RegExp | ((file: File) => boolean) | undefined;
 
-const envGetEnv = callable<[string], string>("get_env");
-const settingsGetSettings = callable<[{ key: string; defaults: unknown }], unknown>("settings_getSetting");
-const settingsSetSettings = callable<[{ key: string; value: unknown }], unknown>("settings_setSetting");
-const settingsCommit = callable<[], unknown>("settings_commit");
-
 export class Backend {
   static async getEnv(env: string) {
-    const output = await envGetEnv(env);
-    return output;
+    const callback = callable<[string], string>("get_env");
+    return await callback(env);
   }
 
   static async getSetting(key: string, defaults: unknown) {
-    const output = await settingsGetSettings({ key, defaults });
-    return output;
+    const callback = callable<[{ key: string; defaults: unknown }], unknown>("get_setting");
+    return await callback({ key, defaults });
   }
 
   static async setSetting(key: string, value: unknown) {
-    const output = await settingsSetSettings({ key, value });
-    return output;
+    const callback = callable<[{ key: string; value: unknown }], unknown>("set_setting");
+    return await callback({ key, value });
   }
 
   static async commitSettings() {
-    const output = await settingsCommit();
-    return output;
+    const callback = callable<[], unknown>("commit_settings");
+    return await callback();
   }
 
   static openFilePicker(
