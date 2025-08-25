@@ -1,9 +1,9 @@
 import { SidebarNavigation, useParams } from "@decky/ui";
 import { FC } from "react";
 import {
-  BsCSquareFill as IconCustom,
+  BsCheckSquareFill as IconNormal,
   BsExclamationSquareFill as IconAdvanced,
-  BsFillDice2Fill as IconNormal,
+  BsPlusSquareFill as IconCustom,
 } from "react-icons/bs";
 
 import t from "../utils/translate";

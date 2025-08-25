@@ -1,13 +1,12 @@
-import {
-  DialogButton,
-  Focusable,
-  showModal,
-  ToggleField,
-} from "@decky/ui";
+import { DialogButton, Focusable, showModal, ToggleField } from "@decky/ui";
 import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 import { FC, useEffect, useState } from "react";
-import { BsPencilFill } from "react-icons/bs";
-import { MdAddBox } from "react-icons/md";
+import { BsPencilFill, BsPlusSquareFill } from "react-icons/bs";
+import {
+  FaBarsProgress as TypeCmdIcon,
+  FaFlag as TypeFlagIcon,
+  FaKey as TypeEnvIcon,
+} from "react-icons/fa6";
 
 import { CustomOptionEdit } from "../components/CustomOptionEdit";
 import { CustomOptionNew } from "../components/CustomOptionNew";
@@ -34,10 +33,6 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
       unregister();
     }, 1000);
   }, []);
-
-  const updateOptList = (updatedOptList: CustomOption[]) => {
-    setCusOptList(updatedOptList);
-  };
 
   return (
     <>
@@ -80,6 +75,9 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
           .CD_IconTranslate {
             transform: translate(0px, 2px);
           }
+          .CD_TypeIcon {
+            padding-left: 8px;
+          }
           .CD_Label {
             white-space: nowrap;
             max-width: 300px;
@@ -101,7 +99,14 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
             <Focusable className="CD_ToggleContainer">
               <ToggleField
                 bottomSeparator="none"
-                label={<span className="CD_Label">{opt.label}</span>}
+                label={(
+                  <>
+                    {opt.type === "env" && <TypeEnvIcon className="CD_TypeIcon" />}
+                    {opt.type === "pre_cmd" && <TypeCmdIcon className="CD_TypeIcon" />}
+                    {opt.type === "flag_args" && <TypeFlagIcon className="CD_TypeIcon" />}
+                    <span className="CD_Label">{opt.label}</span>
+                  </>
+                )}
                 checked={opt.value ? options.hasKeyValue(opt.key, opt.value) : options.hasKey(opt.key)}
                 onChange={(enable: boolean) => {
                   setOptions((prevOptions) => {
@@ -129,7 +134,10 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
             <DialogButton
               className="CD_DialogButton"
               onClick={() => {
-                showModal(<CustomOptionEdit id={opt.id} optList={cusOptList} onSave={updateOptList} />);
+                showModal(
+                  <CustomOptionEdit id={opt.id} optList={cusOptList} onSave={opts => setCusOptList(opts)} />,
+                  window,
+                );
               }}
             >
               <BsPencilFill className="CD_IconTranslate" />
@@ -141,10 +149,13 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
       <DialogButton
         className="CD_AddButton"
         onClick={() => {
-          showModal(<CustomOptionNew optList={cusOptList} onSave={updateOptList} />);
+          showModal(
+            <CustomOptionNew optList={cusOptList} onSave={opts => setCusOptList(opts)} />,
+            window,
+          );
         }}
       >
-        <MdAddBox />
+        <BsPlusSquareFill />
       </DialogButton>
       {(cusOptList.length > 0) && (
         <SaveWithPreview options={options} appid={appid} />
