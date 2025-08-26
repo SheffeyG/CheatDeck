@@ -8,8 +8,9 @@ import {
   TextField,
 } from "@decky/ui";
 import { FC, useState } from "react";
+import { v4 as uuid } from "uuid";
 
-import { CustomOption, getEmptyCustomOption, setCustomOptions } from "../utils/custom";
+import { CustomOption, setCustomOptions } from "../utils/backend";
 import { ParamType } from "../utils/options";
 import t from "../utils/translate";
 
@@ -22,7 +23,12 @@ export const CustomOptionNew: FC<{
   optList,
   onSave,
 }) => {
-  const [targetOpt, setTargetOpt] = useState<CustomOption>(getEmptyCustomOption());
+  const [targetOpt, setTargetOpt] = useState<CustomOption>({
+    id: uuid(),
+    label: "",
+    type: "env",
+    key: "",
+  } as CustomOption);
 
   const paramTypeOptions: { label: string; data: ParamType }[] = [
     { label: t("CUSTOM_TYPE_ENV", "Environment Variable"), data: "env" },

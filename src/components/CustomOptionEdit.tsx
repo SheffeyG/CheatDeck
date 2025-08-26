@@ -9,7 +9,7 @@ import {
 } from "@decky/ui";
 import { FC, useState } from "react";
 
-import { CustomOption, setCustomOptions } from "../utils/custom";
+import { CustomOption, setCustomOptions } from "../utils/backend";
 import { ParamType } from "../utils/options";
 import t from "../utils/translate";
 

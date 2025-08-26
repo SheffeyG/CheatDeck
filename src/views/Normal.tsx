@@ -13,7 +13,8 @@ import { FaGamepad, FaLanguage } from "react-icons/fa";
 import { SaveWithPreview } from "../components/SaveWithPreview";
 import { ToggleFilePicker } from "../components/ToggleFilePicker";
 import { LangCodes } from "../data/langcode.json";
-import { Backend } from "../utils/backend";
+import { getHomePath } from "../utils/backend";
+import { browseFiles } from "../utils/client";
 import { Options } from "../utils/options";
 import t from "../utils/translate";
 
@@ -39,8 +40,8 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
 
   const handleBrowse = async () => {
     const savedCheatDir = options.getKeyValue("PRESSURE_VESSEL_FILESYSTEMS_RW");
-    const defaultPath = savedCheatDir ?? await Backend.getEnv("DECKY_USER_HOME");
-    const filePickerRes = await Backend.openFilePicker(defaultPath, true, ["exe", "bat"]);
+    const defaultPath = savedCheatDir ?? await getHomePath();
+    const filePickerRes = await browseFiles(defaultPath, true, ["exe", "bat"]);
     const selectedCheatPath = filePickerRes.path;
     const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, "");
 
