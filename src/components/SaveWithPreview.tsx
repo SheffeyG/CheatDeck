@@ -1,20 +1,20 @@
 import { DialogButton, Focusable } from "@decky/ui";
 import { FC } from "react";
 
+import { useSettings } from "../hooks/useSettings";
 import { Options } from "../utils/options";
 import t from "../utils/translate";
 
 interface SaveWithPreviewProps {
   options: Options;
   appid: number;
-  showPreview?: boolean;
 }
 
 export const SaveWithPreview: FC<SaveWithPreviewProps> = ({
   options,
   appid,
-  showPreview = true,
 }) => {
+  const { showPreview } = useSettings();
   const optionsString = options.getOptionsString();
 
   return (
