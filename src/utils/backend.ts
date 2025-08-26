@@ -2,14 +2,11 @@ import { callable } from "@decky/api";
 import { v4 as uuid } from "uuid";
 
 import logger from "./logger";
-import { ParamType } from "./options";
+import { ParsedParam } from "./options";
 
-export interface CustomOption {
+export interface CustomOption extends ParsedParam {
   id: string;
   label: string;
-  type: ParamType;
-  key: string;
-  value?: string;
 }
 
 async function getEnv(env: string) {
@@ -42,4 +39,12 @@ export const setCustomOptions = async (data: CustomOption[]): Promise<void> => {
   const optsWithoutId = data.map(({ id, ...rest }) => rest);
   await setSetting("CustomOptions", optsWithoutId);
   logger.info(`Saved user settings:\n${JSON.stringify(optsWithoutId, null, 2)}`);
+};
+
+export const getShowPreview = async (): Promise<boolean> => {
+  return await getSetting("ShowPreview", false) as boolean;
+};
+
+export const setShowPreview = async (value: boolean): Promise<void> => {
+  await setSetting("ShowPreview", value);
 };
