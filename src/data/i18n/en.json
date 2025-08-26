@@ -8,7 +8,10 @@
     "MESSAGE_SAVED": "Game launch options have been saved.",
     "MESSAGE_NON_STEAM": "Warning: This is NOT a Steam game! Settings will never be saved.",
 
-    "CONTENT_TITLE": "Information",
+    "CONTENT_SETTINGS": "Settings",
+    "CONTENT_INFORMATION": "Information",
+    "CONTENT_PREVIEW_LABEL": "Enable Preview",
+    "CONTENT_PREVIEW_DESC": "Enable launch options preview",
     "CONTENT_NOTE0": "CheatDeck only support the normal Steam launcher for now.",
     "CONTENT_NOTE1": "Please enable developer mode in the SteamOS settings;",
     "CONTENT_NOTE2": "You can find the CheatDeck setting in the game details menu;",

@@ -8,7 +8,10 @@
     "MESSAGE_SAVED": "游戏启动项已保存。",
     "MESSAGE_NON_STEAM": "警告: 非 Steam 游戏! 设置将不会被保存。",
 
-    "CONTENT_TITLE": "说明",
+    "CONTENT_SETTINGS": "设置",
+    "CONTENT_INFORMATION": "信息",
+    "CONTENT_PREVIEW_LABEL": "启用预览",
+    "CONTENT_PREVIEW_DESC": "实时预览生成的启动项字符串",
     "CONTENT_NOTE0": "CheatDeck 目前仅支持原生 Steam 游戏启动器。",
     "CONTENT_NOTE1": "请在 SteamOS 设置中启用开发者模式；",
     "CONTENT_NOTE2": "你可以在游戏详情菜单中找到 CheatDeck 设置；",
