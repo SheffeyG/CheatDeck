@@ -4,7 +4,8 @@ import { FC, useEffect, useState } from "react";
 
 import { SaveWithPreview } from "../components/SaveWithPreview";
 import { ToggleFilePicker } from "../components/ToggleFilePicker";
-import { Backend } from "../utils/backend";
+import { getHomePath } from "../utils/backend";
+import { browseFiles } from "../utils/client";
 import { Options } from "../utils/options";
 import t from "../utils/translate";
 
@@ -26,8 +27,8 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
 
   const handleBrowse = async () => {
     const savedCompatDataPath = options.getKeyValue("STEAM_COMPAT_DATA_PATH");
-    const defaultPath = savedCompatDataPath ?? await Backend.getEnv("DECKY_USER_HOME");
-    const filePickerRes = await Backend.openFilePicker(defaultPath, false);
+    const defaultPath = savedCompatDataPath ?? await getHomePath();
+    const filePickerRes = await browseFiles(defaultPath, false);
     const selectedCompatDataPath = filePickerRes.path;
 
     const newOptions = new Options(options.getOptionsString());

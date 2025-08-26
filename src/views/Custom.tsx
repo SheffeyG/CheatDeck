@@ -11,7 +11,7 @@ import {
 import { CustomOptionEdit } from "../components/CustomOptionEdit";
 import { CustomOptionNew } from "../components/CustomOptionNew";
 import { SaveWithPreview } from "../components/SaveWithPreview";
-import { CustomOption, getCustomOptions } from "../utils/custom";
+import { CustomOption, getCustomOptions } from "../utils/backend";
 import { Options } from "../utils/options";
 
 const Custom: FC<{ appid: number }> = ({ appid }) => {
@@ -157,9 +157,9 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
       >
         <BsPlusSquareFill />
       </DialogButton>
-      {(cusOptList.length > 0) && (
-        <SaveWithPreview options={options} appid={appid} />
-      )}
+
+      {cusOptList.length > 0 && <SaveWithPreview options={options} appid={appid} />}
+
     </>
   );
 };
