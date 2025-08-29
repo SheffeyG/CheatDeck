@@ -11,15 +11,31 @@ import {
   ToggleField,
 } from "@decky/ui";
 import { QRCodeSVG } from "qrcode.react";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { HiQrCode } from "react-icons/hi2";
 
-import { SettingsProvider, useSettings } from "../hooks/useSettings";
+import {
+  getShowPreview as loadShowPreview,
+  setShowPreview as saveShowPreview,
+} from "../utils/backend";
+import logger from "../utils/logger";
 import t from "../utils/translate";
 
 const Content: FC = () => {
-  const { showPreview, setShowPreview } = useSettings();
   const translator = t("CREDIT", "");
+  const [showPreview, setShowPreview] = useState(false);
+
+  useEffect(() => {
+    loadShowPreview().then(setShowPreview).catch((error) => {
+      logger.error("Failed to load preview setting", error);
+    });
+  }, []);
+
+  useEffect(() => {
+    saveShowPreview(showPreview).catch((error) => {
+      logger.error("Failed to save preview setting", error);
+    });
+  }, [showPreview]);
 
   const navLink = (url: string) => {
     Navigation.CloseSideMenus();
@@ -42,7 +58,7 @@ const Content: FC = () => {
   };
 
   return (
-    <SettingsProvider>
+    <Focusable style={{ display: "flex", flexDirection: "column" }}>
       <PanelSection title={t("CONTENT_SETTINGS", "settings")}>
         <ToggleField
           label={t("CONTENT_PREVIEW_LABEL", "Enable Preview")}
@@ -91,7 +107,7 @@ const Content: FC = () => {
             padding="none"
             spacingBetweenLabelAndChild="none"
             childrenContainerWidth="max"
-            // TODO
+            // TODO: translate
             description={t(
               "CONTENT_GH_DESC",
               "For bug report, translation and more other informations, check the GitHub page.",
@@ -128,7 +144,7 @@ const Content: FC = () => {
           </Field>
         </PanelSectionRow>
       </PanelSection>
-    </SettingsProvider>
+    </Focusable>
   );
 };
 

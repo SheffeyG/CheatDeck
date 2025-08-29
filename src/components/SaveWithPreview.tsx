@@ -1,5 +1,5 @@
 import { DialogButton, Focusable } from "@decky/ui";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { useSettings } from "../hooks/useSettings";
 import { Options } from "../utils/options";
@@ -14,8 +14,15 @@ export const SaveWithPreview: FC<SaveWithPreviewProps> = ({
   options,
   appid,
 }) => {
-  const { showPreview } = useSettings();
+  const { get } = useSettings();
+  const [showPreview, setShowPreview] = useState<boolean>(false);
   const optionsString = options.getOptionsString();
+
+  useEffect(() => {
+    (async () => {
+      setShowPreview(await get("ShowPreview", false) as boolean);
+    })();
+  }, [get]);
 
   return (
     <div style={{

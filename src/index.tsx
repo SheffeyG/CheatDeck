@@ -7,11 +7,13 @@ import Content from "./views/Content";
 import PageRouter from "./views/PageRouter";
 
 export default definePlugin(() => {
-  routerHook.addRoute("/cheatdeck/:appid", PageRouter, {
-    exact: true,
-  });
-
   const menuPatches = contextMenuPatch(LibraryContextMenu);
+
+  routerHook.addRoute(
+    "/cheatdeck/:appid",
+    PageRouter,
+    { exact: true },
+  );
 
   return {
     title: <div className={staticClasses.Title}>CheatDeck</div>,
