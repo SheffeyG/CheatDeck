@@ -1,16 +1,10 @@
-import {
-  Dropdown,
-  DropdownOption,
-  Field,
-  Focusable,
-  TextField,
-  ToggleField,
-} from "@decky/ui";
+import { DropdownOption, Focusable } from "@decky/ui";
 import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 import { FC, useEffect, useState } from "react";
 import { FaGamepad, FaLanguage } from "react-icons/fa";
 
 import { SaveWithPreview } from "../components/SaveWithPreview";
+import { ToggleDropdown } from "../components/ToggleDropdown";
 import { ToggleFilePicker } from "../components/ToggleFilePicker";
 import { LangCodes } from "../data/langcode.json";
 import { getHomePath } from "../utils/backend";
@@ -85,13 +79,12 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
         fieldLabel={t("NORMAL_CHEAT_LABEL", "EXE Path")}
       />
 
-      <ToggleField
+      <ToggleDropdown
         label={t("NORMAL_LANG_TOGGLE_LABEL", "Language")}
         description={t("NORMAL_LANG_TOGGLE_DESC", "Try to specify the game language")}
         icon={<FaLanguage />}
         checked={showLang}
-        bottomSeparator={showLang ? "none" : "standard"}
-        onChange={(enable: boolean) => {
+        onToggle={(enable: boolean) => {
           setShowLang(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
@@ -99,50 +92,15 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
             setOptions(updatedOptions);
           }
         }}
+        fieldLabel={t("NORMAL_LANG_LABEL", "Language Code")}
+        value={options.getKeyValue("LANG")}
+        onInput={(value: string) => {
+          const updatedOptions = new Options(options.getOptionsString());
+          updatedOptions.setParameter({ type: "env", key: "LANG", value: value });
+          setOptions(updatedOptions);
+        }}
+        preset={defaultLangCodes}
       />
-      {showLang && (
-        <Field
-          label={t("NORMAL_LANG_LABEL", "Language Code")}
-          padding="none"
-          bottomSeparator="standard"
-        >
-          <Focusable
-            style={{
-              boxShadow: "none",
-              display: "flex",
-              justifyContent: "right",
-              padding: "10px 0",
-            }}
-          >
-            <TextField
-              style={{
-                padding: "10px",
-                fontSize: "14px",
-                width: "200px",
-                marginRight: ".5em",
-              }}
-              value={options.getKeyValue("LANG")}
-              onChange={(e) => {
-                e.persist();
-                const updatedOptions = new Options(options.getOptionsString());
-                updatedOptions.setParameter({ type: "env", key: "LANG", value: e.target.value });
-                setOptions(updatedOptions);
-              }}
-            />
-            <Dropdown
-              rgOptions={defaultLangCodes}
-              selectedOption={defaultLangCodes[0]}
-              onChange={(v) => {
-                // logger.info(`selected: ${JSON.stringify(v)}`);
-                const updatedOptions = new Options(options.getOptionsString());
-                updatedOptions.setParameter({ type: "env", key: "LANG", value: v.data });
-                setOptions(updatedOptions);
-              }}
-              strDefaultLabel={t("NORMAL_LANG_DEFAULT", "Default")}
-            />
-          </Focusable>
-        </Field>
-      )}
 
       <SaveWithPreview options={options} appid={appid} />
 
