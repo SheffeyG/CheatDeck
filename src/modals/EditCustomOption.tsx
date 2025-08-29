@@ -8,27 +8,21 @@ import {
   TextField,
 } from "@decky/ui";
 import { FC, useState } from "react";
-import { v4 as uuid } from "uuid";
 
 import { CustomOption, setCustomOptions } from "../utils/backend";
 import { ParamType } from "../utils/options";
 import t from "../utils/translate";
 
-export const CustomOptionNew: FC<{
+export const EditCustomOption: FC<{
   closeModal?: () => void;
+  id?: string;
   optList: CustomOption[];
   onSave: (data: CustomOption[]) => void;
-}> = ({
-  closeModal,
-  optList,
-  onSave,
-}) => {
-  const [targetOpt, setTargetOpt] = useState<CustomOption>({
-    id: uuid(),
-    label: "",
-    type: "env",
-    key: "",
-  } as CustomOption);
+}> = ({ closeModal, id, optList, onSave }) => {
+  const optIndex = optList.findIndex(otp => otp.id === id);
+  const [targetOpt, setTargetOpt] = useState<CustomOption>(
+    optList[optIndex],
+  );
 
   const paramTypeOptions: { label: string; data: ParamType }[] = [
     { label: t("CUSTOM_TYPE_ENV", "Environment Variable"), data: "env" },
@@ -36,9 +30,10 @@ export const CustomOptionNew: FC<{
     { label: t("CUSTOM_TYPE_FLAG", "Flag & Arguments"), data: "flag_args" },
   ];
 
-  const handleSave = async () => {
+  const handleSave = async (action = "Save") => {
     const updatedOpts = [...optList];
-    updatedOpts.push(targetOpt);
+    if (action === "Delete") updatedOpts.splice(optIndex, 1);
+    if (action === "Save") updatedOpts[optIndex] = targetOpt;
     await setCustomOptions(updatedOpts);
     onSave(updatedOpts);
     closeModal?.();
@@ -47,7 +42,7 @@ export const CustomOptionNew: FC<{
   return (
     <ModalRoot onCancel={closeModal}>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <DialogHeader>{t("CUSTOM_NEW_TITLE", "Add a New Option")}</DialogHeader>
+        <DialogHeader>{t("CUSTOM_EDIT_TITLE", "Edit Option")}</DialogHeader>
         <Field
           label={t("CUSTOM_OPTION_LABEL", "Label")}
           padding="none"
@@ -60,10 +55,7 @@ export const CustomOptionNew: FC<{
               style={{ padding: "10px", fontSize: "14px", width: "435px" }}
               value={targetOpt.label}
               onChange={(e) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  label: e.target.value,
-                });
+                setTargetOpt({ ...targetOpt, label: e.target.value });
               }}
             />
           </Focusable>
@@ -90,17 +82,12 @@ export const CustomOptionNew: FC<{
           padding="none"
           bottomSeparator="none"
         >
-          <Focusable
-            style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
-          >
+          <Focusable style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}>
             <TextField
               style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === "pre_cmd" ? "435px" : "200px" }}
               value={targetOpt.key}
               onChange={(e) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  key: e.target.value,
-                });
+                setTargetOpt({ ...targetOpt, key: e.target.value });
               }}
             />
             {targetOpt.type !== "pre_cmd" && (
@@ -112,10 +99,7 @@ export const CustomOptionNew: FC<{
                   style={{ padding: "10px", fontSize: "14px", width: "200px" }}
                   value={targetOpt.value || ""}
                   onChange={(e) => {
-                    setTargetOpt({
-                      ...targetOpt,
-                      value: e.target.value,
-                    });
+                    setTargetOpt({ ...targetOpt, value: e.target.value });
                   }}
                 />
               </>
@@ -124,16 +108,16 @@ export const CustomOptionNew: FC<{
         </Field>
         <Focusable style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <DialogButton
-            onClick={() => handleSave()}
+            onClick={() => handleSave("Save")}
             style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
           >
             {t("SAVE", "Save")}
           </DialogButton>
           <DialogButton
-            onClick={closeModal}
+            onClick={() => handleSave("Delete")}
             style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
           >
-            {t("CANCEL", "Cancel")}
+            {t("DELETE", "Delete")}
           </DialogButton>
         </Focusable>
       </div>
