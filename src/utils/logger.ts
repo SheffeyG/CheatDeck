@@ -1,41 +1,27 @@
-export const log = (...args: unknown[]) => {
+const log = (level: string, background: string, ...args: unknown[]) => {
   console.log(
-    `%c CheatDeck %c`,
+    `%c CheatDeck %c ${level} `,
     "background: #16a085; color: black;",
-    "background: #1abc9c; color: black;",
-    ...args,
-  );
-};
-
-export const debug = (...args: unknown[]) => {
-  console.debug(
-    `%c CheatDeck %c`,
-    "background: #16a085; color: black;",
-    "background: #1abc9c; color: black;",
-    ...args,
-  );
-};
-
-export const error = (...args: unknown[]) => {
-  console.error(
-    `%c CheatDeck %c`,
-    "background: #16a085; color: black;",
-    "background: #FF0000;",
+    `background: ${background}; color: black;`,
     ...args,
   );
 };
 
 const logger = {
-  info: (...args: unknown[]) => {
-    log(...args);
+  debug: (...args: unknown[]) => {
+    log("DEBUG", "#1a96bc", ...args);
   },
 
-  debug: (...args: unknown[]) => {
-    debug(...args);
+  info: (...args: unknown[]) => {
+    log("INFO", "#1abc9c", ...args);
+  },
+
+  warning: (...args: unknown[]) => {
+    log("WARNING", "#ffbb00", ...args);
   },
 
   error: (...args: unknown[]) => {
-    error(...args);
+    log("ERROR", "#bb0000", ...args);
   },
 };
 
