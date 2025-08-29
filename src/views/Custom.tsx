@@ -8,9 +8,9 @@ import {
   FaKey as TypeEnvIcon,
 } from "react-icons/fa6";
 
-import { CustomOptionEdit } from "../components/CustomOptionEdit";
-import { CustomOptionNew } from "../components/CustomOptionNew";
 import { SaveWithPreview } from "../components/SaveWithPreview";
+import { AddCustomOption } from "../modals/AddCustomOption";
+import { EditCustomOption } from "../modals/EditCustomOption";
 import { CustomOption, getCustomOptions } from "../utils/backend";
 import { Options } from "../utils/options";
 
@@ -135,7 +135,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
               className="CD_DialogButton"
               onClick={() => {
                 showModal(
-                  <CustomOptionEdit id={opt.id} optList={cusOptList} onSave={opts => setCusOptList(opts)} />,
+                  <EditCustomOption id={opt.id} optList={cusOptList} onSave={opts => setCusOptList(opts)} />,
                   window,
                 );
               }}
@@ -150,7 +150,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
         className="CD_AddButton"
         onClick={() => {
           showModal(
-            <CustomOptionNew optList={cusOptList} onSave={opts => setCusOptList(opts)} />,
+            <AddCustomOption optList={cusOptList} onSave={opts => setCusOptList(opts)} />,
             window,
           );
         }}

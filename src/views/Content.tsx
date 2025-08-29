@@ -3,17 +3,16 @@ import {
   DialogButton,
   Field,
   Focusable,
-  ModalRoot,
   Navigation,
   PanelSection,
   PanelSectionRow,
   showModal,
   ToggleField,
 } from "@decky/ui";
-import { QRCodeSVG } from "qrcode.react";
 import { FC, useEffect, useState } from "react";
 import { HiQrCode } from "react-icons/hi2";
 
+import QrCode from "../modals/QrCode";
 import {
   getShowPreview as loadShowPreview,
   setShowPreview as saveShowPreview,
@@ -40,21 +39,6 @@ const Content: FC = () => {
   const navLink = (url: string) => {
     Navigation.CloseSideMenus();
     Navigation.NavigateToExternalWeb(url);
-  };
-
-  const showQrModal = (url: string) => {
-    showModal(
-      <ModalRoot>
-        <QRCodeSVG
-          style={{ margin: "0 auto 1.5em auto" }}
-          value={url}
-          includeMargin
-          size={256}
-        />
-        <span style={{ textAlign: "center", wordBreak: "break-word" }}>{url}</span>
-      </ModalRoot>,
-      window,
-    );
   };
 
   return (
@@ -118,7 +102,7 @@ const Content: FC = () => {
             <Focusable style={{ display: "flex" }}>
               <DialogButton
                 onClick={() => navLink("https://github.com/SheffeyG/CheatDeck")}
-                onSecondaryButton={() => showQrModal("https://github.com/SheffeyG/CheatDeck")}
+                onSecondaryButton={() => showModal(<QrCode />, window)}
                 onSecondaryActionDescription={t("CONTENT_QR_DESC", "Show Link QR")}
                 style={{
                   padding: "10px",
@@ -129,7 +113,7 @@ const Content: FC = () => {
               </DialogButton>
               <DialogButton
                 onOKActionDescription={t("CONTENT_QR_DESC", "Show Link QR")}
-                onClick={() => showQrModal("https://github.com/SheffeyG/CheatDeck")}
+                onClick={() => showModal(<QrCode />, window)}
                 style={{
                   display: "flex",
                   justifyContent: "center",
