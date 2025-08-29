@@ -1,13 +1,14 @@
 import { callable } from "@decky/api";
 import { v4 as uuid } from "uuid";
 
-import logger from "./logger";
 import { ParsedParam } from "./options";
 
 export interface CustomOption extends ParsedParam {
   id: string;
   label: string;
 }
+
+/* Backend bridge functions */
 
 async function getEnv(env: string) {
   const callback = callable<[string], string>("get_env");
@@ -24,6 +25,8 @@ async function setSetting(key: string, value: unknown) {
   return await callback({ key, value });
 }
 
+/* Frontend exported functions */
+
 export const getHomePath = async (): Promise<string> => {
   return await getEnv("DECKY_USER_HOME");
 };
@@ -31,14 +34,12 @@ export const getHomePath = async (): Promise<string> => {
 export const getCustomOptions = async (): Promise<CustomOption[]> => {
   const savedOpt = await getSetting("CustomOptions", []) as CustomOption[];
   const optsWithId = savedOpt.map(option => ({ ...option, id: uuid() }));
-  logger.info(`Load user settings:\n${JSON.stringify(optsWithId, null, 2)}`);
   return optsWithId;
 };
 
 export const setCustomOptions = async (data: CustomOption[]): Promise<void> => {
   const optsWithoutId = data.map(({ id, ...rest }) => rest);
   await setSetting("CustomOptions", optsWithoutId);
-  logger.info(`Saved user settings:\n${JSON.stringify(optsWithoutId, null, 2)}`);
 };
 
 export const getShowPreview = async (): Promise<boolean> => {
