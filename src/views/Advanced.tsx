@@ -1,29 +1,17 @@
 import { Focusable, ToggleField } from "@decky/ui";
-import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 
 import { SaveWithPreview } from "../components/SaveWithPreview";
 import { ToggleFilePicker } from "../components/ToggleFilePicker";
+import { useOptions } from "../hooks/useOptions";
 import { getHomePath } from "../utils/backend";
 import { browseFiles } from "../utils/client";
 import { Options } from "../utils/options";
 import t from "../utils/translate";
 
 const Advanced: FC<{ appid: number }> = ({ appid }) => {
-  const [options, setOptions] = useState(new Options(""));
-  const [showPrefix, setShowPrefix] = useState(false);
-
-  useEffect(() => {
-    const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
-      const optionsString = detail.strLaunchOptions;
-      const savedOptions = new Options(optionsString);
-      setShowPrefix(savedOptions.hasKey("STEAM_COMPAT_DATA_PATH"));
-      setOptions(savedOptions);
-    });
-    setTimeout(() => {
-      unregister();
-    }, 1000);
-  }, []);
+  const { options, setOptions } = useOptions();
+  const [showPrefix, setShowPrefix] = useState(options.hasKey("STEAM_COMPAT_DATA_PATH"));
 
   const handleBrowse = async () => {
     const savedCompatDataPath = options.getKeyValue("STEAM_COMPAT_DATA_PATH");
