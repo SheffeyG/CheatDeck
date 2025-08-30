@@ -10,8 +10,7 @@ import {
 import { FC, useState } from "react";
 import { v4 as uuid } from "uuid";
 
-import { CustomOption, setCustomOptions } from "../utils/backend";
-import { ParamType } from "../utils/options";
+import { setCustomOptions } from "../utils/backend";
 import t from "../utils/translate";
 
 export const AddCustomOption: FC<{
@@ -26,7 +25,7 @@ export const AddCustomOption: FC<{
     key: "",
   } as CustomOption);
 
-  const paramTypeOptions: { label: string; data: ParamType }[] = [
+  const paramTypeOptions: { label: string; data: OptionType }[] = [
     { label: t("CUSTOM_TYPE_ENV", "Environment Variable"), data: "env" },
     { label: t("CUSTOM_TYPE_CMD", "Prefix Commands"), data: "pre_cmd" },
     { label: t("CUSTOM_TYPE_FLAG", "Flag & Arguments"), data: "flag_args" },

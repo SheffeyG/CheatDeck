@@ -2,14 +2,7 @@ import { sendNotice } from "./client";
 import logger from "./logger";
 import t from "./translate";
 
-export type ParamType = "env" | "pre_cmd" | "flag_args";
-export type Position = "before" | "after";
-
-export interface ParsedParam {
-  type: ParamType;
-  key: string;
-  value?: string;
-}
+type ParsedParam = LaunchOption;
 
 export class Options {
   #parsedParams: ParsedParam[] = [];
@@ -42,7 +35,7 @@ export class Options {
     return params;
   }
 
-  private parseTokens(text: string, position: Position): ParsedParam[] {
+  private parseTokens(text: string, position: OptionPosition): ParsedParam[] {
     if (!text) return [];
 
     const tokens = this.tokenize(text);
@@ -121,7 +114,7 @@ export class Options {
   }
 
   getParameters(): ParsedParam[] {
-    return [...this.#parsedParams];
+    return this.#parsedParams;
   }
 
   setParameter(param: ParsedParam): void {
@@ -138,7 +131,7 @@ export class Options {
     this.#parsedParams = this.#parsedParams.filter(p => p.key !== key);
   }
 
-  removeParamByType(type: ParamType): void {
+  removeParamByType(type: OptionType): void {
     this.#parsedParams = this.#parsedParams.filter(p => p.type !== type);
   }
 
@@ -165,7 +158,7 @@ export class Options {
 
     const result = [...envString, ...preCmdString, "%command%", ...flagArgsString].join(" ").trim();
 
-    // If the result is only %command%, return empty string
+    // If there's no other launch options, return empty string
     if (result === "%command%") return "";
 
     return result;

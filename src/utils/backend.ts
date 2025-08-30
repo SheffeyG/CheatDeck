@@ -1,13 +1,6 @@
 import { callable } from "@decky/api";
 import { v4 as uuid } from "uuid";
 
-import { ParsedParam } from "./options";
-
-export interface CustomOption extends ParsedParam {
-  id: string;
-  label: string;
-}
-
 /* Backend bridge functions */
 
 async function getEnv(env: string) {
