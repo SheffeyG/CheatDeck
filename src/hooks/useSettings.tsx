@@ -1,50 +1,61 @@
-import { call } from "@decky/api";
 import {
   createContext,
   FC,
   ReactNode,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
+import {
+  getShowPreview as loadShowPreview,
+  setShowPreview as saveShowPreview,
+} from "../utils/backend";
 import logger from "../utils/logger";
 
-export const SettingsContext = createContext({});
+interface SettingsContextType {
+  showPreview: boolean;
+  setShowPreview: (value: boolean) => void;
+}
 
-type SettingsContextType = {
-  set: (key: string, value: unknown, immediate?: boolean) => void;
-  get: (key: string, fallback: unknown) => Promise<unknown>;
-};
+const SettingsContext = createContext<SettingsContextType>({
+  showPreview: false,
+  setShowPreview: () => {},
+});
 
 export const SettingsProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [setting, setSetting] = useState<{ key: string; value: unknown }>();
+  const [showPreview, setShowPreview] = useState<boolean>(false);
 
-  const save = useMemo(() => async (setting: { key: string; value: unknown }) => {
-    logger.info("writing setting", setting);
-    await call("set_setting", setting.key, setting.value);
-  }, []);
-
-  const set = useMemo(() => (key, value) => {
-    return setSetting({ key, value });
-  }, []) as SettingsContextType["set"];
-
-  const get: SettingsContextType["get"] = useMemo(() => async (key, fallback) => {
-    return await call("get_setting", key, fallback);
+  useEffect(() => {
+    loadSetting();
   }, []);
 
   useEffect(() => {
-    if (setting) save(setting);
-  }, [save, setting]);
+    saveSetting(showPreview);
+  }, [showPreview]);
+
+  const loadSetting = async () => {
+    try {
+      const loadedValue = await loadShowPreview();
+      if (loadedValue !== showPreview) setShowPreview(loadedValue);
+    } catch (error) {
+      logger.error("Failed to load preview setting", error);
+    }
+  };
+
+  const saveSetting = async (value: boolean) => {
+    try {
+      await saveShowPreview(value);
+    } catch (error) {
+      logger.error("Failed to save preview setting", error);
+    }
+  };
 
   return (
-    <SettingsContext.Provider value={{ set, get }}>
+    <SettingsContext.Provider value={{ showPreview, setShowPreview }}>
       {children}
     </SettingsContext.Provider>
   );
 };
 
-export const useSettings = () => useContext(SettingsContext) as SettingsContextType;
-
-export default useSettings;
+export const useSettings = () => useContext(SettingsContext);
