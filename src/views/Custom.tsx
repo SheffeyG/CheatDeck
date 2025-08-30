@@ -1,5 +1,4 @@
 import { DialogButton, Focusable, showModal, ToggleField } from "@decky/ui";
-import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 import { FC, useEffect, useState } from "react";
 import { IconType } from "react-icons";
 import { BsPencilFill, BsPlusSquareFill } from "react-icons/bs";
@@ -10,6 +9,7 @@ import {
 } from "react-icons/fa6";
 
 import { SaveWithPreview } from "../components/SaveWithPreview";
+import { useOptions } from "../hooks/useOptions";
 import { AddCustomOption } from "../modals/AddCustomOption";
 import { EditCustomOption } from "../modals/EditCustomOption";
 import { getCustomOptions } from "../utils/backend";
@@ -31,27 +31,15 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
     );
   };
 
+  // Get launch options from current game details
+  const { options, setOptions } = useOptions();
+
   // Load custom options from users' plugin settings
   const [cusOptList, setCusOptList] = useState<CustomOption[]>([]);
   useEffect(() => {
     getCustomOptions().then((result) => {
       setCusOptList(result as CustomOption[]);
     });
-  }, []);
-
-  // Get launch options from current game details
-  const [options, setOptions] = useState<Options>(new Options(""));
-  useEffect(() => {
-    const { unregister } = SteamClient.Apps.RegisterForAppDetails(
-      appid,
-      (detail: AppDetails) => {
-        const savedOptions = new Options(detail.strLaunchOptions);
-        setOptions(savedOptions);
-      },
-    );
-    setTimeout(() => {
-      unregister();
-    }, 1000);
   }, []);
 
   return (
@@ -122,25 +110,23 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
                 label={<CusOptTitle label={opt.label} type={opt.type} />}
                 checked={opt.value ? options.hasKeyValue(opt.key, opt.value) : options.hasKey(opt.key)}
                 onChange={(enable: boolean) => {
-                  setOptions((prevOptions) => {
-                    const updatedOptions = new Options(prevOptions.getOptionsString());
+                  const updatedOptions = new Options(options.getOptionsString());
 
-                    if (enable) {
-                      updatedOptions.setParameter({
-                        type: opt.type,
-                        key: opt.key,
-                        ...(opt.value !== undefined ? { value: opt.value } : {}),
-                      });
+                  if (enable) {
+                    updatedOptions.setParameter({
+                      type: opt.type,
+                      key: opt.key,
+                      ...(opt.value !== undefined ? { value: opt.value } : {}),
+                    });
+                  } else {
+                    if (opt.type === "pre_cmd") {
+                      updatedOptions.removeParamByType("pre_cmd");
                     } else {
-                      if (opt.type === "pre_cmd") {
-                        updatedOptions.removeParamByType("pre_cmd");
-                      } else {
-                        updatedOptions.removeParamByKey(opt.key);
-                      }
+                      updatedOptions.removeParamByKey(opt.key);
                     }
+                  }
 
-                    return updatedOptions;
-                  });
+                  setOptions(updatedOptions);
                 }}
               />
             </Focusable>

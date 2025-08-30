@@ -6,6 +6,7 @@ import {
   BsPlusSquareFill as IconCustom,
 } from "react-icons/bs";
 
+import { OptionsProvider } from "../hooks/useOptions";
 import { SettingsProvider } from "../hooks/useSettings";
 import t from "../utils/translate";
 import Advanced from "./Advanced";
@@ -40,7 +41,9 @@ const PageRouter: FC = () => {
 
   return (
     <SettingsProvider>
-      <SidebarNavigation pages={pages} />
+      <OptionsProvider appid={appid}>
+        <SidebarNavigation pages={pages} />
+      </OptionsProvider>
     </SettingsProvider>
   );
 };
