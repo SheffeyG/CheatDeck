@@ -1,36 +1,24 @@
 import { DropdownOption, Focusable } from "@decky/ui";
-import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { FaGamepad, FaLanguage } from "react-icons/fa";
 
 import { SaveWithPreview } from "../components/SaveWithPreview";
 import { ToggleDropdown } from "../components/ToggleDropdown";
 import { ToggleFilePicker } from "../components/ToggleFilePicker";
 import { LangCodes } from "../data/langcode.json";
+import { useOptions } from "../hooks/useOptions";
 import { getHomePath } from "../utils/backend";
 import { browseFiles } from "../utils/client";
 import { Options } from "../utils/options";
 import t from "../utils/translate";
 
 const Normal: FC<{ appid: number }> = ({ appid }) => {
-  const [options, setOptions] = useState(new Options(""));
-  const [showCheat, setShowChat] = useState(false);
-  const [showLang, setShowLang] = useState(false);
+  const { options, setOptions } = useOptions();
+
+  const [showCheat, setShowChat] = useState(options.hasKey("PROTON_REMOTE_DEBUG_CMD"));
+  const [showLang, setShowLang] = useState(options.hasKey("LANG"));
 
   const defaultLangCodes: DropdownOption[] = LangCodes;
-
-  useEffect(() => {
-    const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
-      const optionsString = detail.strLaunchOptions;
-      const savedOptions = new Options(optionsString);
-      setOptions(savedOptions);
-      setShowChat(savedOptions.hasKey("PROTON_REMOTE_DEBUG_CMD"));
-      setShowLang(savedOptions.hasKey("LANG"));
-    });
-    setTimeout(() => {
-      unregister();
-    }, 1000);
-  }, []);
 
   const handleBrowse = async () => {
     const savedCheatDir = options.getKeyValue("PRESSURE_VESSEL_FILESYSTEMS_RW");
