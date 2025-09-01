@@ -10,7 +10,6 @@ import {
 import { FC, useState } from "react";
 import { v4 as uuid } from "uuid";
 
-import { setCustomOptions } from "../utils/backend";
 import t from "../utils/translate";
 
 export const AddCustomOption: FC<{
@@ -31,14 +30,6 @@ export const AddCustomOption: FC<{
     { label: t("CUSTOM_TYPE_FLAG", "Flag & Arguments"), data: "flag_args" },
   ];
 
-  const handleSave = async () => {
-    const updatedOpts = [...optList];
-    updatedOpts.push(targetOpt);
-    await setCustomOptions(updatedOpts);
-    onSave(updatedOpts);
-    closeModal?.();
-  };
-
   return (
     <ModalRoot onCancel={closeModal}>
       <div style={{ display: "flex", flexDirection: "column" }}>
@@ -54,12 +45,7 @@ export const AddCustomOption: FC<{
             <TextField
               style={{ padding: "10px", fontSize: "14px", width: "435px" }}
               value={targetOpt.label}
-              onChange={(e) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  label: e.target.value,
-                });
-              }}
+              onChange={e => setTargetOpt({ ...targetOpt, label: e.target.value })}
             />
           </Focusable>
         </Field>
@@ -74,9 +60,7 @@ export const AddCustomOption: FC<{
             <Dropdown
               rgOptions={paramTypeOptions}
               selectedOption={targetOpt.type}
-              onChange={(selected) => {
-                setTargetOpt({ ...targetOpt, type: selected.data });
-              }}
+              onChange={v => setTargetOpt({ ...targetOpt, type: v.data })}
             />
           </Focusable>
         </Field>
@@ -91,12 +75,7 @@ export const AddCustomOption: FC<{
             <TextField
               style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === "pre_cmd" ? "435px" : "200px" }}
               value={targetOpt.key}
-              onChange={(e) => {
-                setTargetOpt({
-                  ...targetOpt,
-                  key: e.target.value,
-                });
-              }}
+              onChange={e => setTargetOpt({ ...targetOpt, key: e.target.value })}
             />
             {targetOpt.type !== "pre_cmd" && (
               <>
@@ -106,12 +85,7 @@ export const AddCustomOption: FC<{
                 <TextField
                   style={{ padding: "10px", fontSize: "14px", width: "200px" }}
                   value={targetOpt.value || ""}
-                  onChange={(e) => {
-                    setTargetOpt({
-                      ...targetOpt,
-                      value: e.target.value,
-                    });
-                  }}
+                  onChange={e => setTargetOpt({ ...targetOpt, value: e.target.value })}
                 />
               </>
             )}
@@ -119,7 +93,11 @@ export const AddCustomOption: FC<{
         </Field>
         <Focusable style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <DialogButton
-            onClick={() => handleSave()}
+            onClick={() => {
+              const updatedOpts = [...optList, targetOpt];
+              onSave(updatedOpts);
+              closeModal?.();
+            }}
             style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
           >
             {t("SAVE", "Save")}

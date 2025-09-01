@@ -9,8 +9,9 @@ import {
 } from "@decky/ui";
 import { FC, useState } from "react";
 
-import { setCustomOptions } from "../utils/backend";
 import t from "../utils/translate";
+
+type Action = "Change" | "Delete";
 
 export const EditCustomOption: FC<{
   closeModal?: () => void;
@@ -29,11 +30,10 @@ export const EditCustomOption: FC<{
     { label: t("CUSTOM_TYPE_FLAG", "Flag & Arguments"), data: "flag_args" },
   ];
 
-  const handleSave = async (action = "Save") => {
+  const handleSave = async (action: Action) => {
     const updatedOpts = [...optList];
     if (action === "Delete") updatedOpts.splice(optIndex, 1);
-    if (action === "Save") updatedOpts[optIndex] = targetOpt;
-    await setCustomOptions(updatedOpts);
+    if (action === "Change") updatedOpts[optIndex] = targetOpt;
     onSave(updatedOpts);
     closeModal?.();
   };
@@ -53,9 +53,7 @@ export const EditCustomOption: FC<{
             <TextField
               style={{ padding: "10px", fontSize: "14px", width: "435px" }}
               value={targetOpt.label}
-              onChange={(e) => {
-                setTargetOpt({ ...targetOpt, label: e.target.value });
-              }}
+              onChange={e => setTargetOpt({ ...targetOpt, label: e.target.value })}
             />
           </Focusable>
         </Field>
@@ -70,9 +68,7 @@ export const EditCustomOption: FC<{
             <Dropdown
               rgOptions={paramTypeOptions}
               selectedOption={targetOpt.type}
-              onChange={(selected) => {
-                setTargetOpt({ ...targetOpt, type: selected.data });
-              }}
+              onChange={v => setTargetOpt({ ...targetOpt, type: v.data })}
             />
           </Focusable>
         </Field>
@@ -97,9 +93,7 @@ export const EditCustomOption: FC<{
                 <TextField
                   style={{ padding: "10px", fontSize: "14px", width: "200px" }}
                   value={targetOpt.value || ""}
-                  onChange={(e) => {
-                    setTargetOpt({ ...targetOpt, value: e.target.value });
-                  }}
+                  onChange={e => setTargetOpt({ ...targetOpt, value: e.target.value })}
                 />
               </>
             )}
@@ -107,7 +101,7 @@ export const EditCustomOption: FC<{
         </Field>
         <Focusable style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <DialogButton
-            onClick={() => handleSave("Save")}
+            onClick={() => handleSave("Change")}
             style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
           >
             {t("SAVE", "Save")}

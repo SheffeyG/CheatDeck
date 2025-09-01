@@ -1,5 +1,5 @@
 import { DialogButton, Focusable, showModal, ToggleField } from "@decky/ui";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { IconType } from "react-icons";
 import { BsPencilFill, BsPlusSquareFill } from "react-icons/bs";
 import {
@@ -10,12 +10,17 @@ import {
 
 import { SaveWithPreview } from "../components/SaveWithPreview";
 import { useOptions } from "../hooks/useOptions";
+import { useSettings } from "../hooks/useSettings";
 import { AddCustomOption } from "../modals/AddCustomOption";
 import { EditCustomOption } from "../modals/EditCustomOption";
-import { getCustomOptions } from "../utils/backend";
 import { Options } from "../utils/options";
 
 const Custom: FC<{ appid: number }> = ({ appid }) => {
+  // Launch options from current game details
+  const { options, setOptions } = useOptions();
+  // Custom options from users' plugin settings
+  const { customOptions, setCustomOptions } = useSettings();
+
   const CusOptTitle: FC<{ label: string; type: OptionType }> = ({ label, type }) => {
     const typeMap: Record<OptionType, IconType> = {
       env: TypeEnvIcon,
@@ -30,17 +35,6 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
       </>
     );
   };
-
-  // Get launch options from current game details
-  const { options, setOptions } = useOptions();
-
-  // Load custom options from users' plugin settings
-  const [cusOptList, setCusOptList] = useState<CustomOption[]>([]);
-  useEffect(() => {
-    getCustomOptions().then((result) => {
-      setCusOptList(result as CustomOption[]);
-    });
-  }, []);
 
   return (
     <>
@@ -101,8 +95,8 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
           }
         `}
       </style>
-      {(cusOptList.length > 0) && (
-        cusOptList.map((opt: CustomOption) => (
+      {(customOptions.length > 0) && (
+        customOptions.map((opt: CustomOption) => (
           <Focusable className="CheatDeckEntryContainer" key={opt.id}>
             <Focusable className="CheatDeckToggleContainer">
               <ToggleField
@@ -134,7 +128,11 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
               className="CheatDeckEditButton"
               onClick={() => {
                 showModal(
-                  <EditCustomOption id={opt.id} optList={cusOptList} onSave={opts => setCusOptList(opts)} />,
+                  <EditCustomOption
+                    id={opt.id}
+                    optList={customOptions}
+                    onSave={opts => setCustomOptions(opts)}
+                  />,
                   window,
                 );
               }}
@@ -149,7 +147,10 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
         className="CheatDeckAddButton"
         onClick={() => {
           showModal(
-            <AddCustomOption optList={cusOptList} onSave={opts => setCusOptList(opts)} />,
+            <AddCustomOption
+              optList={customOptions}
+              onSave={opts => setCustomOptions(opts)}
+            />,
             window,
           );
         }}
@@ -157,7 +158,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
         <BsPlusSquareFill />
       </DialogButton>
 
-      {cusOptList.length > 0 && <SaveWithPreview options={options} appid={appid} />}
+      {customOptions.length > 0 && <SaveWithPreview options={options} appid={appid} />}
 
     </>
   );

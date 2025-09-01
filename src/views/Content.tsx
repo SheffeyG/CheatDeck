@@ -9,32 +9,16 @@ import {
   showModal,
   ToggleField,
 } from "@decky/ui";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { HiQrCode } from "react-icons/hi2";
 
+import { useSettings } from "../hooks/useSettings";
 import QrCode from "../modals/QrCode";
-import {
-  getShowPreview as loadShowPreview,
-  setShowPreview as saveShowPreview,
-} from "../utils/backend";
-import logger from "../utils/logger";
 import t from "../utils/translate";
 
 const Content: FC = () => {
   const translator = t("CREDIT", "");
-  const [showPreview, setShowPreview] = useState(false);
-
-  useEffect(() => {
-    loadShowPreview().then(setShowPreview).catch((error) => {
-      logger.error("Failed to load preview setting", error);
-    });
-  }, []);
-
-  useEffect(() => {
-    saveShowPreview(showPreview).catch((error) => {
-      logger.error("Failed to save preview setting", error);
-    });
-  }, [showPreview]);
+  const { showPreview, setShowPreview } = useSettings();
 
   const navLink = (url: string) => {
     Navigation.CloseSideMenus();
