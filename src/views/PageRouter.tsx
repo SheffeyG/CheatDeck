@@ -6,9 +6,8 @@ import {
   BsPlusSquareFill as IconCustom,
 } from "react-icons/bs";
 
-import { OptionsProvider } from "../hooks/useOptions";
-import { SettingsProvider } from "../hooks/useSettings";
-import t from "../utils/translate";
+import { OptionsProvider, SettingsProvider } from "../hooks";
+import { t } from "../utils";
 import Advanced from "./Advanced";
 import Custom from "./Custom";
 import Normal from "./Normal";

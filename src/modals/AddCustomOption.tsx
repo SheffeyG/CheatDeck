@@ -10,7 +10,7 @@ import {
 import { FC, useState } from "react";
 import { v4 as uuid } from "uuid";
 
-import t from "../utils/translate";
+import { t } from "../utils";
 
 export const AddCustomOption: FC<{
   closeModal?: () => void;

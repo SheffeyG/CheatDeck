@@ -8,8 +8,7 @@ import {
   useState,
 } from "react";
 
-import logger from "../utils/logger";
-import { Options } from "../utils/options";
+import { logger, Options } from "../utils";
 
 interface OptionsContextProps {
   options: Options;

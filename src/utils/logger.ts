@@ -7,7 +7,7 @@ const log = (level: string, background: string, ...args: unknown[]) => {
   );
 };
 
-const logger = {
+export const logger = {
   debug: (...args: unknown[]) => {
     log("DEBUG", "#1a96bc", ...args);
   },
@@ -24,5 +24,3 @@ const logger = {
     log("ERROR", "#bb0000", ...args);
   },
 };
-
-export default logger;
