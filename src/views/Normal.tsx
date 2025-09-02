@@ -14,30 +14,27 @@ import t from "../utils/translate";
 
 const Normal: FC<{ appid: number }> = ({ appid }) => {
   const { options, setOptions } = useOptions();
-
   const [showCheat, setShowChat] = useState(options.hasKey("PROTON_REMOTE_DEBUG_CMD"));
   const [showLang, setShowLang] = useState(options.hasKey("LANG"));
-
-  const defaultLangCodes: DropdownOption[] = LangCodes;
 
   const handleBrowse = async () => {
     const savedCheatDir = options.getKeyValue("PRESSURE_VESSEL_FILESYSTEMS_RW");
     const defaultPath = savedCheatDir ?? await getHomePath();
     const filePickerRes = await browseFiles(defaultPath, true, ["exe", "bat"]);
-    const selectedCheatPath = filePickerRes.path;
-    const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, "");
+    const selectedCheatPath = filePickerRes.path.replace(/(['"])/g, "\\$1"); // Escape quotes
+    const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, ""); // Get parent directory
 
     const newOptions = new Options(options.getOptionsString());
     newOptions.setParameter({
       type: "env",
       key: "PROTON_REMOTE_DEBUG_CMD",
-      value: `'${selectedCheatPath}'`, // single quotes to avoid issues with spaces
+      value: `"'${selectedCheatPath}'"`, // Quote twice to adjust Proton's shlex.split parser
     });
     // Make sure proton has read/write access to the parent directory
     newOptions.setParameter({
       type: "env",
       key: "PRESSURE_VESSEL_FILESYSTEMS_RW",
-      value: selectedCheatDir,
+      value: `"${selectedCheatDir}"`,
     });
     setOptions(newOptions);
   };
@@ -62,7 +59,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
             setOptions(updatedOptions);
           }
         }}
-        value={options.getKeyValue("PROTON_REMOTE_DEBUG_CMD")?.replace(/^'|'$/g, "")}
+        value={options.getKeyValue("PROTON_REMOTE_DEBUG_CMD")?.replace(/^"'|\\|'"$/g, "")}
         onBrowse={handleBrowse}
         fieldLabel={t("NORMAL_CHEAT_LABEL", "EXE Path")}
       />
@@ -87,7 +84,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
           updatedOptions.setParameter({ type: "env", key: "LANG", value: value });
           setOptions(updatedOptions);
         }}
-        preset={defaultLangCodes}
+        preset={LangCodes as DropdownOption[]}
       />
 
       <SaveWithPreview options={options} appid={appid} />

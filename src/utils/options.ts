@@ -49,7 +49,7 @@ export class Options {
 
       if (current.includes("=") && !current.startsWith("-") && position === "before") {
         const [key, ...valueParts] = current.split("="); // Edge case: "ENV=a=b"
-        const value = valueParts.join("=").replace(/^["']|["']$/g, "");
+        const value = valueParts.join("=");
         params.push({ type: "env", key: key.trim(), value: value });
         i++;
         continue;
@@ -57,8 +57,7 @@ export class Options {
 
       if (current.startsWith("-") && position === "after") {
         if (next && !next.startsWith("-")) { // flag with argument
-          const value = next.replace(/^["']|["']$/g, "");
-          params.push({ type: "flag_args", key: current, value: value });
+          params.push({ type: "flag_args", key: current, value: next });
           i += 2;
         } else { // flag without argument
           params.push({ type: "flag_args", key: current });
@@ -92,7 +91,10 @@ export class Options {
     for (let i = 0; i < text.length; i++) {
       const char = text[i];
 
-      if ((char === "\"" || char === "'") && !inQuotes) {
+      if (char === "\\" && i + 1 < text.length) {
+        current += char + text[i + 1];
+        i++;
+      } else if ((char === "\"" || char === "'") && !inQuotes) {
         inQuotes = true;
         quoteChar = char;
         current += char;
@@ -150,7 +152,7 @@ export class Options {
 
   getOptionsString(): string {
     const envString = this.#parsedParams.filter(param => param.type === "env")
-      .map(param => `${param.key}="${param.value}"`);
+      .map(param => `${param.key}=${param.value}`);
     const preCmdString = this.#parsedParams.filter(param => param.type === "pre_cmd")
       .map(param => param.key);
     const flagArgsString = this.#parsedParams.filter(param => param.type === "flag_args")
