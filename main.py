@@ -99,8 +99,9 @@ class Plugin:
 
     @classmethod
     async def get_setting(cls, data: GetSettingOptions):
-        logger.info("[backend] Get {}".format(data["key"]))
-        return settings.getSetting(data["key"], data["defaults"])
+        value = settings.getSetting(data["key"], data["defaults"])
+        logger.info("[backend] Get {}: {}".format(data["key"], value))
+        return value
 
     @classmethod
     async def set_setting(cls, data: SetSettingOptions):

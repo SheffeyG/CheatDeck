@@ -18,7 +18,7 @@ import t from "../utils/translate";
 
 const Content: FC = () => {
   const translator = t("CREDIT", "");
-  const { showPreview, setShowPreview } = useSettings();
+  const { showPreview, saveShowPreview } = useSettings();
 
   const navLink = (url: string) => {
     Navigation.CloseSideMenus();
@@ -34,7 +34,7 @@ const Content: FC = () => {
             description={t("CONTENT_PREVIEW_DESC", "Enable launch options preview")}
             bottomSeparator="thick"
             checked={showPreview}
-            onChange={(enable: boolean) => setShowPreview(enable)}
+            onChange={(enable: boolean) => saveShowPreview(enable)}
           />
         </PanelSectionRow>
       </PanelSection>

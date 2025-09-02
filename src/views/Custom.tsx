@@ -19,7 +19,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
   // Launch options from current game details
   const { options, setOptions } = useOptions();
   // Custom options from users' plugin settings
-  const { customOptions, setCustomOptions } = useSettings();
+  const { customOptions, saveCustomOptions } = useSettings();
 
   const CusOptTitle: FC<{ label: string; type: OptionType }> = ({ label, type }) => {
     const typeMap: Record<OptionType, IconType> = {
@@ -131,7 +131,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
                   <EditCustomOption
                     id={opt.id}
                     optList={customOptions}
-                    onSave={opts => setCustomOptions(opts)}
+                    onSave={opts => saveCustomOptions(opts)}
                   />,
                   window,
                 );
@@ -149,7 +149,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
           showModal(
             <AddCustomOption
               optList={customOptions}
-              onSave={opts => setCustomOptions(opts)}
+              onSave={opts => saveCustomOptions(opts)}
             />,
             window,
           );
