@@ -8,12 +8,10 @@ import {
   FaKey as TypeEnvIcon,
 } from "react-icons/fa6";
 
-import { SaveWithPreview } from "../components/SaveWithPreview";
-import { useOptions } from "../hooks/useOptions";
-import { useSettings } from "../hooks/useSettings";
-import { AddCustomOption } from "../modals/AddCustomOption";
-import { EditCustomOption } from "../modals/EditCustomOption";
-import { Options } from "../utils/options";
+import { SaveWithPreview } from "../components";
+import { useOptions, useSettings } from "../hooks";
+import { AddCustomOption, EditCustomOption } from "../modals";
+import { Options } from "../utils";
 
 const Custom: FC<{ appid: number }> = ({ appid }) => {
   // Launch options from current game details

@@ -2,15 +2,10 @@ import { DropdownOption, Focusable } from "@decky/ui";
 import { FC, useState } from "react";
 import { FaGamepad, FaLanguage } from "react-icons/fa";
 
-import { SaveWithPreview } from "../components/SaveWithPreview";
-import { ToggleDropdown } from "../components/ToggleDropdown";
-import { ToggleFilePicker } from "../components/ToggleFilePicker";
+import { SaveWithPreview, ToggleDropdown, ToggleFilePicker } from "../components";
 import { LangCodes } from "../data/langcode.json";
-import { useOptions } from "../hooks/useOptions";
-import { getHomePath } from "../utils/backend";
-import { browseFiles } from "../utils/client";
-import { Options } from "../utils/options";
-import t from "../utils/translate";
+import { useOptions } from "../hooks";
+import { browseFiles, getHomePath, Options, t } from "../utils";
 
 const Normal: FC<{ appid: number }> = ({ appid }) => {
   const { options, setOptions } = useOptions();

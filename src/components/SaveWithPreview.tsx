@@ -2,9 +2,7 @@ import { DialogButton, Focusable } from "@decky/ui";
 import { FC } from "react";
 
 import { useSettings } from "../hooks/useSettings";
-import { sendNotice } from "../utils/client";
-import { Options } from "../utils/options";
-import t from "../utils/translate";
+import { Options, sendNotice, t } from "../utils";
 
 export const SaveWithPreview: FC<{
   options: Options;

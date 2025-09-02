@@ -1,13 +1,9 @@
 import { Focusable, ToggleField } from "@decky/ui";
 import { FC, useState } from "react";
 
-import { SaveWithPreview } from "../components/SaveWithPreview";
-import { ToggleFilePicker } from "../components/ToggleFilePicker";
-import { useOptions } from "../hooks/useOptions";
-import { getHomePath } from "../utils/backend";
-import { browseFiles } from "../utils/client";
-import { Options } from "../utils/options";
-import t from "../utils/translate";
+import { SaveWithPreview, ToggleFilePicker } from "../components";
+import { useOptions } from "../hooks";
+import { browseFiles, getHomePath, Options, t } from "../utils";
 
 const Advanced: FC<{ appid: number }> = ({ appid }) => {
   const { options, setOptions } = useOptions();

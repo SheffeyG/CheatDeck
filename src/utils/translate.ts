@@ -6,7 +6,7 @@ import * as ko from "../data/i18n/ko.json";
 import * as ru from "../data/i18n/ru.json";
 import * as zhCn from "../data/i18n/zh-cn.json";
 import * as zhTw from "../data/i18n/zh-tw.json";
-import logger from "./logger";
+import { logger } from "./logger";
 
 type Lang = { [key: string]: string };
 type Languages = { [key: string]: Lang };
@@ -39,6 +39,4 @@ function translate() {
   };
 }
 
-const t = translate();
-
-export default t;
+export const t = translate();

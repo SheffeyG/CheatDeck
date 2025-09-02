@@ -12,9 +12,9 @@ import {
 import { FC } from "react";
 import { HiQrCode } from "react-icons/hi2";
 
-import { useSettings } from "../hooks/useSettings";
-import QrCode from "../modals/QrCode";
-import t from "../utils/translate";
+import { useSettings } from "../hooks";
+import { QrCode } from "../modals";
+import { t } from "../utils";
 
 const Content: FC = () => {
   const translator = t("CREDIT", "");

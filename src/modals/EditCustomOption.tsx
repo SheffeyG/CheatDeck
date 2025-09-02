@@ -9,7 +9,7 @@ import {
 } from "@decky/ui";
 import { FC, useState } from "react";
 
-import t from "../utils/translate";
+import { t } from "../utils";
 
 type Action = "Change" | "Delete";
 

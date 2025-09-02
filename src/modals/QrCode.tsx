@@ -4,7 +4,7 @@ import { FC } from "react";
 
 export const defaultUrl = "https://github.com/SheffeyG/CheatDeck";
 
-const QrCode: FC<{ url?: string }> = ({ url = defaultUrl }) => (
+export const QrCode: FC<{ url?: string }> = ({ url = defaultUrl }) => (
   <ModalRoot onClose={() => { }}>
     <QRCodeSVG
       style={{ margin: "0 auto 1.5em auto" }}
@@ -17,5 +17,3 @@ const QrCode: FC<{ url?: string }> = ({ url = defaultUrl }) => (
     </span>
   </ModalRoot>
 );
-
-export default QrCode;

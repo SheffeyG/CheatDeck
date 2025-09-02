@@ -12,8 +12,8 @@ import {
   getShowPreview as backendGetShowPreview,
   setCustomOptions as backendSetCustomOptions,
   setShowPreview as backendSetShowPreview,
-} from "../utils/backend";
-import logger from "../utils/logger";
+} from "../utils";
+import { logger } from "../utils/logger";
 
 interface SettingsContextType {
   showPreview: boolean;

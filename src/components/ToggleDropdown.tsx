@@ -8,7 +8,7 @@ import {
 } from "@decky/ui";
 import { FC, ReactNode } from "react";
 
-import t from "../utils/translate";
+import { t } from "../utils";
 
 interface ToggleDropdownProps {
   label: string;
