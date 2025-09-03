@@ -37,7 +37,7 @@ export const OptionsProvider: FC<{
     const { unregister } = SteamClient.Apps.RegisterForAppDetails(
       appid,
       (detail: AppDetails) => {
-        if (detail) {
+        if (detail && detail.strLaunchOptions !== undefined) {
           const savedOptions = new Options(detail.strLaunchOptions);
           setOptions(savedOptions);
         } else {
@@ -46,8 +46,15 @@ export const OptionsProvider: FC<{
       },
     );
 
-    // Unregister on unmount
-    return () => unregister();
+    // Unregister in 1s
+    const timeoutId = setTimeout(() => {
+      unregister();
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeoutId);
+      unregister();
+    };
   }, [appid]);
 
   if (!options) {
