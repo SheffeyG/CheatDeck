@@ -1,6 +1,4 @@
-import { sendNotice } from "./client";
 import logger from "./logger";
-import t from "./translate";
 
 type ParsedParam = LaunchOption;
 
@@ -115,6 +113,10 @@ export class Options {
     return tokens;
   }
 
+  isSteamGame(): boolean {
+    return this.#isSteam;
+  }
+
   getParameters(): ParsedParam[] {
     return this.#parsedParams;
   }
@@ -164,17 +166,5 @@ export class Options {
     if (result === "%command%") return "";
 
     return result;
-  }
-
-  saveOptions(appid: number) {
-    if (this.#isSteam) {
-      SteamClient.Apps.SetAppLaunchOptions(appid, this.getOptionsString());
-      sendNotice(t("MESSAGE_SAVED", "Game launch options have been saved."));
-    } else {
-      sendNotice(t(
-        "MESSAGE_NON_STEAM",
-        "Warning: This is NOT a steam game! Settings will never be saved.",
-      ));
-    }
   }
 }

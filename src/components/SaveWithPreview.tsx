@@ -2,20 +2,28 @@ import { DialogButton, Focusable } from "@decky/ui";
 import { FC } from "react";
 
 import { useSettings } from "../hooks/useSettings";
+import { sendNotice } from "../utils/client";
 import { Options } from "../utils/options";
 import t from "../utils/translate";
 
-interface SaveWithPreviewProps {
+export const SaveWithPreview: FC<{
   options: Options;
   appid: number;
-}
-
-export const SaveWithPreview: FC<SaveWithPreviewProps> = ({
-  options,
-  appid,
-}) => {
+}> = ({ options, appid }) => {
   const { showPreview } = useSettings();
   const optionsString = options.getOptionsString();
+
+  const handleSave = () => {
+    if (options.isSteamGame()) {
+      SteamClient.Apps.SetAppLaunchOptions(appid, optionsString);
+      sendNotice(t("MESSAGE_SAVED", "Game launch options have been saved."));
+    } else {
+      sendNotice(t(
+        "MESSAGE_NON_STEAM",
+        "Warning: This is NOT a steam game! Settings will never be saved.",
+      ));
+    }
+  };
 
   return (
     <div style={{
@@ -45,7 +53,7 @@ export const SaveWithPreview: FC<SaveWithPreviewProps> = ({
       )}
 
       <DialogButton
-        onClick={() => options.saveOptions(appid)}
+        onClick={handleSave}
         style={{
           padding: "10px",
           fontSize: "14px",
