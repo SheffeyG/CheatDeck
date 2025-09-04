@@ -119,6 +119,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
           if (enable) {
+            updatedOptions.removeParamByKey("~/fgmod/fgmod-uninstaller.sh");
             updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod" });
           } else {
             updatedOptions.removeParamByKey("~/fgmod/fgmod");
@@ -138,6 +139,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(options.getOptionsString());
           if (enable) {
+            updatedOptions.removeParamByKey("~/fgmod/fgmod");
             updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod-uninstaller.sh" });
           } else {
             updatedOptions.removeParamByKey("~/fgmod/fgmod-uninstaller.sh");

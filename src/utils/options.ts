@@ -38,7 +38,6 @@ export class Options {
 
     const tokens = this.tokenize(text);
     const params: ParsedParam[] = [];
-    const others: string[] = [];
     let i = 0;
 
     while (i < tokens.length) {
@@ -65,16 +64,12 @@ export class Options {
       }
 
       if (position === "before") {
-        others.push(current);
+        params.push({ type: "pre_cmd", key: current });
       } else {
         logger.error("Unexcepted token after '%command%':", current);
       }
-      i++;
-    }
 
-    // Let's say all the rest is pre_cmd parameter, put them all in key
-    if (others.length > 0) {
-      params.push({ type: "pre_cmd", key: others.join(" ") });
+      i++;
     }
 
     return params;
@@ -122,21 +117,12 @@ export class Options {
   }
 
   setParameter(param: ParsedParam): void {
-    if (param.type === "pre_cmd") {
-      // For pre_cmd, remove the whole pre_cmd type parameters
-      this.removeParamByType("pre_cmd");
-    } else {
-      this.removeParamByKey(param.key);
-    }
+    this.removeParamByKey(param.key);
     this.#parsedParams.push(param);
   }
 
   removeParamByKey(key: string): void {
     this.#parsedParams = this.#parsedParams.filter(p => p.key !== key);
-  }
-
-  removeParamByType(type: OptionType): void {
-    this.#parsedParams = this.#parsedParams.filter(p => p.type !== type);
   }
 
   hasKey(key: string): boolean {

@@ -113,11 +113,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
                       ...(opt.value !== undefined ? { value: opt.value } : {}),
                     });
                   } else {
-                    if (opt.type === "pre_cmd") {
-                      updatedOptions.removeParamByType("pre_cmd");
-                    } else {
-                      updatedOptions.removeParamByKey(opt.key);
-                    }
+                    updatedOptions.removeParamByKey(opt.key);
                   }
 
                   setOptions(updatedOptions);
