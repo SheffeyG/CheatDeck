@@ -38,38 +38,48 @@ export class Options {
 
     const tokens = this.tokenize(text);
     const params: ParsedParam[] = [];
-    let i = 0;
+    let prefix: string[] = [];
 
-    while (i < tokens.length) {
+    for (let i = 0; i < tokens.length; i++) {
       const current = tokens[i];
       const next = tokens[i + 1];
 
-      if (current.includes("=") && !current.startsWith("-") && position === "before") {
-        const [key, ...valueParts] = current.split("="); // Edge case: "ENV=a=b"
-        const value = valueParts.join("=");
-        params.push({ type: "env", key: key.trim(), value: value });
-        i++;
-        continue;
-      }
-
-      if (current.startsWith("-") && position === "after") {
-        if (next && !next.startsWith("-")) { // flag with argument
-          params.push({ type: "flag_args", key: current, value: next });
-          i += 2;
-        } else { // flag without argument
-          params.push({ type: "flag_args", key: current });
-          i++;
-        }
-        continue;
-      }
-
       if (position === "before") {
-        params.push({ type: "pre_cmd", key: current });
-      } else {
-        logger.error("Unexcepted token after '%command%':", current);
+        if (current.includes("=") && !current.startsWith("-")) {
+          /* 1. Take all tokens with equal sign as ENV type
+                note multip equal signs case "ENV=foo=bar" */
+          const [key, ...valueParts] = current.split("=");
+          const value = valueParts.join("=");
+          params.push({ type: "env", key: key.trim(), value: value });
+        } else if (current === "--") {
+          /* 2. If separator "--" is found, push as one complete prefix command */
+          if (prefix.length > 0) {
+            params.push({ type: "pre_cmd", key: prefix.join(" ") });
+          }
+          prefix = [];
+        } else {
+          /* 3. Take all other tokens as pre_cmd, store them in a list */
+          prefix.push(current);
+        }
       }
 
-      i++;
+      if (position === "after") {
+        if (current.startsWith("-")) {
+          if (next && !next.startsWith("-")) { // Flag with argument
+            params.push({ type: "flag_args", key: current, value: next });
+            i++;
+          } else { // Flag without argument
+            params.push({ type: "flag_args", key: current });
+          }
+        } else {
+          logger.error("Unexcepted token after '%command%':", current);
+        }
+      }
+    }
+
+    // Push the rest of prefix tokens as the last pre_cmd
+    if (prefix.length > 0) {
+      params.push({ type: "pre_cmd", key: prefix.join(" ") });
     }
 
     return params;
@@ -139,18 +149,29 @@ export class Options {
   }
 
   getOptionsString(): string {
-    const envString = this.#parsedParams.filter(param => param.type === "env")
-      .map(param => `${param.key}=${param.value}`);
-    const preCmdString = this.#parsedParams.filter(param => param.type === "pre_cmd")
-      .map(param => param.key);
-    const flagArgsString = this.#parsedParams.filter(param => param.type === "flag_args")
-      .map(param => param.value ? `${param.key} ${param.value}` : param.key);
+    const envString = this.#parsedParams
+      .filter(param => param.type === "env")
+      .map(param => `${param.key}=${param.value}`)
+      .join(" ");
 
-    const result = [...envString, ...preCmdString, "%command%", ...flagArgsString].join(" ").trim();
+    const preCmdString = this.#parsedParams
+      .filter(param => param.type === "pre_cmd")
+      .map(param => param.key)
+      .join(" -- ");
+
+    const flagArgsString = this.#parsedParams
+      .filter(param => param.type === "flag_args")
+      .map(param => param.value ? `${param.key} ${param.value}` : param.key)
+      .join(" ");
+
+    const optionsString = [envString, preCmdString, "%command%", flagArgsString]
+      .filter(part => part) // Remove empty parts
+      .join(" ")
+      .trim();
 
     // If there's no other launch options, return empty string
-    if (result === "%command%") return "";
+    if (optionsString === "%command%") return "";
 
-    return result;
+    return optionsString;
   }
 }
