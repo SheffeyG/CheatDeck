@@ -68,7 +68,15 @@ export const EditCustomOption: FC<{
             <Dropdown
               rgOptions={paramTypeOptions}
               selectedOption={targetOpt.type}
-              onChange={v => setTargetOpt({ ...targetOpt, type: v.data })}
+              onChange={(v) => {
+                if (targetOpt.type !== v.data) setTargetOpt({
+                  label: targetOpt.label,
+                  id: targetOpt.id,
+                  type: v.data,
+                  key: "",
+                  value: undefined,
+                });
+              }}
             />
           </Focusable>
         </Field>
@@ -81,9 +89,7 @@ export const EditCustomOption: FC<{
             <TextField
               style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === "pre_cmd" ? "435px" : "200px" }}
               value={targetOpt.key}
-              onChange={(e) => {
-                setTargetOpt({ ...targetOpt, key: e.target.value });
-              }}
+              onChange={e => setTargetOpt({ ...targetOpt, key: e.target.value })}
             />
             {targetOpt.type !== "pre_cmd" && (
               <>
@@ -93,7 +99,10 @@ export const EditCustomOption: FC<{
                 <TextField
                   style={{ padding: "10px", fontSize: "14px", width: "200px" }}
                   value={targetOpt.value || ""}
-                  onChange={e => setTargetOpt({ ...targetOpt, value: e.target.value })}
+                  onChange={(e) => {
+                    const value = e.target.value.trim() === "" ? undefined : e.target.value;
+                    setTargetOpt({ ...targetOpt, value: value });
+                  }}
                 />
               </>
             )}
