@@ -5,7 +5,7 @@
   "api_version": 1,
   "publish": {
     "tags": [ "cheat", "trainer" ],
-    "description": "Launch games with cheats or trainers and customize your launch settings.",
+    "description": "A Steam Deck tool for managing launcher options, enabling cheats and trainers in games.",
     "image": "https://github.com/SheffeyG/CheatDeck/raw/main/docs/settings.jpg"
   }
 }
