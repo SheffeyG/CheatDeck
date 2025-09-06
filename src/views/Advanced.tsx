@@ -3,7 +3,7 @@ import { FC, useState } from "react";
 
 import { SaveWithPreview, ToggleFilePicker } from "../components";
 import { useOptions } from "../hooks";
-import { browseFiles, getHomePath, Options, t } from "../utils";
+import { browseFiles, getHomePath, t } from "../utils";
 
 const Advanced: FC<{ appid: number }> = ({ appid }) => {
   const { options, setOptions } = useOptions();
@@ -15,7 +15,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
     const filePickerRes = await browseFiles(defaultPath, false);
     const selectedCompatDataPath = filePickerRes.path;
 
-    const newOptions = new Options(options.getOptionsString());
+    const newOptions = structuredClone(options);
     newOptions.setParameter({
       type: "env",
       key: "STEAM_COMPAT_DATA_PATH",
@@ -36,7 +36,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         bottomSeparator="standard"
         checked={options.hasKeyValue("DXVK_ASYNC", "1")}
         onChange={(enable: boolean) => {
-          const updatedOptions = new Options(options.getOptionsString());
+          const updatedOptions = structuredClone(options);
           if (enable) {
             updatedOptions.setParameter({ type: "env", key: "DXVK_ASYNC", value: "1" });
           } else {
@@ -55,7 +55,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         bottomSeparator="standard"
         checked={options.hasKeyValue("RADV_PERFTEST", "gpl")}
         onChange={(enable: boolean) => {
-          const updatedOptions = new Options(options.getOptionsString());
+          const updatedOptions = structuredClone(options);
           if (enable) {
             updatedOptions.setParameter({ type: "env", key: "RADV_PERFTEST", value: "gpl" });
           } else {
@@ -75,7 +75,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         onToggle={(enable: boolean) => {
           setShowPrefix(enable);
           if (!enable) {
-            const updatedOptions = new Options(options.getOptionsString());
+            const updatedOptions = structuredClone(options);
             updatedOptions.removeParamByKey("STEAM_COMPAT_DATA_PATH");
             setOptions(updatedOptions);
           }
@@ -94,7 +94,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         bottomSeparator="standard"
         checked={options.hasKey("~/lsfg")}
         onChange={(enable: boolean) => {
-          const updatedOptions = new Options(options.getOptionsString());
+          const updatedOptions = structuredClone(options);
           if (enable) {
             updatedOptions.setParameter({ type: "pre_cmd", key: "~/lsfg" });
           } else {
@@ -113,7 +113,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         bottomSeparator="standard"
         checked={options.hasKey("~/fgmod/fgmod")}
         onChange={(enable: boolean) => {
-          const updatedOptions = new Options(options.getOptionsString());
+          const updatedOptions = structuredClone(options);
           if (enable) {
             updatedOptions.removeParamByKey("~/fgmod/fgmod-uninstaller.sh");
             updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod" });
@@ -133,7 +133,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         bottomSeparator="standard"
         checked={options.hasKey("~/fgmod/fgmod-uninstaller.sh")}
         onChange={(enable: boolean) => {
-          const updatedOptions = new Options(options.getOptionsString());
+          const updatedOptions = structuredClone(options);
           if (enable) {
             updatedOptions.removeParamByKey("~/fgmod/fgmod");
             updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod-uninstaller.sh" });

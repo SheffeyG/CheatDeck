@@ -5,7 +5,7 @@ import { FaGamepad, FaLanguage } from "react-icons/fa";
 import { SaveWithPreview, ToggleDropdown, ToggleFilePicker } from "../components";
 import { LangCodes } from "../data/langcode.json";
 import { useOptions } from "../hooks";
-import { browseFiles, getHomePath, Options, t } from "../utils";
+import { browseFiles, getHomePath, t } from "../utils";
 
 const Normal: FC<{ appid: number }> = ({ appid }) => {
   const { options, setOptions } = useOptions();
@@ -19,7 +19,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
     const selectedCheatPath = filePickerRes.path.replace(/(['"])/g, "\\$1"); // Escape quotes
     const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, ""); // Get parent directory
 
-    const newOptions = new Options(options.getOptionsString());
+    const newOptions = structuredClone(options);
     newOptions.setParameter({
       type: "env",
       key: "PROTON_REMOTE_DEBUG_CMD",
@@ -48,7 +48,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
         onToggle={(enable: boolean) => {
           setShowChat(enable);
           if (!enable) {
-            const updatedOptions = new Options(options.getOptionsString());
+            const updatedOptions = structuredClone(options);
             updatedOptions.removeParamByKey("PROTON_REMOTE_DEBUG_CMD");
             updatedOptions.removeParamByKey("PRESSURE_VESSEL_FILESYSTEMS_RW");
             setOptions(updatedOptions);
@@ -67,7 +67,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
         onToggle={(enable: boolean) => {
           setShowLang(enable);
           if (!enable) {
-            const updatedOptions = new Options(options.getOptionsString());
+            const updatedOptions = structuredClone(options);
             updatedOptions.removeParamByKey("LANG");
             setOptions(updatedOptions);
           }
@@ -75,7 +75,7 @@ const Normal: FC<{ appid: number }> = ({ appid }) => {
         fieldLabel={t("NORMAL_LANG_LABEL", "Language Code")}
         value={options.getKeyValue("LANG")}
         onInput={(value: string) => {
-          const updatedOptions = new Options(options.getOptionsString());
+          const updatedOptions = structuredClone(options);
           updatedOptions.setParameter({ type: "env", key: "LANG", value: value });
           setOptions(updatedOptions);
         }}

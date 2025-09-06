@@ -11,7 +11,6 @@ import {
 import { SaveWithPreview } from "../components";
 import { useOptions, useSettings } from "../hooks";
 import { AddCustomOption, EditCustomOption } from "../modals";
-import { Options } from "../utils";
 
 const Custom: FC<{ appid: number }> = ({ appid }) => {
   // Launch options from current game details
@@ -102,7 +101,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
                 label={<CusOptTitle label={opt.label} type={opt.type} />}
                 checked={opt.value ? options.hasKeyValue(opt.key, opt.value) : options.hasKey(opt.key)}
                 onChange={(enable: boolean) => {
-                  const updatedOptions = new Options(options.getOptionsString());
+                  const updatedOptions = structuredClone(options);
 
                   if (enable) {
                     updatedOptions.setParameter({
