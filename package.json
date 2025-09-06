@@ -2,7 +2,7 @@
   "name": "cheatdeck",
   "type": "module",
   "version": "1.0.0",
-  "description": "A Steam Deck tool for managing launcher options, enabling cheats and trainers in games.",
+  "description": "A launch options manager allows you to run games with cheats and trainers.",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
