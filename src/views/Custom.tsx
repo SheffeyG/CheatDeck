@@ -13,11 +13,13 @@ import { useOptions, useSettings } from "../hooks";
 import { AddCustomOption, EditCustomOption } from "../modals";
 import { Options } from "../utils";
 
-const Custom: FC<{ appid: number }> = ({ appid }) => {
+const Custom: FC = () => {
   // Launch options from current game details
   const { options, setOptions } = useOptions();
   // Custom options from users' plugin settings
   const { customOptions, saveCustomOptions } = useSettings();
+
+  const optionsString = options.getOptionsString();
 
   const CusOptTitle: FC<{ label: string; type: OptionType }> = ({ label, type }) => {
     const typeMap: Record<OptionType, IconType> = {
@@ -102,7 +104,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
                 label={<CusOptTitle label={opt.label} type={opt.type} />}
                 checked={opt.value ? options.hasKeyValue(opt.key, opt.value) : options.hasKey(opt.key)}
                 onChange={(enable: boolean) => {
-                  const updatedOptions = new Options(options.getOptionsString());
+                  const updatedOptions = new Options(optionsString);
 
                   if (enable) {
                     updatedOptions.setParameter({
@@ -152,7 +154,7 @@ const Custom: FC<{ appid: number }> = ({ appid }) => {
         <BsPlusSquareFill />
       </DialogButton>
 
-      {customOptions.length > 0 && <SaveWithPreview options={options} appid={appid} />}
+      {customOptions.length > 0 && <SaveWithPreview checkWine={false} />}
 
     </>
   );

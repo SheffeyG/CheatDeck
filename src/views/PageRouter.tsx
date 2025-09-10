@@ -20,19 +20,19 @@ const PageRouter: FC = () => {
   const pages = [
     {
       title: t("NORMAL_TITLE", "Normal"),
-      content: <Normal appid={appid} />,
+      content: <Normal />,
       icon: <IconNormal />,
       hideTitle: false,
     },
     {
       title: t("ADVANCED_TITLE", "Advanced"),
-      content: <Advanced appid={appid} />,
+      content: <Advanced />,
       icon: <IconAdvanced />,
       hideTitle: false,
     },
     {
       title: t("CUSTOM_TITLE", "Custom"),
-      content: <Custom appid={appid} />,
+      content: <Custom />,
       icon: <IconCustom />,
       hideTitle: false,
     },

@@ -4,15 +4,9 @@ type ParsedParam = LaunchOption;
 
 export class Options {
   #parsedParams: ParsedParam[] = [];
-  #isSteam: boolean;
 
   constructor(input: string) {
-    this.#isSteam = this.detectSteamLauncher(input);
     this.#parsedParams = this.parseParameters(input);
-  }
-
-  private detectSteamLauncher(input: string): boolean {
-    return !input.includes("heroicgameslauncher") && !input.includes("Emulation");
   }
 
   private parseParameters(input: string): ParsedParam[] {
@@ -116,10 +110,6 @@ export class Options {
 
     if (current.trim()) tokens.push(current.trim());
     return tokens;
-  }
-
-  isSteamGame(): boolean {
-    return this.#isSteam;
   }
 
   getParameters(): ParsedParam[] {
