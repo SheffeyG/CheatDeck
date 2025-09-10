@@ -22,13 +22,13 @@ const Normal: FC = () => {
     const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, ""); // Get parent directory
 
     const newOptions = new Options(optionsString);
-    newOptions.setParameter({
+    newOptions.setOption({
       type: "env",
       key: "PROTON_REMOTE_DEBUG_CMD",
       value: `"'${selectedCheatPath}'"`, // Quote twice to adjust Proton's shlex.split parser
     });
     // Make sure proton has read/write access to the parent directory
-    newOptions.setParameter({
+    newOptions.setOption({
       type: "env",
       key: "PRESSURE_VESSEL_FILESYSTEMS_RW",
       value: `"${selectedCheatDir}"`,
@@ -51,8 +51,8 @@ const Normal: FC = () => {
           setShowChat(enable);
           if (!enable) {
             const updatedOptions = new Options(optionsString);
-            updatedOptions.removeParamByKey("PROTON_REMOTE_DEBUG_CMD");
-            updatedOptions.removeParamByKey("PRESSURE_VESSEL_FILESYSTEMS_RW");
+            updatedOptions.removeOptionByKey("PROTON_REMOTE_DEBUG_CMD");
+            updatedOptions.removeOptionByKey("PRESSURE_VESSEL_FILESYSTEMS_RW");
             setOptions(updatedOptions);
           }
         }}
@@ -70,7 +70,7 @@ const Normal: FC = () => {
           setShowLang(enable);
           if (!enable) {
             const updatedOptions = new Options(optionsString);
-            updatedOptions.removeParamByKey("LANG");
+            updatedOptions.removeOptionByKey("LANG");
             setOptions(updatedOptions);
           }
         }}
@@ -78,7 +78,7 @@ const Normal: FC = () => {
         value={options.getKeyValue("LANG")}
         onInput={(value: string) => {
           const updatedOptions = new Options(optionsString);
-          updatedOptions.setParameter({ type: "env", key: "LANG", value: value });
+          updatedOptions.setOption({ type: "env", key: "LANG", value: value });
           setOptions(updatedOptions);
         }}
         preset={LangCodes as DropdownOption[]}
