@@ -18,7 +18,7 @@ const Advanced: FC = () => {
     const selectedCompatDataPath = filePickerRes.path;
 
     const newOptions = new Options(optionsString);
-    newOptions.setParameter({
+    newOptions.setOption({
       type: "env",
       key: "STEAM_COMPAT_DATA_PATH",
       value: selectedCompatDataPath,
@@ -40,9 +40,9 @@ const Advanced: FC = () => {
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(optionsString);
           if (enable) {
-            updatedOptions.setParameter({ type: "env", key: "DXVK_ASYNC", value: "1" });
+            updatedOptions.setOption({ type: "env", key: "DXVK_ASYNC", value: "1" });
           } else {
-            updatedOptions.removeParamByKey("DXVK_ASYNC");
+            updatedOptions.removeOptionByKey("DXVK_ASYNC");
           }
           setOptions(updatedOptions);
         }}
@@ -59,9 +59,9 @@ const Advanced: FC = () => {
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(optionsString);
           if (enable) {
-            updatedOptions.setParameter({ type: "env", key: "RADV_PERFTEST", value: "gpl" });
+            updatedOptions.setOption({ type: "env", key: "RADV_PERFTEST", value: "gpl" });
           } else {
-            updatedOptions.removeParamByKey("RADV_PERFTEST");
+            updatedOptions.removeOptionByKey("RADV_PERFTEST");
           }
           setOptions(updatedOptions);
         }}
@@ -78,7 +78,7 @@ const Advanced: FC = () => {
           setShowPrefix(enable);
           if (!enable) {
             const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.removeParamByKey("STEAM_COMPAT_DATA_PATH");
+            updatedOptions.removeOptionByKey("STEAM_COMPAT_DATA_PATH");
             setOptions(updatedOptions);
           }
         }}
@@ -98,9 +98,9 @@ const Advanced: FC = () => {
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(optionsString);
           if (enable) {
-            updatedOptions.setParameter({ type: "pre_cmd", key: "~/lsfg" });
+            updatedOptions.setOption({ type: "pre_cmd", key: "~/lsfg" });
           } else {
-            updatedOptions.removeParamByKey("~/lsfg");
+            updatedOptions.removeOptionByKey("~/lsfg");
           }
           setOptions(updatedOptions);
         }}
@@ -117,10 +117,10 @@ const Advanced: FC = () => {
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(optionsString);
           if (enable) {
-            updatedOptions.removeParamByKey("~/fgmod/fgmod-uninstaller.sh");
-            updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod" });
+            updatedOptions.removeOptionByKey("~/fgmod/fgmod-uninstaller.sh");
+            updatedOptions.setOption({ type: "pre_cmd", key: "~/fgmod/fgmod" });
           } else {
-            updatedOptions.removeParamByKey("~/fgmod/fgmod");
+            updatedOptions.removeOptionByKey("~/fgmod/fgmod");
           }
           setOptions(updatedOptions);
         }}
@@ -137,10 +137,10 @@ const Advanced: FC = () => {
         onChange={(enable: boolean) => {
           const updatedOptions = new Options(optionsString);
           if (enable) {
-            updatedOptions.removeParamByKey("~/fgmod/fgmod");
-            updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod-uninstaller.sh" });
+            updatedOptions.removeOptionByKey("~/fgmod/fgmod");
+            updatedOptions.setOption({ type: "pre_cmd", key: "~/fgmod/fgmod-uninstaller.sh" });
           } else {
-            updatedOptions.removeParamByKey("~/fgmod/fgmod-uninstaller.sh");
+            updatedOptions.removeOptionByKey("~/fgmod/fgmod-uninstaller.sh");
           }
           setOptions(updatedOptions);
         }}

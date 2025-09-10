@@ -107,13 +107,13 @@ const Custom: FC = () => {
                   const updatedOptions = new Options(optionsString);
 
                   if (enable) {
-                    updatedOptions.setParameter({
+                    updatedOptions.setOption({
                       type: opt.type,
                       key: opt.key,
                       ...(opt.value !== undefined ? { value: opt.value } : {}),
                     });
                   } else {
-                    updatedOptions.removeParamByKey(opt.key);
+                    updatedOptions.removeOptionByKey(opt.key);
                   }
 
                   setOptions(updatedOptions);
