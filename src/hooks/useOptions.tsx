@@ -5,17 +5,22 @@ import {
   ReactNode,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
 import { logger, Options } from "../utils";
 
 interface OptionsContextProps {
+  appid: number;
+  command: string;
   options: Options;
   setOptions: (options: Options) => void;
 }
 
 const OptionsContext = createContext<OptionsContextProps>({
+  appid: 0,
+  command: "",
   options: new Options(""),
   setOptions: () => {},
 });
@@ -24,6 +29,7 @@ export const OptionsProvider: FC<{
   children: ReactNode;
   appid: number;
 }> = ({ children, appid }) => {
+  const cmd = useRef<string>("");
   const [options, setOptions] = useState<Options | null>(null);
 
   useEffect(() => {
@@ -32,10 +38,11 @@ export const OptionsProvider: FC<{
       return;
     }
 
-    // Initialize options with the current app's launch options
+    // Initialize command and options with the current AppDetails
     const { unregister } = SteamClient.Apps.RegisterForAppDetails(
       appid,
       (detail: AppDetails) => {
+        cmd.current = detail.strShortcutExe;
         if (detail && detail.strLaunchOptions !== undefined) {
           const savedOptions = new Options(detail.strLaunchOptions);
           setOptions(savedOptions);
@@ -60,8 +67,15 @@ export const OptionsProvider: FC<{
     return <div>Loading options...</div>;
   }
 
+  const value = {
+    appid,
+    command: cmd.current,
+    options,
+    setOptions,
+  };
+
   return (
-    <OptionsContext.Provider value={{ options, setOptions }}>
+    <OptionsContext.Provider value={value}>
       {children}
     </OptionsContext.Provider>
   );

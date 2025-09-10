@@ -1,25 +1,26 @@
 import { DialogButton, Focusable } from "@decky/ui";
 import { FC } from "react";
 
-import { useSettings } from "../hooks/useSettings";
-import { Options, sendNotice, t } from "../utils";
+import { useOptions, useSettings } from "../hooks";
+import { sendNotice, t } from "../utils";
 
-export const SaveWithPreview: FC<{
-  options: Options;
-  appid: number;
-}> = ({ options, appid }) => {
+export const SaveWithPreview: FC<{ checkWine?: boolean }> = ({ checkWine = true }) => {
   const { showPreview } = useSettings();
+  const { appid, command, options } = useOptions();
+
   const optionsString = options.getOptionsString();
+  const commandString = command.toLowerCase();
+  const isWineGame = commandString.includes(".exe") || commandString.includes(".bat");
 
   const handleSave = () => {
-    if (options.isSteamGame()) {
-      SteamClient.Apps.SetAppLaunchOptions(appid, optionsString);
-      sendNotice(t("MESSAGE_SAVED", "Game launch options have been saved."));
-    } else {
+    if (checkWine && !isWineGame) {
       sendNotice(t(
         "MESSAGE_NON_STEAM",
         "Warning: This is NOT a steam game! Settings will never be saved.",
       ));
+    } else {
+      SteamClient.Apps.SetAppLaunchOptions(appid, optionsString);
+      sendNotice(t("MESSAGE_SAVED", "Game launch options have been saved."));
     }
   };
 

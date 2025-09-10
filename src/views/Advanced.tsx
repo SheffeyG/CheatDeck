@@ -5,9 +5,11 @@ import { SaveWithPreview, ToggleFilePicker } from "../components";
 import { useOptions } from "../hooks";
 import { browseFiles, getHomePath, Options, t } from "../utils";
 
-const Advanced: FC<{ appid: number }> = ({ appid }) => {
+const Advanced: FC = () => {
   const { options, setOptions } = useOptions();
   const [showPrefix, setShowPrefix] = useState(options.hasKey("STEAM_COMPAT_DATA_PATH"));
+
+  const optionsString = options.getOptionsString();
 
   const handleBrowse = async () => {
     const savedCompatDataPath = options.getKeyValue("STEAM_COMPAT_DATA_PATH");
@@ -15,7 +17,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
     const filePickerRes = await browseFiles(defaultPath, false);
     const selectedCompatDataPath = filePickerRes.path;
 
-    const newOptions = new Options(options.getOptionsString());
+    const newOptions = new Options(optionsString);
     newOptions.setParameter({
       type: "env",
       key: "STEAM_COMPAT_DATA_PATH",
@@ -36,7 +38,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         bottomSeparator="standard"
         checked={options.hasKeyValue("DXVK_ASYNC", "1")}
         onChange={(enable: boolean) => {
-          const updatedOptions = new Options(options.getOptionsString());
+          const updatedOptions = new Options(optionsString);
           if (enable) {
             updatedOptions.setParameter({ type: "env", key: "DXVK_ASYNC", value: "1" });
           } else {
@@ -55,7 +57,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         bottomSeparator="standard"
         checked={options.hasKeyValue("RADV_PERFTEST", "gpl")}
         onChange={(enable: boolean) => {
-          const updatedOptions = new Options(options.getOptionsString());
+          const updatedOptions = new Options(optionsString);
           if (enable) {
             updatedOptions.setParameter({ type: "env", key: "RADV_PERFTEST", value: "gpl" });
           } else {
@@ -94,7 +96,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         bottomSeparator="standard"
         checked={options.hasKey("~/lsfg")}
         onChange={(enable: boolean) => {
-          const updatedOptions = new Options(options.getOptionsString());
+          const updatedOptions = new Options(optionsString);
           if (enable) {
             updatedOptions.setParameter({ type: "pre_cmd", key: "~/lsfg" });
           } else {
@@ -113,7 +115,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         bottomSeparator="standard"
         checked={options.hasKey("~/fgmod/fgmod")}
         onChange={(enable: boolean) => {
-          const updatedOptions = new Options(options.getOptionsString());
+          const updatedOptions = new Options(optionsString);
           if (enable) {
             updatedOptions.removeParamByKey("~/fgmod/fgmod-uninstaller.sh");
             updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod" });
@@ -133,7 +135,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         bottomSeparator="standard"
         checked={options.hasKey("~/fgmod/fgmod-uninstaller.sh")}
         onChange={(enable: boolean) => {
-          const updatedOptions = new Options(options.getOptionsString());
+          const updatedOptions = new Options(optionsString);
           if (enable) {
             updatedOptions.removeParamByKey("~/fgmod/fgmod");
             updatedOptions.setParameter({ type: "pre_cmd", key: "~/fgmod/fgmod-uninstaller.sh" });
@@ -144,7 +146,7 @@ const Advanced: FC<{ appid: number }> = ({ appid }) => {
         }}
       />
 
-      <SaveWithPreview options={options} appid={appid} />
+      <SaveWithPreview />
 
     </Focusable>
   );
