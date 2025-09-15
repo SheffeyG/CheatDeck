@@ -36,7 +36,7 @@ const spliceMenuItem = (children: any[], appid: number) => {
 // Check if correct menu by looking at the code of the onSelected function
 // Should be enough to ignore the screenshots and other menus.
 const isOpeningAppContextMenu = (items: any[]) => {
-  if (items.length === 0 || items.length === undefined) {
+  if (!items || items.length === 0 || items.length === undefined) {
     return false;
   }
   return items.findIndex(item => findInReactTree(item, x => x?.onSelected
