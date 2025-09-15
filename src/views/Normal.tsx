@@ -15,8 +15,8 @@ const Normal: FC = () => {
   const optionsString = options.getOptionsString();
 
   const handleBrowse = async () => {
-    const savedCheatDir = options.getKeyValue("PRESSURE_VESSEL_FILESYSTEMS_RW");
-    const defaultPath = savedCheatDir ?? await getHomePath();
+    const savedPath = options.getKeyValue("PRESSURE_VESSEL_FILESYSTEMS_RW")?.replace(/^"|"$/g, "");
+    const defaultPath = savedPath ?? await getHomePath();
     const filePickerRes = await browseFiles(defaultPath, true, ["exe", "bat"]);
     const selectedCheatPath = filePickerRes.path.replace(/(['"])/g, "\\$1"); // Escape quotes
     const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, ""); // Get parent directory

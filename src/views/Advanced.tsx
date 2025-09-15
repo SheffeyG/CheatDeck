@@ -12,8 +12,8 @@ const Advanced: FC = () => {
   const optionsString = options.getOptionsString();
 
   const handleBrowse = async () => {
-    const savedCompatDataPath = options.getKeyValue("STEAM_COMPAT_DATA_PATH");
-    const defaultPath = savedCompatDataPath ?? await getHomePath();
+    const savedPath = options.getKeyValue("STEAM_COMPAT_DATA_PATH")?.replace(/^"|"$/g, "");
+    const defaultPath = savedPath ?? await getHomePath();
     const filePickerRes = await browseFiles(defaultPath, false);
     const selectedCompatDataPath = filePickerRes.path;
 
