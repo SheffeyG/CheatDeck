@@ -10,10 +10,14 @@ export const SaveWithPreview: FC<{ checkWine?: boolean }> = ({ checkWine = true 
 
   const optionsString = options.getOptionsString();
   const commandString = command.toLowerCase();
-  const isWineGame = commandString.includes(".exe") || commandString.includes(".bat");
+
+  const isWineGame = (cmd: string) => {
+    if (cmd.trim().length === 0) return true; // No command set, assume native
+    return cmd.includes(".exe") || cmd.includes(".bat");
+  };
 
   const handleSave = () => {
-    if (checkWine && !isWineGame) {
+    if (checkWine && !isWineGame(commandString)) {
       sendNotice(t(
         "MESSAGE_NON_STEAM",
         "Warning: This is NOT a steam game! Settings will never be saved.",

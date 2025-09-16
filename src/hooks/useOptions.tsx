@@ -22,7 +22,7 @@ const OptionsContext = createContext<OptionsContextProps>({
   appid: 0,
   command: "",
   options: new Options(""),
-  setOptions: () => {},
+  setOptions: () => { },
 });
 
 export const OptionsProvider: FC<{
@@ -42,12 +42,14 @@ export const OptionsProvider: FC<{
     const { unregister } = SteamClient.Apps.RegisterForAppDetails(
       appid,
       (detail: AppDetails) => {
-        cmd.current = detail.strShortcutExe;
-        if (detail && detail.strLaunchOptions !== undefined) {
+        if (!detail) {
+          logger.error("Invalid AppDetails:", detail);
+          return;
+        }
+        if (detail.strShortcutExe) cmd.current = detail.strShortcutExe;
+        if (detail.strLaunchOptions) {
           const savedOptions = new Options(detail.strLaunchOptions);
           setOptions(savedOptions);
-        } else {
-          logger.error("Invalid AppDetails:", detail);
         }
       },
     );
