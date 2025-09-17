@@ -1,4 +1,4 @@
-import { DialogButton, Focusable } from "@decky/ui";
+import { DialogBody, DialogButton } from "@decky/ui";
 import { FC } from "react";
 
 import { useOptions, useSettings } from "../hooks";
@@ -39,7 +39,7 @@ export const SaveWithPreview: FC<{ checkWine?: boolean }> = ({ checkWine = true 
     }}
     >
       {showPreview && optionsString.length > 0 && (
-        <Focusable style={{
+        <DialogBody style={{
           background: "rgba(255,255,255,0.1)",
           padding: "10px",
           borderRadius: "2px",
@@ -52,7 +52,7 @@ export const SaveWithPreview: FC<{ checkWine?: boolean }> = ({ checkWine = true 
         }}
         >
           {optionsString}
-        </Focusable>
+        </DialogBody>
       )}
 
       <DialogButton
