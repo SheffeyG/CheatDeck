@@ -46,8 +46,10 @@ export const OptionsProvider: FC<{
           logger.error("Invalid AppDetails:", detail);
           return;
         }
-        if (detail.strShortcutExe) cmd.current = detail.strShortcutExe;
-        if (detail.strLaunchOptions) {
+        if (detail.strShortcutExe !== undefined) {
+          cmd.current = detail.strShortcutExe;
+        }
+        if (detail.strLaunchOptions !== undefined) {
           const savedOptions = new Options(detail.strLaunchOptions);
           setOptions(savedOptions);
         }
