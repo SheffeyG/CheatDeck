@@ -1,26 +1,28 @@
 /**
- * From decky plugin SteamGridDB
+ * Credit: decky-steamgriddb
  * https://github.com/SteamGridDB/decky-steamgriddb/blob/main/src/patches/contextMenuPatch.tsx
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 
 import {
   afterPatch,
   fakeRenderComponent,
   findInReactTree,
-  findInTree,
-  findModuleChild,
+  findModuleByExport,
+  Export,
   MenuItem,
   Navigation,
   Patch,
-} from "@decky/ui";
+  findInTree,
+} from '@decky/ui';
+import { FC } from 'react';
 
 // Always add before "Properties..."
-const spliceMenuItem = (children: any[], appid: number) => {
-  children.find((x: any) => x?.key === "properties");
-  const propertiesMenuItemIdx = children.findIndex(item =>
-    findInReactTree(item, x => x?.onSelected && x.onSelected.toString().includes("AppProperties")),
+const spliceArtworkItem = (children: any[], appid: number) => {
+  children.find((x: any) => x?.key === 'properties');
+  const propertiesMenuItemIdx = children.findIndex((item) =>
+    findInReactTree(item, (x) => x?.onSelected && x.onSelected.toString().includes('AppProperties'))
   );
   children.splice(propertiesMenuItemIdx, 0, (
     <MenuItem
@@ -37,34 +39,35 @@ const spliceMenuItem = (children: any[], appid: number) => {
 // Check if correct menu by looking at the code of the onSelected function
 // Should be enough to ignore the screenshots and other menus.
 const isOpeningAppContextMenu = (items: any[]) => {
-  if (!items || items.length === 0 || items.length === undefined) {
+  if (!items?.length) {
     return false;
   }
-  return items.findIndex(item => findInReactTree(item, x => x?.onSelected
-    && x.onSelected.toString().includes("AddToNewCollection"),
-  )) !== -1;
+  return !!findInReactTree(items, (x) => x?.props?.onSelected && x?.props?.onSelected.toString().includes('launchSource'));
 };
 
 const handleItemDupes = (items: any[]) => {
-  const idx = items.findIndex((x: any) => x?.key === "cheat-deck");
-  if (idx != -1) items.splice(idx, 1);
+  const sgdbIdx = items.findIndex((x: any) => x?.key === 'cheat-deck');
+  if (sgdbIdx != -1) items.splice(sgdbIdx, 1);
 };
 
 const patchMenuItems = (menuItems: any[], appid: number) => {
   let updatedAppid: number = appid;
-  // find the first menu component that has the correct appid,
-  // sometimes the one passed is cached from another context menu
-  const parentOverview = menuItems.find((x: any) => x?._owner?.pendingProps?.overview?.appid
-    && x._owner.pendingProps.overview.appid !== appid);
+  // find the first menu component that has the correct appid, sometimes the one passed is cached from another context menu
+  const parentOverview = menuItems.find((x: any) => x?._owner?.pendingProps?.overview?.appid &&
+    x._owner.pendingProps.overview.appid !== appid
+  );
   // if found then use that appid
   if (parentOverview) {
     updatedAppid = parentOverview._owner.pendingProps.overview.appid;
   }
   // Oct 2025 client
   if (updatedAppid === appid) {
-    updatedAppid = findInTree(menuItems, x => x?.app?.appid, { walkable: ["props", "children"] }).app.appid;
+    const foundApp = findInTree(menuItems, (x) => x?.app?.appid, { walkable: ['props', 'children'] });
+    if (foundApp) {
+      updatedAppid = foundApp.app.appid;
+    }
   }
-  spliceMenuItem(menuItems, updatedAppid);
+  spliceArtworkItem(menuItems, updatedAppid);
 };
 
 /**
@@ -74,29 +77,31 @@ const patchMenuItems = (menuItems: any[], appid: number) => {
  */
 const contextMenuPatch = (LibraryContextMenu: any) => {
   const patches: {
-    outer?: Patch;
-    inner?: Patch;
+    outer?: Patch,
+    inner?: Patch,
     unpatch: () => void;
   } = { unpatch: () => { return null; } };
-  patches.outer = afterPatch(LibraryContextMenu.prototype, "render", (_: Record<string, unknown>[], component: any) => {
-    let appid: number = 1018880; // you don't want this game
+  patches.outer = afterPatch(LibraryContextMenu.prototype, 'render', (_: Record<string, unknown>[], component: any) => {
+    let appid: number = 1018880;
     if (component._owner) {
       appid = component._owner.pendingProps.overview.appid;
     } else {
       // Oct 2025 client
-      appid = findInTree(component.props.children, x => x?.app?.appid, { walkable: ["props", "children"] }).app.appid;
+      const foundApp = findInTree(component.props.children, (x) => x?.app?.appid, { walkable: ['props', 'children'] });
+      if (foundApp) {
+        appid = foundApp.app.appid;
+      }
     }
 
     if (!patches.inner) {
-      patches.inner = afterPatch(component, "type", (_: any, ret: any) => {
+      patches.inner = afterPatch(component, 'type', (_: any, ret: any) => {
         // initial render
-        afterPatch(ret.type.prototype, "render", (_: any, ret2: any) => {
+        afterPatch(ret.type.prototype, 'render', (_: any, ret2: any) => {
           const menuItems = ret2.props.children[0]; // always the first child
           if (!isOpeningAppContextMenu(menuItems)) return ret2;
           try {
             handleItemDupes(menuItems);
           } catch (error) {
-            // wrong context menu (probably)
             return ret2;
           }
           patchMenuItems(menuItems, appid);
@@ -104,7 +109,7 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
         });
 
         // when steam decides to regresh app overview
-        afterPatch(ret.type.prototype, "shouldComponentUpdate", ([nextProps]: any, shouldUpdate: any) => {
+        afterPatch(ret.type.prototype, 'shouldComponentUpdate', ([nextProps]: any, shouldUpdate: any) => {
           try {
             handleItemDupes(nextProps.children);
           } catch (error) {
@@ -121,9 +126,8 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
         return ret;
       });
     } else {
-      spliceMenuItem(component.props.children, appid);
+      spliceArtworkItem(component.props.children, appid);
     }
-
     return component;
   });
   patches.unpatch = () => {
@@ -137,21 +141,12 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
  * Game context menu component.
  */
 export const LibraryContextMenu = fakeRenderComponent(
-  findModuleChild((m) => {
-    if (typeof m !== "object") return;
-    for (const prop in m) {
-      if (
-        m[prop]?.toString()
-        && m[prop].toString().includes("().LibraryContextMenu")
-      ) {
-        return Object.values(m).find(sibling => (
-          sibling?.toString().includes("createElement")
-          && sibling?.toString().includes("navigator:")
-        ));
-      }
-    }
-    return;
-  }),
+  Object.values(
+    findModuleByExport((e: Export) => e?.toString && e.toString().includes('().LibraryContextMenu'))
+  ).find((sibling) => (
+    sibling?.toString().includes('createElement') &&
+    sibling?.toString().includes('navigator:')
+  )) as FC
 ).type;
 
 export default contextMenuPatch;
