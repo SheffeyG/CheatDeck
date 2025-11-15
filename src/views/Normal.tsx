@@ -10,7 +10,7 @@ import { browseFiles, getHomePath, Options, t } from "../utils";
 const Normal: FC = () => {
   const { options, setOptions } = useOptions();
   const [showCheat, setShowChat] = useState(options.hasKey("PROTON_REMOTE_DEBUG_CMD"));
-  const [showLang, setShowLang] = useState(options.hasKey("LANG"));
+  const [showLang, setShowLang] = useState(options.hasKey("LANG") || options.hasKey("HOST_LC_ALL"));
 
   const optionsString = options.getOptionsString();
 
@@ -71,6 +71,7 @@ const Normal: FC = () => {
           if (!enable) {
             const updatedOptions = new Options(optionsString);
             updatedOptions.removeOptionByKey("LANG");
+            updatedOptions.removeOptionByKey("HOST_LC_ALL");
             setOptions(updatedOptions);
           }
         }}
@@ -79,6 +80,7 @@ const Normal: FC = () => {
         onInput={(value: string) => {
           const updatedOptions = new Options(optionsString);
           updatedOptions.setOption({ type: "env", key: "LANG", value: value });
+          updatedOptions.setOption({ type: "env", key: "HOST_LC_ALL", value: value });
           setOptions(updatedOptions);
         }}
         preset={LangCodes as DropdownOption[]}
