@@ -6,7 +6,7 @@
     "DELETE": "Delete",
     "CANCEL": "Cancel",
     "MESSAGE_SAVED": "Game launch options have been saved.",
-    "MESSAGE_NON_STEAM": "Warning: This is NOT a Steam game! Settings will never be saved.",
+    "MESSAGE_NON_STEAM": "This launcher is not supported; settings were not saved.",
 
     "CONTENT_SETTINGS": "Settings",
     "CONTENT_INFORMATION": "Information",

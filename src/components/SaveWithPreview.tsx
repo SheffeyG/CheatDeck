@@ -12,16 +12,14 @@ export const SaveWithPreview: FC<{ checkWine?: boolean }> = ({ checkWine = true 
   const commandString = command.toLowerCase();
 
   const isWineGame = (cmd: string) => {
-    if (cmd.trim().length === 0) return true; // No command set, assume native
-    return cmd.includes(".exe") || cmd.includes(".bat");
+    // Skip some launchers like heroic
+    if (cmd.includes("flatpak") || cmd.includes("appimage")) return false;
+    return true;
   };
 
   const handleSave = () => {
     if (checkWine && !isWineGame(commandString)) {
-      sendNotice(t(
-        "MESSAGE_NON_STEAM",
-        "Warning: This is NOT a steam game! Settings will never be saved.",
-      ));
+      sendNotice(t("MESSAGE_NON_STEAM", "This launcher is not supported; settings were not saved."));
     } else {
       SteamClient.Apps.SetAppLaunchOptions(appid, optionsString);
       sendNotice(t("MESSAGE_SAVED", "Game launch options have been saved."));
