@@ -33,11 +33,11 @@ If it doesn't, press the Steam key to toggle between the game and cheat interfac
 
 ## Custom Options
 There are 3 kinds of launch options for most games, so you can add and quickly access them for any game.
-|Type                |Format                    |Note                      |
-|--------------------|--------------------------|--------------------------|
-|Environment Variable|`key=value` `key="with space"` |Quote the value if it has a space.   |
-|Prefix Commands     |`~/my_script run`   |Support multiple commands.|
-|Flag & Arguments    |`--flag` `--key value` `--args=val`|The second field could be empty. Arguments like `--args=val` should be placed in the first field while keeping the second field empty.|
+|Type                |Format                        |Note                             |
+|--------------------|------------------------------|---------------------------------|
+|Environment Variable|`key=value` `key="with space"`|Quote the value if it has spaces.|
+|Prefix Commands     |`~/my_script run`             |Support multiple prefix commands.|
+|Flag and Arguments  |`--flag` `--key value` `--args=val`|The second field could be empty. Arguments like `--args=val` should be placed in the first field while keeping the second field empty.|
 
 
 ## Acknowledge
