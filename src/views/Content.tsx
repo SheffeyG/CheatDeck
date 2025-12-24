@@ -16,6 +16,8 @@ import { useSettings } from "../hooks";
 import { QrCode } from "../modals";
 import { t } from "../utils";
 
+const GITHUB = "https://github.com/SheffeyG/CheatDeck";
+
 const Content: FC = () => {
   const translator = t("CREDIT", "");
   const { showPreview, saveShowPreview } = useSettings();
@@ -85,8 +87,8 @@ const Content: FC = () => {
           >
             <Focusable style={{ display: "flex" }}>
               <DialogButton
-                onClick={() => navLink("https://github.com/SheffeyG/CheatDeck")}
-                onSecondaryButton={() => showModal(<QrCode />, window)}
+                onClick={() => navLink(GITHUB)}
+                onSecondaryButton={() => showModal(<QrCode url={GITHUB} />, window)}
                 onSecondaryActionDescription={t("CONTENT_QR_DESC", "Show Link QR")}
                 style={{
                   padding: "10px",
@@ -97,7 +99,7 @@ const Content: FC = () => {
               </DialogButton>
               <DialogButton
                 onOKActionDescription={t("CONTENT_QR_DESC", "Show Link QR")}
-                onClick={() => showModal(<QrCode />, window)}
+                onClick={() => showModal(<QrCode url={GITHUB} />, window)}
                 style={{
                   display: "flex",
                   justifyContent: "center",
