@@ -15,13 +15,12 @@ const Advanced: FC = () => {
     const savedPath = options.getKeyValue("STEAM_COMPAT_DATA_PATH")?.replace(/^"|"$/g, "");
     const defaultPath = savedPath ?? await getHomePath();
     const filePickerRes = await browseFiles(defaultPath, false);
-    const selectedCompatDataPath = filePickerRes.path;
 
     const newOptions = new Options(optionsString);
     newOptions.setOption({
       type: "env",
       key: "STEAM_COMPAT_DATA_PATH",
-      value: selectedCompatDataPath,
+      value: `"${filePickerRes.path}"`,
     });
     setOptions(newOptions);
   };
@@ -82,7 +81,7 @@ const Advanced: FC = () => {
             setOptions(updatedOptions);
           }
         }}
-        value={options.getKeyValue("STEAM_COMPAT_DATA_PATH")}
+        value={options.getKeyValue("STEAM_COMPAT_DATA_PATH")?.replace(/^"|\\|"$/g, "")}
         onBrowse={handleBrowse}
         fieldLabel={t("ADVANCED_STEAM_COMPAT_DATA_PATH_NOTE", "Data Path")}
       />
