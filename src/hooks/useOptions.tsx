@@ -22,7 +22,7 @@ const OptionsContext = createContext<OptionsContextProps>({
   appid: 0,
   command: "",
   options: new Options(""),
-  setOptions: () => { },
+  setOptions: () => {},
 });
 
 export const OptionsProvider: FC<{

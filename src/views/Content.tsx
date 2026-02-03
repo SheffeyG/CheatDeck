@@ -44,7 +44,7 @@ const Content: FC = () => {
       <PanelSection title={t("CONTENT_INFORMATION", "information")}>
         <Focusable
           focusWithinClassName="gpfocuswithin"
-          onActivate={() => { }}
+          onActivate={() => {}}
           style={{
             width: "100%",
             margin: 0,

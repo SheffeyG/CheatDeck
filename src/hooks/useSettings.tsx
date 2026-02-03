@@ -25,8 +25,8 @@ interface SettingsContextType {
 const SettingsContext = createContext<SettingsContextType>({
   showPreview: false,
   customOptions: [],
-  saveShowPreview: () => { },
-  saveCustomOptions: () => { },
+  saveShowPreview: () => {},
+  saveCustomOptions: () => {},
 });
 
 export const SettingsProvider: FC<{ children: ReactNode }> = ({ children }) => {

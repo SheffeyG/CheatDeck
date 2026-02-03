@@ -5,7 +5,7 @@ import { FC } from "react";
 export const QrCode: FC<{
   closeModal?: () => void;
   url: string;
-}> = ({ closeModal = () => { }, url }) => (
+}> = ({ closeModal = () => {}, url }) => (
   <ModalRoot closeModal={closeModal}>
     <QRCodeSVG
       style={{ margin: "0 auto 1.5em auto" }}

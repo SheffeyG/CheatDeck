@@ -12,7 +12,7 @@ export const SaveWithPreview: FC<{ checkWine?: boolean }> = ({ checkWine = true 
   const commandString = command.toLowerCase();
 
   const isWineGame = (cmd: string) => {
-    // Skip some launchers like heroic
+    // Skip native applications
     if (cmd.includes("flatpak") || cmd.includes("appimage")) return false;
     return true;
   };

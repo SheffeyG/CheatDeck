@@ -67,30 +67,29 @@ export class Options {
       const next = tokens[i + 1];
 
       if (position === "before") {
+        // Enviroment values
         if (current.includes("=") && !current.startsWith("-")) {
-          /* 1. Take all tokens with equal sign as ENV type
-                note multip equal signs case "ENV=foo=bar" */
           const [key, ...valueParts] = current.split("=");
           const value = valueParts.join("=");
           options.push({ type: "env", key: key.trim(), value: value });
+        // Prefix commands
         } else if (current === "--") {
-          /* 2. If separator "--" is found, push as one complete prefix command */
           if (prefix.length > 0) {
             options.push({ type: "pre_cmd", key: prefix.join(" ") });
           }
           prefix = [];
         } else {
-          /* 3. Take all other tokens as pre_cmd, store them in a list */
           prefix.push(current);
         }
       }
 
       if (position === "after") {
+        // Flags with/without arguments
         if (current.startsWith("-")) {
-          if (next && !next.startsWith("-")) { // Flag with argument
+          if (next && !next.startsWith("-")) {
             options.push({ type: "flag_args", key: current, value: next });
             i++;
-          } else { // Flag without argument
+          } else {
             options.push({ type: "flag_args", key: current });
           }
         } else {
@@ -99,7 +98,7 @@ export class Options {
       }
     }
 
-    // Push the rest of prefix tokens as the last pre_cmd
+    // Take the rest tokens as the last prefix command
     if (prefix.length > 0) {
       options.push({ type: "pre_cmd", key: prefix.join(" ") });
     }
@@ -150,11 +149,10 @@ export class Options {
       .join(" ");
 
     const optionsString = [envString, preCmdString, "%command%", flagArgsString]
-      .filter(part => part) // Remove empty parts
+      .filter(part => part) // filter empty parts
       .join(" ")
       .trim();
 
-    // If there's no other launch options, return empty string
     if (optionsString === "%command%") return "";
 
     return optionsString;
