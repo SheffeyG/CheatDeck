@@ -4,8 +4,8 @@ import { FC } from "react";
 import { useOptions, useSettings } from "../hooks";
 import { sendNotice, t } from "../utils";
 
-export const SaveWithPreview: FC<{ checkWine?: boolean }> = ({ checkWine = true }) => {
-  const { showPreview } = useSettings();
+export const SaveWithPreview: FC<{ checkWine?: boolean }> = () => {
+  const { showPreview, skipWineCheck } = useSettings();
   const { appid, command, options } = useOptions();
 
   const optionsString = options.getOptionsString();
@@ -18,7 +18,7 @@ export const SaveWithPreview: FC<{ checkWine?: boolean }> = ({ checkWine = true 
   };
 
   const handleSave = () => {
-    if (checkWine && !isWineGame(commandString)) {
+    if (!skipWineCheck && !isWineGame(commandString)) {
       sendNotice(t("MESSAGE_NON_STEAM", "This launcher is not supported; settings were not saved."));
     } else {
       SteamClient.Apps.SetAppLaunchOptions(appid, optionsString);

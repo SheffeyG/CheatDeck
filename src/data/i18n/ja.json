@@ -12,6 +12,8 @@
     "CONTENT_INFORMATION": "情報",
     "CONTENT_PREVIEW_LABEL": "プレビューを有効にする",
     "CONTENT_PREVIEW_DESC": "起動オプションのプレビューを有効にする",
+    "CONTENT_CHECK_WINE_LABEL": "ランチャーのチェックをスキップ",
+    "CONTENT_CHECK_WINE_DESC": "すべてのランチャーに適用を試みます",
     "CONTENT_NOTE0": "CheatDeckは現在、通常のSteamランチャーのみをサポートしています。",
     "CONTENT_NOTE1": "SteamOSの設定で開発者モードを有効にしてください。",
     "CONTENT_NOTE2": "ゲームの詳細メニューでCheatDeckの設定を見つけることができます。",

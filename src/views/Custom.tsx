@@ -154,7 +154,7 @@ const Custom: FC = () => {
         <BsPlusSquareFill />
       </DialogButton>
 
-      {customOptions.length > 0 && <SaveWithPreview checkWine={false} />}
+      {customOptions.length > 0 && <SaveWithPreview />}
 
     </>
   );

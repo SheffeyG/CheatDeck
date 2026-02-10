@@ -42,3 +42,11 @@ export const getShowPreview = async (): Promise<boolean> => {
 export const setShowPreview = async (value: boolean): Promise<void> => {
   await setSetting("ShowPreview", value);
 };
+
+export const getSkipWineCheck = async (): Promise<boolean> => {
+  return await getSetting("SkipWineCheck", false) as boolean;
+};
+
+export const setSkipWineCheck = async (value: boolean): Promise<void> => {
+  await setSetting("SkipWineCheck", value);
+};

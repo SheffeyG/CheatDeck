@@ -20,7 +20,7 @@ const GITHUB = "https://github.com/SheffeyG/CheatDeck";
 
 const Content: FC = () => {
   const translator = t("CREDIT", "");
-  const { showPreview, saveShowPreview } = useSettings();
+  const { showPreview, skipWineCheck, saveShowPreview, saveSkipWineCheck } = useSettings();
 
   const navLink = (url: string) => {
     Navigation.CloseSideMenus();
@@ -39,12 +39,21 @@ const Content: FC = () => {
             onChange={(enable: boolean) => saveShowPreview(enable)}
           />
         </PanelSectionRow>
+        <PanelSectionRow>
+          <ToggleField
+            label={t("CONTENT_CHECK_WINE_LABEL", "Skip launcher check")}
+            description={t("CONTENT_CHECK_WINE_DESC", "Try to apply for all launchers")}
+            bottomSeparator="thick"
+            checked={skipWineCheck}
+            onChange={(enable: boolean) => saveSkipWineCheck(enable)}
+          />
+        </PanelSectionRow>
       </PanelSection>
 
       <PanelSection title={t("CONTENT_INFORMATION", "information")}>
         <Focusable
           focusWithinClassName="gpfocuswithin"
-          onActivate={() => {}}
+          onActivate={() => { }}
           style={{
             width: "100%",
             margin: 0,

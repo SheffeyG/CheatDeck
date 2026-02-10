@@ -12,6 +12,8 @@
     "CONTENT_INFORMATION": "Информация",
     "CONTENT_PREVIEW_LABEL": "Включить предварительный просмотр",
     "CONTENT_PREVIEW_DESC": "Включить предварительный просмотр параметров запуска",
+    "CONTENT_CHECK_WINE_LABEL": "Пропустить проверку лаунчера",
+    "CONTENT_CHECK_WINE_DESC": "Попытаться применить ко всем лаунчерам",
     "CONTENT_NOTE0": "CheatDeck пока поддерживает только обычный лаунчер Steam.",
     "CONTENT_NOTE1": "Включите режим разработчика в настройках SteamOS;",
     "CONTENT_NOTE2": "Настройки CheatDeck можно найти в меню подробной информации об игре;",

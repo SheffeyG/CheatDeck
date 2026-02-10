@@ -12,6 +12,8 @@
     "CONTENT_INFORMATION": "Informationen",
     "CONTENT_PREVIEW_LABEL": "Vorschau aktivieren",
     "CONTENT_PREVIEW_DESC": "Vorschau der Startoptionen aktivieren",
+    "CONTENT_CHECK_WINE_LABEL": "Launcher-Prüfung überspringen",
+    "CONTENT_CHECK_WINE_DESC": "Versucht, die Einstellungen auf alle Launcher anzuwenden",
     "CONTENT_NOTE0": "CheatDeck unterstützt derzeit nur den normalen Steam-Launcher.",
     "CONTENT_NOTE1": "Bitte aktivieren Sie den Entwicklermodus in den SteamOS-Einstellungen;",
     "CONTENT_NOTE2": "Sie finden die CheatDeck-Einstellung im Detailmenü des Spiels;",
