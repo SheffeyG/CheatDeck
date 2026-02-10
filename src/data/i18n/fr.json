@@ -12,6 +12,8 @@
     "CONTENT_INFORMATION": "Informations",
     "CONTENT_PREVIEW_LABEL": "Activer l'aperçu",
     "CONTENT_PREVIEW_DESC": "Activer l'aperçu des options de lancement",
+    "CONTENT_CHECK_WINE_LABEL": "Ignorer la vérification du lanceur",
+    "CONTENT_CHECK_WINE_DESC": "Tenter de s'appliquer à tous les lanceurs",
     "CONTENT_NOTE0": "CheatDeck ne prend en charge que le lanceur Steam normal pour le moment.",
     "CONTENT_NOTE1": "Veuillez activer le mode développeur dans les paramètres SteamOS ;",
     "CONTENT_NOTE2": "Vous pouvez trouver le paramètre CheatDeck dans le menu des détails du jeu ;",

@@ -12,6 +12,8 @@
     "CONTENT_INFORMATION": "資訊",
     "CONTENT_PREVIEW_LABEL": "啟用預覽",
     "CONTENT_PREVIEW_DESC": "啟用啟動選項預覽",
+    "CONTENT_CHECK_WINE_LABEL": "略過啟動器檢查",
+    "CONTENT_CHECK_WINE_DESC": "嘗試應用於所有啟動器",
     "CONTENT_NOTE0": "CheatDeck 目前僅支援原生 Steam 遊戲啟動器。",
     "CONTENT_NOTE1": "請在 SteamOS 設定中啟用開發者模式；",
     "CONTENT_NOTE2": "您可以在遊戲詳情選單中找到 CheatDeck 設定；",

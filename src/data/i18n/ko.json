@@ -12,6 +12,8 @@
     "CONTENT_INFORMATION": "정보",
     "CONTENT_PREVIEW_LABEL": "미리보기 활성화",
     "CONTENT_PREVIEW_DESC": "실행 옵션 미리보기 활성화",
+    "CONTENT_CHECK_WINE_LABEL": "런처 확인 건너뛰기",
+    "CONTENT_CHECK_WINE_DESC": "모든 런처에 적용을 시도합니다",
     "CONTENT_NOTE0": "CheatDeck은 현재 일반 스팀 런처만 지원합니다.",
     "CONTENT_NOTE1": "SteamOS 설정에서 개발자 모드를 활성화하십시오.",
     "CONTENT_NOTE2": "게임 세부 정보 메뉴에서 CheatDeck 설정을 찾을 수 있습니다.",
