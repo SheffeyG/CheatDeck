@@ -20,12 +20,16 @@ CheatDeck is a [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader)
 If it doesn't, press the Steam key to toggle between the game and cheat interfaces.
     <details open> <summary>screenshot</summary> <img src="docs/trainer.jpg" width="600"> </details>
 
-**Troubleshooting:**
+### Troubleshooting
 
 - Ensure Developer Mode is enabled in your Steam settings.
 - File or folder names must not contain slashes or quotes.
 - If you cannot activate the selected cheat, switch the game to windowed mode.
 - If a program or trainer does not launch, it may require [.NET Core](https://dotnet.microsoft.com/en-us/download/dotnet), [.NET Framework](https://dotnet.microsoft.com/en-us/download/dotnet-framework), or the [Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist) that is not present in your compatibility environment. Use `protontricks` to install required dependencies.
+
+### Share Your Experience!
+
+If you've successfully used CheatDeck with a game or trainer, please share your compatibility findings or solutions in our [Game Compatibility Discussion](https://github.com/SheffeyG/CheatDeck/discussions/23). Your feedback helps the community!
 
 ## Advanced Options
 
