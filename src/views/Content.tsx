@@ -34,7 +34,7 @@ const Content: FC = () => {
           <ToggleField
             label={t("CONTENT_PREVIEW_LABEL", "Enable Preview")}
             description={t("CONTENT_PREVIEW_DESC", "Enable launch options preview")}
-            bottomSeparator="thick"
+            bottomSeparator="standard"
             checked={showPreview}
             onChange={(enable: boolean) => saveShowPreview(enable)}
           />
@@ -43,7 +43,7 @@ const Content: FC = () => {
           <ToggleField
             label={t("CONTENT_CHECK_WINE_LABEL", "Skip launcher check")}
             description={t("CONTENT_CHECK_WINE_DESC", "Try to apply for all launchers")}
-            bottomSeparator="thick"
+            bottomSeparator="standard"
             checked={skipWineCheck}
             onChange={(enable: boolean) => saveSkipWineCheck(enable)}
           />
@@ -61,22 +61,11 @@ const Content: FC = () => {
           }}
         >
           <DialogBodyText>
-            <p><b>{t("CONTENT_NOTE0", "CheatDeck only support the normal steam launcher for now.")}</b></p>
-            <li>{t("CONTENT_NOTE1", "Please enable developer mode in the steam system settings.")}</li>
-            <li>{t("CONTENT_NOTE2", "You can find the cheat settings in the game details menu.")}</li>
-            <li>{t("CONTENT_NOTE3", "Use the steam key to switch between game and cheat windows.")}</li>
-            <li>{t("CONTENT_NOTE4", "Turn the game to window mode if unable to click the cheat panel.")}</li>
+            <li>{t("CONTENT_NOTE0", "CheatDeck only support the official steam launcher for now.")}</li>
+            <li>{t("CONTENT_NOTE1", "CheatDeck game settings are accessible through the game details menu.")}</li>
+            <li>{t("CONTENT_NOTE2", "Check the GitHub page for more informations and bug reports.")}</li>
           </DialogBodyText>
         </Focusable>
-
-        {translator.length > 0 && (
-          <DialogBodyText>
-            <p>
-              <b>{t("TRANSLATION", "Translator") + ": "}</b>
-              {translator}
-            </p>
-          </DialogBodyText>
-        )}
 
         <PanelSectionRow>
           <Field
@@ -88,11 +77,7 @@ const Content: FC = () => {
             padding="none"
             spacingBetweenLabelAndChild="none"
             childrenContainerWidth="max"
-            // TODO: translate
-            description={t(
-              "CONTENT_GH_DESC",
-              "For bug report, translation and more other informations, check the GitHub page.",
-            )}
+            description={t("CONTENT_GH_DESC", "Star this project on GitHub")}
           >
             <Focusable style={{ display: "flex" }}>
               <DialogButton
@@ -124,6 +109,15 @@ const Content: FC = () => {
             </Focusable>
           </Field>
         </PanelSectionRow>
+
+        {translator.length > 0 && (
+          <DialogBodyText>
+            <p>
+              <b>{t("TRANSLATION", "Translator") + ": "}</b>
+              {translator}
+            </p>
+          </DialogBodyText>
+        )}
       </PanelSection>
     </Focusable>
   );
