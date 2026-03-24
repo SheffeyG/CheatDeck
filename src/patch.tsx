@@ -144,7 +144,6 @@ export const LibraryContextMenu = fakeRenderComponent(
   Object.values(
     findModuleByExport((e: Export) => e?.toString && e.toString().includes('().LibraryContextMenu'))
   ).find((sibling) => (
-    sibling?.toString().includes('createElement') &&
     sibling?.toString().includes('navigator:')
   )) as FC
 ).type;
