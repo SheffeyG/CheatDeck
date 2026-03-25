@@ -17,7 +17,7 @@
     "CONTENT_NOTE0": "CheatDeck은 현재 공식 Steam 런처만 지원합니다.",
     "CONTENT_NOTE1": "CheatDeck 게임 설정은 게임 세부 정보 메뉴에서 액세스할 수 있습니다.",
     "CONTENT_NOTE2": "자세한 정보 및 버그 보고는 GitHub 페이지를 참고하세요.",
-    "CONTENT_GH_DESC": "GitHub에서 이 프로젝트를 스타로 표시하세요",
+    "CONTENT_GH_DESC": "GitHub에서 이 프로젝트에 기여하거나 스타를 표시하세요",
     "CONTENT_QR_DESC": "링크 QR 표시",
 
     "NORMAL_TITLE": "일반",
