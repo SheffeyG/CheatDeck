@@ -14,34 +14,38 @@ import Normal from "./Normal";
 
 const PageRouter: FC = () => {
   let { appid } = useParams<{ appid: number }>();
+
   if (typeof appid === "string") {
     appid = parseInt(appid, 10);
   }
-  const pages = [
-    {
-      title: t("NORMAL_TITLE", "Normal"),
-      content: <Normal />,
-      icon: <IconNormal />,
-      hideTitle: false,
-    },
-    {
-      title: t("ADVANCED_TITLE", "Advanced"),
-      content: <Advanced />,
-      icon: <IconAdvanced />,
-      hideTitle: false,
-    },
-    {
-      title: t("CUSTOM_TITLE", "Custom"),
-      content: <Custom />,
-      icon: <IconCustom />,
-      hideTitle: false,
-    },
-  ];
 
   return (
     <SettingsProvider>
       <OptionsProvider appid={appid}>
-        <SidebarNavigation pages={pages} />
+        <SidebarNavigation
+          title="CheatDeck"
+          showTitle={true}
+          pages={[
+            {
+              title: t("NORMAL_TITLE", "Normal"),
+              content: <Normal />,
+              icon: <IconNormal />,
+              hideTitle: false,
+            },
+            {
+              title: t("ADVANCED_TITLE", "Advanced"),
+              content: <Advanced />,
+              icon: <IconAdvanced />,
+              hideTitle: false,
+            },
+            {
+              title: t("CUSTOM_TITLE", "Custom"),
+              content: <Custom />,
+              icon: <IconCustom />,
+              hideTitle: false,
+            },
+          ]}
+        />
       </OptionsProvider>
     </SettingsProvider>
   );
