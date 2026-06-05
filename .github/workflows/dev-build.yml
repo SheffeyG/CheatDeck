@@ -18,21 +18,24 @@ jobs:
   lint-frontend:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
       - uses: actions/checkout@v6
       - name: Set up pnpm
         uses: pnpm/action-setup@v5
         with:
-          version: latest
+          version: 11.5.0
       - name: Set up Node.js with pnpm cache
         uses: actions/setup-node@v6
         with:
-          node-version: latest
+          node-version: 22
           cache: pnpm
-      - name: Lint frontend source
+      - name: Validate frontend source
         run: |
-          pnpm i
-          pnpm run lint:frontend
+          pnpm install --frozen-lockfile
+          pnpm run lint
+          pnpm run typecheck
 
   lint-backend:
     if: github.event_name == 'pull_request'
@@ -52,28 +55,31 @@ jobs:
 
   build-plugin:
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
       - uses: actions/checkout@v6
       - name: Set up PNPM
         uses: pnpm/action-setup@v5
         with:
-          version: latest
+          version: 11.5.0
       - name: Set up Node.js with pnpm cache
         uses: actions/setup-node@v6
         with:
-          node-version: latest
+          node-version: 22
           cache: pnpm
       - name: Build plugin
         run: |
-          pnpm install --no-frozen-lockfile
+          pnpm install --frozen-lockfile
           pnpm run build
           mkdir -p output/${{ github.event.repository.name }}/dist
-          cp dist/index.js output/${{ github.event.repository.name }}/dist
-          cp main.py       output/${{ github.event.repository.name }}
-          cp plugin.json   output/${{ github.event.repository.name }}
-          cp package.json  output/${{ github.event.repository.name }}
-          cp README.md     output/${{ github.event.repository.name }}
-          cp LICENSE       output/${{ github.event.repository.name }}
+          cp dist/index.js  output/${{ github.event.repository.name }}/dist
+          cp main.py        output/${{ github.event.repository.name }}
+          cp plugin.json    output/${{ github.event.repository.name }}
+          cp package.json   output/${{ github.event.repository.name }}
+          cp pnpm-lock.yaml output/${{ github.event.repository.name }}
+          cp README.md      output/${{ github.event.repository.name }}
+          cp LICENSE        output/${{ github.event.repository.name }}
       - name: Upload artifact
         uses: actions/upload-artifact@v6
         with:
