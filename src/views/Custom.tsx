@@ -5,18 +5,16 @@ import { BsPencilFill, BsPlusSquareFill } from "react-icons/bs";
 import { FaBarsProgress as TypeCmdIcon, FaKey as TypeEnvIcon, FaFlag as TypeFlagIcon } from "react-icons/fa6";
 
 import { SaveWithPreview } from "../components";
-import { Options, type OptionType } from "../domain/launchOptions";
+import type { OptionType } from "../domain/launchOptions";
 import type { CustomOption } from "../domain/settings";
 import { useOptions, useSettings } from "../hooks";
 import { AddCustomOption, EditCustomOption } from "../modals";
 
 const Custom: FC = () => {
   // Launch options from current game details
-  const { options, setOptions } = useOptions();
+  const { options, applyEdit } = useOptions();
   // Custom options from users' plugin settings
   const { customOptions, saveCustomOptions } = useSettings();
-
-  const optionsString = options.getOptionsString();
 
   const CusOptTitle: FC<{ label: string; type: OptionType }> = ({ label, type }) => {
     const typeMap: Record<OptionType, IconType> = {
@@ -99,22 +97,8 @@ const Custom: FC = () => {
               <ToggleField
                 bottomSeparator="none"
                 label={<CusOptTitle label={opt.label} type={opt.type} />}
-                checked={opt.value ? options.hasKeyValue(opt.key, opt.value) : options.hasKey(opt.key)}
-                onChange={(enable: boolean) => {
-                  const updatedOptions = new Options(optionsString);
-
-                  if (enable) {
-                    updatedOptions.setOption({
-                      type: opt.type,
-                      key: opt.key,
-                      ...(opt.value !== undefined ? { value: opt.value } : {}),
-                    });
-                  } else {
-                    updatedOptions.removeOptionByKey(opt.key);
-                  }
-
-                  setOptions(updatedOptions);
-                }}
+                checked={options.isCustomOptionEnabled(opt)}
+                onChange={(enable: boolean) => applyEdit(options.setCustomOption(opt, enable))}
               />
             </Focusable>
             <DialogButton

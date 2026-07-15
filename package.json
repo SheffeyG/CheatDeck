@@ -6,11 +6,11 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
-    "lint": "biome check src",
+    "lint": "biome check src tests vitest.config.ts",
     "lint:frontend": "pnpm run lint",
     "format": "biome check --write src",
     "typecheck": "tsc --noEmit",
-    "check": "pnpm run lint && pnpm run typecheck && pnpm run build",
+    "check": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build",
     "test": "vitest run",
     "test:watch": "vitest"
   },

@@ -1,7 +1,3 @@
-import { logger } from "../utils/logger";
-
-export type OptionPosition = "before" | "after";
-
 export type OptionType = "env" | "pre_cmd" | "flag_args";
 
 export interface LaunchOption {
@@ -10,161 +6,580 @@ export interface LaunchOption {
   value?: string;
 }
 
-export class Options {
-  #parsedOptions: LaunchOption[] = [];
+export type LaunchOptionsEditFailure = "missing-command-marker" | "invalid-custom-option";
 
-  constructor(input: string) {
-    const match = input.match(/(.*)%command%(.*)/);
-    const beforeCommand = match ? match[1].trim() : input;
-    const afterCommand = match ? match[2].trim() : "";
+export type LaunchOptionsEditResult =
+  | { ok: true; value: LaunchOptions }
+  | { ok: false; value: LaunchOptions; error: LaunchOptionsEditFailure };
 
-    if (beforeCommand) {
-      const tokens = this.tokenize(beforeCommand);
-      const options = this.parseTokens(tokens, "before");
-      this.#parsedOptions.push(...options);
+interface Token {
+  start: number;
+  end: number;
+  raw: string;
+  value: string;
+  complete: boolean;
+}
+
+interface Entry {
+  type: OptionType;
+  key: string;
+  value?: string;
+  start: number;
+  end: number;
+  tokens: string[];
+  separatorBefore?: Token;
+  separatorAfter?: Token;
+}
+
+interface ParsedSource {
+  marker?: Token;
+  markerCount: number;
+  entries: Entry[];
+  prefixEntries: Entry[];
+}
+
+interface Patch {
+  start: number;
+  end: number;
+  replacement: string;
+}
+
+interface ManagedEntry {
+  type: OptionType;
+  key: string;
+  value?: string;
+  rendered: string;
+  exactValue?: boolean;
+}
+
+const keys = {
+  trainer: "PROTON_REMOTE_DEBUG_CMD",
+  trainerDirectory: "PRESSURE_VESSEL_FILESYSTEMS_RW",
+  language: "LANG",
+  hostLanguage: "HOST_LC_ALL",
+  compatibilityPath: "STEAM_COMPAT_DATA_PATH",
+  dxvkAsync: "DXVK_ASYNC",
+  radvPerftest: "RADV_PERFTEST",
+} as const;
+
+const commands = {
+  losslessScaling: "~/lsfg",
+  framegenPatch: "~/fgmod/fgmod",
+  framegenUnpatch: "~/fgmod/fgmod-uninstaller.sh",
+} as const;
+
+const decodeFragment = (raw: string): { value: string; complete: boolean } => {
+  let value = "";
+  let quote = "";
+
+  for (let index = 0; index < raw.length; index++) {
+    const char = raw[index];
+    if (char === "\\") {
+      if (index + 1 >= raw.length) return { value, complete: false };
+      value += raw[index + 1];
+      index++;
+    } else if (quote) {
+      if (char === quote) quote = "";
+      else value += char;
+    } else if (char === '"' || char === "'") {
+      quote = char;
+    } else {
+      value += char;
+    }
+  }
+
+  return { value, complete: quote === "" };
+};
+
+const lex = (source: string): Token[] => {
+  const tokens: Token[] = [];
+  let start: number | undefined;
+  let quote = "";
+  let escaped = false;
+
+  const pushToken = (end: number) => {
+    if (start === undefined) return;
+    const raw = source.slice(start, end);
+    tokens.push({ start, end, raw, ...decodeFragment(raw) });
+    start = undefined;
+  };
+
+  for (let index = 0; index < source.length; index++) {
+    const char = source[index];
+    if (start === undefined) {
+      if (/\s/.test(char)) continue;
+      start = index;
     }
 
-    if (afterCommand) {
-      const tokens = this.tokenize(afterCommand);
-      const options = this.parseTokens(tokens, "after");
-      this.#parsedOptions.push(...options);
+    if (escaped) {
+      escaped = false;
+    } else if (char === "\\") {
+      escaped = true;
+    } else if (quote) {
+      if (char === quote) quote = "";
+    } else if (char === '"' || char === "'") {
+      quote = char;
+    } else if (/\s/.test(char)) {
+      pushToken(index);
     }
   }
 
-  private tokenize(text: string): string[] {
-    if (!text) return [];
+  pushToken(source.length);
+  return tokens;
+};
 
-    const tokens: string[] = [];
-    let current = "";
-    let inQuotes = false;
-    let quoteChar = "";
+const findUnquotedEquals = (raw: string): number => {
+  let quote = "";
+  let escaped = false;
 
-    for (let i = 0; i < text.length; i++) {
-      const char = text[i];
+  for (let index = 0; index < raw.length; index++) {
+    const char = raw[index];
+    if (escaped) escaped = false;
+    else if (char === "\\") escaped = true;
+    else if (quote && char === quote) quote = "";
+    else if (!quote && (char === '"' || char === "'")) quote = char;
+    else if (!quote && char === "=") return index;
+  }
 
-      if (char === "\\" && i + 1 < text.length) {
-        current += char + text[i + 1];
-        i++;
-      } else if ((char === '"' || char === "'") && !inQuotes) {
-        inQuotes = true;
-        quoteChar = char;
-        current += char;
-      } else if (char === quoteChar && inQuotes) {
-        inQuotes = false;
-        current += char;
-      } else if (char === " " && !inQuotes) {
-        if (current.trim()) {
-          tokens.push(current.trim());
-          current = "";
-        }
-      } else {
-        current += char;
-      }
+  return -1;
+};
+
+const envEntry = (token: Token): Entry | undefined => {
+  if (!token.complete) return undefined;
+  const equals = findUnquotedEquals(token.raw);
+  if (equals <= 0) return undefined;
+
+  const key = decodeFragment(token.raw.slice(0, equals));
+  const value = decodeFragment(token.raw.slice(equals + 1));
+  if (!key.complete || !value.complete || !key.value) return undefined;
+
+  return {
+    type: "env",
+    key: key.value,
+    value: value.value,
+    start: token.start,
+    end: token.end,
+    tokens: [token.value],
+  };
+};
+
+const isNegativeNumber = (value: string): boolean => /^-\d+(?:\.\d+)?$/.test(value);
+
+const parseSource = (source: string): ParsedSource => {
+  const tokens = lex(source);
+  const markerIndexes = tokens
+    .map((token, index) => (token.complete && token.raw === "%command%" ? index : -1))
+    .filter((index) => index >= 0);
+  const markerIndex = markerIndexes[0];
+  const marker = markerIndex === undefined ? undefined : tokens[markerIndex];
+  if (!marker) return { markerCount: 0, entries: [], prefixEntries: [] };
+
+  const entries: Entry[] = [];
+  const prefixEntries: Entry[] = [];
+  let prefixTokens: Token[] = [];
+  let prefixZone: Entry[] = [];
+  let pendingSeparator: Token | undefined;
+
+  const resetPrefixZone = () => {
+    prefixZone = [];
+    pendingSeparator = undefined;
+  };
+
+  const pushPrefix = () => {
+    if (prefixTokens.length === 0) return;
+    const entry: Entry = {
+      type: "pre_cmd",
+      key: prefixTokens.map((token) => token.value).join(" "),
+      start: prefixTokens[0].start,
+      end: prefixTokens[prefixTokens.length - 1].end,
+      tokens: prefixTokens.map((token) => token.value),
+    };
+    if (pendingSeparator) entry.separatorBefore = pendingSeparator;
+    entries.push(entry);
+    prefixEntries.push(entry);
+    prefixZone.push(entry);
+    prefixTokens = [];
+    pendingSeparator = undefined;
+  };
+
+  for (const token of tokens.slice(0, markerIndex)) {
+    if (!token.complete) {
+      pushPrefix();
+      resetPrefixZone();
+      continue;
+    }
+    if (token.raw === "--") {
+      pushPrefix();
+      const previous = prefixZone[prefixZone.length - 1];
+      if (previous) previous.separatorAfter = token;
+      pendingSeparator = token;
+      continue;
     }
 
-    if (current.trim()) tokens.push(current.trim());
-    return tokens;
+    const env = envEntry(token);
+    if (env) {
+      pushPrefix();
+      resetPrefixZone();
+      entries.push(env);
+    } else {
+      prefixTokens.push(token);
+    }
+  }
+  pushPrefix();
+
+  const after = tokens.slice(markerIndex + 1);
+  for (let index = 0; index < after.length; index++) {
+    const token = after[index];
+    if (!token.complete || !token.value.startsWith("-")) continue;
+    const next = after[index + 1];
+    const hasValue = next?.complete && (!next.value.startsWith("-") || isNegativeNumber(next.value));
+    entries.push({
+      type: "flag_args",
+      key: token.value,
+      value: hasValue ? next.value : undefined,
+      start: token.start,
+      end: hasValue ? next.end : token.end,
+      tokens: hasValue ? [token.value, next.value] : [token.value],
+    });
+    if (hasValue) index++;
   }
 
-  private parseTokens(tokens: string[], position: OptionPosition): LaunchOption[] {
-    if (!tokens) return [];
+  return { marker, markerCount: markerIndexes.length, entries, prefixEntries };
+};
 
-    const options: LaunchOption[] = [];
-    let prefix: string[] = [];
+const mergeDeletionPatches = (patches: Patch[]): Patch[] => {
+  const sorted = [...patches].sort((left, right) => left.start - right.start || left.end - right.end);
+  const merged: Patch[] = [];
 
-    for (let i = 0; i < tokens.length; i++) {
-      const current = tokens[i];
-      const next = tokens[i + 1];
+  for (const patch of sorted) {
+    const previous = merged[merged.length - 1];
+    if (previous && !previous.replacement && !patch.replacement && patch.start <= previous.end) {
+      previous.end = Math.max(previous.end, patch.end);
+    } else {
+      merged.push({ ...patch });
+    }
+  }
 
-      if (position === "before") {
-        // Enviroment values
-        if (current.includes("=") && !current.startsWith("-")) {
-          const [key, ...valueParts] = current.split("=");
-          const value = valueParts.join("=");
-          options.push({ type: "env", key: key.trim(), value: value });
-          // Prefix commands
-        } else if (current === "--") {
-          if (prefix.length > 0) {
-            options.push({ type: "pre_cmd", key: prefix.join(" ") });
-          }
-          prefix = [];
-        } else {
-          prefix.push(current);
-        }
-      }
+  return merged;
+};
 
-      if (position === "after") {
-        // Flags with/without arguments
-        if (current.startsWith("-")) {
-          if (next && !next.startsWith("-")) {
-            options.push({ type: "flag_args", key: current, value: next });
-            i++;
-          } else {
-            options.push({ type: "flag_args", key: current });
-          }
-        } else {
-          logger.error("Unexcepted token after '%command%':", current);
-        }
-      }
+const applyPatches = (source: string, patches: Patch[]): string =>
+  mergeDeletionPatches(patches)
+    .sort((left, right) => right.start - left.start || right.end - left.end)
+    .reduce((current, patch) => current.slice(0, patch.start) + patch.replacement + current.slice(patch.end), source);
+
+const escapeDoubleQuoted = (value: string): string => value.replace(/[\\"$`]/g, "\\$&");
+
+const renderEnvValue = (value: string): string =>
+  /^[A-Za-z0-9_.,:@%+/-]*$/.test(value) ? value : `"${escapeDoubleQuoted(value)}"`;
+
+const parentPath = (path: string): string => {
+  const separator = path.lastIndexOf("/");
+  if (separator < 0) return ".";
+  return separator === 0 ? path[0] : path.slice(0, separator);
+};
+
+const unwrapTrainerPath = (value: string | undefined): string | undefined => {
+  if (value?.startsWith("'") && value.endsWith("'")) return value.slice(1, -1);
+  return value;
+};
+
+export class LaunchOptions {
+  readonly #source: string;
+  readonly #parsed: ParsedSource;
+
+  private constructor(source: string) {
+    this.#source = source;
+    this.#parsed = parseSource(source);
+  }
+
+  static parse(source: string): LaunchOptions {
+    return new LaunchOptions(source);
+  }
+
+  toString(): string {
+    return this.#source.trim() === "%command%" ? "" : this.#source;
+  }
+
+  get trainerPath(): string | undefined {
+    return unwrapTrainerPath(this.findEntries("env", keys.trainer)[0]?.value);
+  }
+
+  get trainerDirectory(): string | undefined {
+    return this.findEntries("env", keys.trainerDirectory)[0]?.value;
+  }
+
+  get language(): string | undefined {
+    return this.findEntries("env", keys.language)[0]?.value;
+  }
+
+  get compatibilityPath(): string | undefined {
+    return this.findEntries("env", keys.compatibilityPath)[0]?.value;
+  }
+
+  get isTrainerEnabled(): boolean {
+    return this.findEntries("env", keys.trainer).length > 0;
+  }
+
+  get isLanguageEnabled(): boolean {
+    return this.findEntries("env", keys.language).length > 0 || this.findEntries("env", keys.hostLanguage).length > 0;
+  }
+
+  get isDxvkAsyncEnabled(): boolean {
+    return this.hasEntry({ type: "env", key: keys.dxvkAsync, value: "1" });
+  }
+
+  get isRadvPerftestEnabled(): boolean {
+    return this.hasEntry({ type: "env", key: keys.radvPerftest, value: "gpl" });
+  }
+
+  get isLosslessScalingEnabled(): boolean {
+    return this.hasEntry({ type: "pre_cmd", key: commands.losslessScaling });
+  }
+
+  get isFramegenPatchEnabled(): boolean {
+    return this.hasEntry({ type: "pre_cmd", key: commands.framegenPatch });
+  }
+
+  get isFramegenUnpatchEnabled(): boolean {
+    return this.hasEntry({ type: "pre_cmd", key: commands.framegenUnpatch });
+  }
+
+  setTrainer(path: string): LaunchOptionsEditResult {
+    const directory = parentPath(path);
+    return this.edit([
+      {
+        type: "env",
+        key: keys.trainer,
+        value: `'${path}'`,
+        rendered: `${keys.trainer}="'${escapeDoubleQuoted(path)}'"`,
+      },
+      {
+        type: "env",
+        key: keys.trainerDirectory,
+        value: directory,
+        rendered: `${keys.trainerDirectory}="${escapeDoubleQuoted(directory)}"`,
+      },
+    ]);
+  }
+
+  disableTrainer(): LaunchOptionsEditResult {
+    return this.edit(
+      [],
+      [
+        { type: "env", key: keys.trainer },
+        { type: "env", key: keys.trainerDirectory },
+      ],
+    );
+  }
+
+  setLanguage(value: string): LaunchOptionsEditResult {
+    const rendered = renderEnvValue(value);
+    return this.edit([
+      { type: "env", key: keys.language, value, rendered: `${keys.language}=${rendered}` },
+      { type: "env", key: keys.hostLanguage, value, rendered: `${keys.hostLanguage}=${rendered}` },
+    ]);
+  }
+
+  disableLanguage(): LaunchOptionsEditResult {
+    return this.edit(
+      [],
+      [
+        { type: "env", key: keys.language },
+        { type: "env", key: keys.hostLanguage },
+      ],
+    );
+  }
+
+  setCompatibilityPath(path: string): LaunchOptionsEditResult {
+    return this.edit([
+      {
+        type: "env",
+        key: keys.compatibilityPath,
+        value: path,
+        rendered: `${keys.compatibilityPath}="${escapeDoubleQuoted(path)}"`,
+      },
+    ]);
+  }
+
+  disableCompatibilityPath(): LaunchOptionsEditResult {
+    return this.edit([], [{ type: "env", key: keys.compatibilityPath }]);
+  }
+
+  setDxvkAsync(enabled: boolean): LaunchOptionsEditResult {
+    return this.toggle({ type: "env", key: keys.dxvkAsync, value: "1", rendered: `${keys.dxvkAsync}=1` }, enabled);
+  }
+
+  setRadvPerftest(enabled: boolean): LaunchOptionsEditResult {
+    return this.toggle(
+      { type: "env", key: keys.radvPerftest, value: "gpl", rendered: `${keys.radvPerftest}=gpl` },
+      enabled,
+    );
+  }
+
+  setLosslessScaling(enabled: boolean): LaunchOptionsEditResult {
+    return this.toggle({ type: "pre_cmd", key: commands.losslessScaling, rendered: commands.losslessScaling }, enabled);
+  }
+
+  setFramegenPatch(enabled: boolean): LaunchOptionsEditResult {
+    return this.edit(
+      enabled ? [{ type: "pre_cmd", key: commands.framegenPatch, rendered: commands.framegenPatch }] : [],
+      enabled
+        ? [{ type: "pre_cmd", key: commands.framegenUnpatch }]
+        : [{ type: "pre_cmd", key: commands.framegenPatch }],
+    );
+  }
+
+  setFramegenUnpatch(enabled: boolean): LaunchOptionsEditResult {
+    return this.edit(
+      enabled ? [{ type: "pre_cmd", key: commands.framegenUnpatch, rendered: commands.framegenUnpatch }] : [],
+      enabled
+        ? [{ type: "pre_cmd", key: commands.framegenPatch }]
+        : [{ type: "pre_cmd", key: commands.framegenUnpatch }],
+    );
+  }
+
+  isCustomOptionEnabled(option: LaunchOption): boolean {
+    const normalized = this.normalizeCustomOption(option);
+    return normalized ? this.hasEntry(normalized) : false;
+  }
+
+  setCustomOption(option: LaunchOption, enabled: boolean): LaunchOptionsEditResult {
+    const normalized = this.normalizeCustomOption(option);
+    if (!normalized) return { ok: false, value: this, error: "invalid-custom-option" };
+    return this.toggle(normalized, enabled);
+  }
+
+  private toggle(option: ManagedEntry, enabled: boolean): LaunchOptionsEditResult {
+    return enabled ? this.edit([option]) : this.edit([], [option]);
+  }
+
+  private normalizeCustomOption(option: LaunchOption): ManagedEntry | undefined {
+    if (!(["env", "pre_cmd", "flag_args"] as unknown[]).includes(option.type)) return undefined;
+    const key = option.key.trim();
+    if (!key || key !== option.key) return undefined;
+
+    const rendered =
+      option.type === "env"
+        ? `${key}=${option.value ?? ""}`
+        : option.value === undefined
+          ? key
+          : `${key} ${option.value}`;
+    const source = option.type === "flag_args" ? `%command% ${rendered}` : `${rendered} %command%`;
+    const parsed = parseSource(source);
+    const entry = parsed.entries[0];
+    const expectedStart = option.type === "flag_args" ? "%command% ".length : 0;
+    const expectedEnd = expectedStart + rendered.length;
+
+    if (
+      parsed.markerCount !== 1 ||
+      parsed.entries.length !== 1 ||
+      !entry ||
+      entry.type !== option.type ||
+      entry.start !== expectedStart ||
+      entry.end !== expectedEnd
+    ) {
+      return undefined;
     }
 
-    // Take the rest tokens as the last prefix command
-    if (prefix.length > 0) {
-      options.push({ type: "pre_cmd", key: prefix.join(" ") });
+    return {
+      type: entry.type,
+      key: entry.key,
+      value: entry.value,
+      rendered,
+      exactValue: true,
+    };
+  }
+
+  private hasEntry(option: Pick<ManagedEntry, "type" | "key" | "value">): boolean {
+    return this.findEntries(option.type, option.key).some((entry) => entry.value === option.value);
+  }
+
+  private findEntries(type: OptionType, key: string): Entry[] {
+    if (type === "pre_cmd") {
+      const desired = lex(key)
+        .filter((token) => token.complete)
+        .map((token) => token.value);
+      return this.#parsed.entries.filter(
+        (entry) => entry.type === type && entry.tokens.join("\0") === desired.join("\0"),
+      );
+    }
+    return this.#parsed.entries.filter((entry) => entry.type === type && entry.key === key);
+  }
+
+  private matchingEntries(option: Pick<ManagedEntry, "type" | "key" | "value" | "exactValue">): Entry[] {
+    const matches = this.findEntries(option.type, option.key);
+    return option.exactValue ? matches.filter((entry) => entry.value === option.value) : matches;
+  }
+
+  private edit(
+    upserts: ManagedEntry[],
+    removals: Array<Pick<ManagedEntry, "type" | "key" | "value" | "exactValue">> = [],
+  ): LaunchOptionsEditResult {
+    const isBlank = this.#source.trim() === "";
+    if (!isBlank && this.#parsed.markerCount !== 1) {
+      return { ok: false, value: this, error: "missing-command-marker" };
     }
 
-    return options;
+    if (isBlank && upserts.length === 0) return { ok: true, value: this };
+    const initial = isBlank ? LaunchOptions.parse("%command%") : this;
+    const withoutRemoved = removals.reduce((current, removal) => current.removeAll(removal), initial);
+    const value = upserts.reduce((current, upsert) => current.upsert(upsert), withoutRemoved);
+    return { ok: true, value };
   }
 
-  getParsedOptions(): LaunchOption[] {
-    return this.#parsedOptions;
+  private removeAll(option: Pick<ManagedEntry, "type" | "key" | "value" | "exactValue">): LaunchOptions {
+    const matches = this.matchingEntries(option);
+    if (matches.length === 0) return this;
+    return LaunchOptions.parse(
+      applyPatches(
+        this.#source,
+        matches.map((entry) => this.deletionPatch(entry)),
+      ),
+    );
   }
 
-  setOption(opt: LaunchOption): void {
-    this.removeOptionByKey(opt.key);
-    this.#parsedOptions.push(opt);
+  private upsert(option: ManagedEntry): LaunchOptions {
+    const matches = this.matchingEntries(option);
+    if (matches.length === 0) return this.insert(option);
+
+    const [first, ...duplicates] = matches;
+    const patches = duplicates.map((entry) => this.deletionPatch(entry));
+    if (first.value !== option.value) {
+      patches.push({ start: first.start, end: first.end, replacement: option.rendered });
+    }
+    return patches.length === 0 ? this : LaunchOptions.parse(applyPatches(this.#source, patches));
   }
 
-  removeOptionByKey(key: string): void {
-    this.#parsedOptions = this.#parsedOptions.filter((p) => p.key !== key);
+  private insert(option: ManagedEntry): LaunchOptions {
+    const marker = this.#parsed.marker;
+    if (!marker) return this;
+
+    if (option.type === "flag_args") {
+      return LaunchOptions.parse(
+        `${this.#source.slice(0, marker.end)} ${option.rendered}${this.#source.slice(marker.end)}`,
+      );
+    }
+
+    if (option.type === "pre_cmd") {
+      const firstPrefix = this.#parsed.prefixEntries[0];
+      const position = firstPrefix?.start ?? marker.start;
+      const rendered = firstPrefix ? `${option.rendered} -- ` : `${option.rendered} `;
+      return LaunchOptions.parse(`${this.#source.slice(0, position)}${rendered}${this.#source.slice(position)}`);
+    }
+
+    const position = this.#parsed.prefixEntries[0]?.start ?? marker.start;
+    return LaunchOptions.parse(`${this.#source.slice(0, position)}${option.rendered} ${this.#source.slice(position)}`);
   }
 
-  hasKey(key: string): boolean {
-    return this.#parsedOptions.some((p) => p.key === key);
-  }
-
-  hasKeyValue(key: string, value: string): boolean {
-    return this.#parsedOptions.some((p) => p.key === key && p.value === value);
-  }
-
-  getKeyValue(key: string): string | undefined {
-    const param = this.#parsedOptions.find((p) => p.key === key);
-    return param?.value;
-  }
-
-  getOptionsString(): string {
-    const envString = this.#parsedOptions
-      .filter((opt) => opt.type === "env")
-      .map((opt) => `${opt.key}=${opt.value}`)
-      .join(" ");
-
-    const preCmdString = this.#parsedOptions
-      .filter((opt) => opt.type === "pre_cmd")
-      .map((opt) => opt.key)
-      .join(" -- ");
-
-    const flagArgsString = this.#parsedOptions
-      .filter((opt) => opt.type === "flag_args")
-      .map((opt) => (opt.value ? `${opt.key} ${opt.value}` : opt.key))
-      .join(" ");
-
-    const optionsString = [envString, preCmdString, "%command%", flagArgsString]
-      .filter((part) => part) // filter empty parts
-      .join(" ")
-      .trim();
-
-    if (optionsString === "%command%") return "";
-
-    return optionsString;
+  private deletionPatch(entry: Entry): Patch {
+    if (entry.type !== "pre_cmd") return { start: entry.start, end: entry.end, replacement: "" };
+    if (entry.separatorAfter) {
+      return { start: entry.start, end: entry.separatorAfter.end, replacement: "" };
+    }
+    if (entry.separatorBefore) {
+      return { start: entry.separatorBefore.start, end: entry.end, replacement: "" };
+    }
+    return { start: entry.start, end: entry.end, replacement: "" };
   }
 }

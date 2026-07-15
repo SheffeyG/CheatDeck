@@ -2,30 +2,19 @@ import { Focusable, ToggleField } from "@decky/ui";
 import { type FC, useState } from "react";
 
 import { SaveWithPreview, ToggleFilePicker } from "../components";
-import { Options } from "../domain/launchOptions";
 import { useOptions } from "../hooks";
 import { browseFiles } from "../infra/client";
 import { getHomePath } from "../infra/environment";
 import { t } from "../utils/translate";
 
 const Advanced: FC = () => {
-  const { options, setOptions } = useOptions();
-  const [showPrefix, setShowPrefix] = useState(options.hasKey("STEAM_COMPAT_DATA_PATH"));
-
-  const optionsString = options.getOptionsString();
+  const { options, applyEdit } = useOptions();
+  const [showPrefix, setShowPrefix] = useState(options.compatibilityPath !== undefined);
 
   const handleBrowse = async () => {
-    const savedPath = options.getKeyValue("STEAM_COMPAT_DATA_PATH")?.replace(/^"|"$/g, "");
-    const defaultPath = savedPath ?? (await getHomePath());
+    const defaultPath = options.compatibilityPath ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, false);
-
-    const newOptions = new Options(optionsString);
-    newOptions.setOption({
-      type: "env",
-      key: "STEAM_COMPAT_DATA_PATH",
-      value: `"${filePickerRes.path}"`,
-    });
-    setOptions(newOptions);
+    applyEdit(options.setCompatibilityPath(filePickerRes.path));
   };
 
   return (
@@ -37,16 +26,8 @@ const Advanced: FC = () => {
           "Optimize the ProtonGE compatibility layer to reduce frame time and input lag",
         )}
         bottomSeparator="standard"
-        checked={options.hasKeyValue("DXVK_ASYNC", "1")}
-        onChange={(enable: boolean) => {
-          const updatedOptions = new Options(optionsString);
-          if (enable) {
-            updatedOptions.setOption({ type: "env", key: "DXVK_ASYNC", value: "1" });
-          } else {
-            updatedOptions.removeOptionByKey("DXVK_ASYNC");
-          }
-          setOptions(updatedOptions);
-        }}
+        checked={options.isDxvkAsyncEnabled}
+        onChange={(enable: boolean) => applyEdit(options.setDxvkAsync(enable))}
       />
 
       <ToggleField
@@ -56,31 +37,24 @@ const Advanced: FC = () => {
           "Optimize the shader cache behavior of the ProtonGE compatibility layer",
         )}
         bottomSeparator="standard"
-        checked={options.hasKeyValue("RADV_PERFTEST", "gpl")}
-        onChange={(enable: boolean) => {
-          const updatedOptions = new Options(optionsString);
-          if (enable) {
-            updatedOptions.setOption({ type: "env", key: "RADV_PERFTEST", value: "gpl" });
-          } else {
-            updatedOptions.removeOptionByKey("RADV_PERFTEST");
-          }
-          setOptions(updatedOptions);
-        }}
+        checked={options.isRadvPerftestEnabled}
+        onChange={(enable: boolean) => applyEdit(options.setRadvPerftest(enable))}
       />
 
       <ToggleFilePicker
         label={t("ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL", "STEAM_COMPAT_DATA_PATH")}
         description={t("ADVANCED_STEAM_COMPAT_DATA_PATH_DESC", "Specify a folder as the shared prefix for the game")}
-        checked={showPrefix}
+        checked={showPrefix || options.compatibilityPath !== undefined}
         onToggle={(enable: boolean) => {
-          setShowPrefix(enable);
-          if (!enable) {
-            const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.removeOptionByKey("STEAM_COMPAT_DATA_PATH");
-            setOptions(updatedOptions);
+          if (enable) {
+            setShowPrefix(true);
+            return;
           }
+          const result = options.disableCompatibilityPath();
+          if (result.ok) setShowPrefix(false);
+          applyEdit(result);
         }}
-        value={options.getKeyValue("STEAM_COMPAT_DATA_PATH")?.replace(/^"|\\|"$/g, "")}
+        value={options.compatibilityPath}
         onBrowse={handleBrowse}
         fieldLabel={t("ADVANCED_STEAM_COMPAT_DATA_PATH_NOTE", "Data Path")}
       />
@@ -92,16 +66,8 @@ const Advanced: FC = () => {
           "Patch the game to use Framegen (requires the Lossless-Scaling plugin)",
         )}
         bottomSeparator="standard"
-        checked={options.hasKey("~/lsfg")}
-        onChange={(enable: boolean) => {
-          const updatedOptions = new Options(optionsString);
-          if (enable) {
-            updatedOptions.setOption({ type: "pre_cmd", key: "~/lsfg" });
-          } else {
-            updatedOptions.removeOptionByKey("~/lsfg");
-          }
-          setOptions(updatedOptions);
-        }}
+        checked={options.isLosslessScalingEnabled}
+        onChange={(enable: boolean) => applyEdit(options.setLosslessScaling(enable))}
       />
 
       <ToggleField
@@ -111,17 +77,8 @@ const Advanced: FC = () => {
           "Patch the game to use Framegen (requires the Decky-Framegen plugin)",
         )}
         bottomSeparator="standard"
-        checked={options.hasKey("~/fgmod/fgmod")}
-        onChange={(enable: boolean) => {
-          const updatedOptions = new Options(optionsString);
-          if (enable) {
-            updatedOptions.removeOptionByKey("~/fgmod/fgmod-uninstaller.sh");
-            updatedOptions.setOption({ type: "pre_cmd", key: "~/fgmod/fgmod" });
-          } else {
-            updatedOptions.removeOptionByKey("~/fgmod/fgmod");
-          }
-          setOptions(updatedOptions);
-        }}
+        checked={options.isFramegenPatchEnabled}
+        onChange={(enable: boolean) => applyEdit(options.setFramegenPatch(enable))}
       />
 
       <ToggleField
@@ -131,17 +88,8 @@ const Advanced: FC = () => {
           "Unpatch the game for Decky Framegen (requires the Decky-Framegen plugin)",
         )}
         bottomSeparator="standard"
-        checked={options.hasKey("~/fgmod/fgmod-uninstaller.sh")}
-        onChange={(enable: boolean) => {
-          const updatedOptions = new Options(optionsString);
-          if (enable) {
-            updatedOptions.removeOptionByKey("~/fgmod/fgmod");
-            updatedOptions.setOption({ type: "pre_cmd", key: "~/fgmod/fgmod-uninstaller.sh" });
-          } else {
-            updatedOptions.removeOptionByKey("~/fgmod/fgmod-uninstaller.sh");
-          }
-          setOptions(updatedOptions);
-        }}
+        checked={options.isFramegenUnpatchEnabled}
+        onChange={(enable: boolean) => applyEdit(options.setFramegenUnpatch(enable))}
       />
 
       <SaveWithPreview />

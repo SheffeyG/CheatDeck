@@ -4,39 +4,20 @@ import { FaGamepad, FaLanguage } from "react-icons/fa";
 
 import { SaveWithPreview, ToggleDropdown, ToggleFilePicker } from "../components";
 import { LangCodes } from "../data/languageCodes.json";
-import { Options } from "../domain/launchOptions";
 import { useOptions } from "../hooks";
 import { browseFiles } from "../infra/client";
 import { getHomePath } from "../infra/environment";
 import { t } from "../utils/translate";
 
 const Normal: FC = () => {
-  const { options, setOptions } = useOptions();
-  const [showCheat, setShowChat] = useState(options.hasKey("PROTON_REMOTE_DEBUG_CMD"));
-  const [showLang, setShowLang] = useState(options.hasKey("LANG") || options.hasKey("HOST_LC_ALL"));
-
-  const optionsString = options.getOptionsString();
+  const { options, applyEdit } = useOptions();
+  const [showCheat, setShowCheat] = useState(options.isTrainerEnabled);
+  const [showLang, setShowLang] = useState(options.isLanguageEnabled);
 
   const handleBrowse = async () => {
-    const savedPath = options.getKeyValue("PRESSURE_VESSEL_FILESYSTEMS_RW")?.replace(/^"|"$/g, "");
-    const defaultPath = savedPath ?? (await getHomePath());
+    const defaultPath = options.trainerDirectory ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, true, ["exe", "bat"]);
-    const selectedCheatPath = filePickerRes.path.replace(/(['"])/g, "\\$1"); // Escape quotes
-    const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, ""); // Get parent directory
-
-    const newOptions = new Options(optionsString);
-    newOptions.setOption({
-      type: "env",
-      key: "PROTON_REMOTE_DEBUG_CMD",
-      value: `"'${selectedCheatPath}'"`, // Quote twice to adjust Proton's shlex.split parser
-    });
-    // Make sure proton has read/write access to the parent directory
-    newOptions.setOption({
-      type: "env",
-      key: "PRESSURE_VESSEL_FILESYSTEMS_RW",
-      value: `"${selectedCheatDir}"`,
-    });
-    setOptions(newOptions);
+    applyEdit(options.setTrainer(filePickerRes.path));
   };
 
   return (
@@ -45,17 +26,17 @@ const Normal: FC = () => {
         label={t("NORMAL_CHEAT_TOGGLE_LABEL", "Enable Cheat")}
         description={t("NORMAL_CHEAT_TOGGLE_DESC", "Select the cheat or trainer exe file from storage")}
         icon={<FaGamepad />}
-        checked={showCheat}
+        checked={showCheat || options.isTrainerEnabled}
         onToggle={(enable: boolean) => {
-          setShowChat(enable);
-          if (!enable) {
-            const updatedOptions = new Options(optionsString);
-            updatedOptions.removeOptionByKey("PROTON_REMOTE_DEBUG_CMD");
-            updatedOptions.removeOptionByKey("PRESSURE_VESSEL_FILESYSTEMS_RW");
-            setOptions(updatedOptions);
+          if (enable) {
+            setShowCheat(true);
+            return;
           }
+          const result = options.disableTrainer();
+          if (result.ok) setShowCheat(false);
+          applyEdit(result);
         }}
-        value={options.getKeyValue("PROTON_REMOTE_DEBUG_CMD")?.replace(/^"'|\\|'"$/g, "")}
+        value={options.trainerPath}
         onBrowse={handleBrowse}
         fieldLabel={t("NORMAL_CHEAT_LABEL", "EXE Path")}
       />
@@ -64,24 +45,19 @@ const Normal: FC = () => {
         label={t("NORMAL_LANG_TOGGLE_LABEL", "Language")}
         description={t("NORMAL_LANG_TOGGLE_DESC", "Try to specify the game language")}
         icon={<FaLanguage />}
-        checked={showLang}
+        checked={showLang || options.isLanguageEnabled}
         onToggle={(enable: boolean) => {
-          setShowLang(enable);
-          if (!enable) {
-            const updatedOptions = new Options(optionsString);
-            updatedOptions.removeOptionByKey("LANG");
-            updatedOptions.removeOptionByKey("HOST_LC_ALL");
-            setOptions(updatedOptions);
+          if (enable) {
+            setShowLang(true);
+            return;
           }
+          const result = options.disableLanguage();
+          if (result.ok) setShowLang(false);
+          applyEdit(result);
         }}
         fieldLabel={t("NORMAL_LANG_LABEL", "Language Code")}
-        value={options.getKeyValue("LANG")}
-        onInput={(value: string) => {
-          const updatedOptions = new Options(optionsString);
-          updatedOptions.setOption({ type: "env", key: "LANG", value: value });
-          updatedOptions.setOption({ type: "env", key: "HOST_LC_ALL", value: value });
-          setOptions(updatedOptions);
-        }}
+        value={options.language}
+        onInput={(value: string) => applyEdit(options.setLanguage(value))}
         preset={LangCodes as DropdownOption[]}
       />
 

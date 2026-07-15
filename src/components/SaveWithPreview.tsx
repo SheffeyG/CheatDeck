@@ -7,9 +7,9 @@ import { t } from "../utils/translate";
 
 export const SaveWithPreview: FC<{ checkWine?: boolean }> = () => {
   const { showPreview, skipWineCheck } = useSettings();
-  const { appid, command, options } = useOptions();
+  const { appid, command, options, editFailure } = useOptions();
 
-  const optionsString = options.getOptionsString();
+  const optionsString = options.toString();
   const commandString = command.toLowerCase();
 
   const isWineGame = (cmd: string) => {
@@ -19,7 +19,11 @@ export const SaveWithPreview: FC<{ checkWine?: boolean }> = () => {
   };
 
   const handleSave = () => {
-    if (!skipWineCheck && !isWineGame(commandString)) {
+    if (editFailure === "missing-command-marker") {
+      sendNotice(t("MESSAGE_MISSING_COMMAND", "Launch options must contain exactly one %command% marker."));
+    } else if (editFailure === "invalid-custom-option") {
+      sendNotice(t("MESSAGE_INVALID_CUSTOM_OPTION", "The custom launch option is invalid and was not applied."));
+    } else if (!skipWineCheck && !isWineGame(commandString)) {
       sendNotice(t("MESSAGE_NON_STEAM", "This launcher is not supported; settings were not saved."));
     } else {
       SteamClient.Apps.SetAppLaunchOptions(appid, optionsString);
