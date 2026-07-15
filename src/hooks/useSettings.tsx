@@ -1,11 +1,4 @@
-import {
-  createContext,
-  FC,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, type FC, type ReactNode, useContext, useEffect, useState } from "react";
 
 import {
   getCustomOptions as backendGetCustomOptions,
@@ -90,11 +83,7 @@ export const SettingsProvider: FC<{ children: ReactNode }> = ({ children }) => {
     saveCustomOptions,
   };
 
-  return (
-    <SettingsContext.Provider value={value}>
-      {children}
-    </SettingsContext.Provider>
-  );
+  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
 };
 
 export const useSettings = () => useContext(SettingsContext);

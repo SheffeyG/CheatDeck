@@ -25,8 +25,8 @@ export const getHomePath = async (): Promise<string> => {
 };
 
 export const getCustomOptions = async (): Promise<CustomOption[]> => {
-  const savedOpt = await getSetting("CustomOptions", []) as CustomOption[];
-  const optsWithId = savedOpt.map(option => ({ ...option, id: uuid() }));
+  const savedOpt = (await getSetting("CustomOptions", [])) as CustomOption[];
+  const optsWithId = savedOpt.map((option) => ({ ...option, id: uuid() }));
   return optsWithId;
 };
 
@@ -36,7 +36,7 @@ export const setCustomOptions = async (data: CustomOption[]): Promise<void> => {
 };
 
 export const getShowPreview = async (): Promise<boolean> => {
-  return await getSetting("ShowPreview", false) as boolean;
+  return (await getSetting("ShowPreview", false)) as boolean;
 };
 
 export const setShowPreview = async (value: boolean): Promise<void> => {
@@ -44,7 +44,7 @@ export const setShowPreview = async (value: boolean): Promise<void> => {
 };
 
 export const getSkipWineCheck = async (): Promise<boolean> => {
-  return await getSetting("SkipWineCheck", false) as boolean;
+  return (await getSetting("SkipWineCheck", false)) as boolean;
 };
 
 export const setSkipWineCheck = async (value: boolean): Promise<void> => {

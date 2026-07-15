@@ -1,10 +1,4 @@
-import {
-  FilePickerRes,
-  FileSelectionType,
-  openFilePicker,
-  ToastData,
-  toaster,
-} from "@decky/api";
+import { type FilePickerRes, FileSelectionType, openFilePicker, type ToastData, toaster } from "@decky/api";
 
 export type FilePickerFilter = RegExp | ((file: File) => boolean) | undefined;
 

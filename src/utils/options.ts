@@ -35,7 +35,7 @@ export class Options {
       if (char === "\\" && i + 1 < text.length) {
         current += char + text[i + 1];
         i++;
-      } else if ((char === "\"" || char === "'") && !inQuotes) {
+      } else if ((char === '"' || char === "'") && !inQuotes) {
         inQuotes = true;
         quoteChar = char;
         current += char;
@@ -72,7 +72,7 @@ export class Options {
           const [key, ...valueParts] = current.split("=");
           const value = valueParts.join("=");
           options.push({ type: "env", key: key.trim(), value: value });
-        // Prefix commands
+          // Prefix commands
         } else if (current === "--") {
           if (prefix.length > 0) {
             options.push({ type: "pre_cmd", key: prefix.join(" ") });
@@ -116,40 +116,40 @@ export class Options {
   }
 
   removeOptionByKey(key: string): void {
-    this.#parsedOptions = this.#parsedOptions.filter(p => p.key !== key);
+    this.#parsedOptions = this.#parsedOptions.filter((p) => p.key !== key);
   }
 
   hasKey(key: string): boolean {
-    return this.#parsedOptions.some(p => p.key === key);
+    return this.#parsedOptions.some((p) => p.key === key);
   }
 
   hasKeyValue(key: string, value: string): boolean {
-    return this.#parsedOptions.some(p => p.key === key && p.value === value);
+    return this.#parsedOptions.some((p) => p.key === key && p.value === value);
   }
 
   getKeyValue(key: string): string | undefined {
-    const param = this.#parsedOptions.find(p => p.key === key);
+    const param = this.#parsedOptions.find((p) => p.key === key);
     return param?.value;
   }
 
   getOptionsString(): string {
     const envString = this.#parsedOptions
-      .filter(opt => opt.type === "env")
-      .map(opt => `${opt.key}=${opt.value}`)
+      .filter((opt) => opt.type === "env")
+      .map((opt) => `${opt.key}=${opt.value}`)
       .join(" ");
 
     const preCmdString = this.#parsedOptions
-      .filter(opt => opt.type === "pre_cmd")
-      .map(opt => opt.key)
+      .filter((opt) => opt.type === "pre_cmd")
+      .map((opt) => opt.key)
       .join(" -- ");
 
     const flagArgsString = this.#parsedOptions
-      .filter(opt => opt.type === "flag_args")
-      .map(opt => opt.value ? `${opt.key} ${opt.value}` : opt.key)
+      .filter((opt) => opt.type === "flag_args")
+      .map((opt) => (opt.value ? `${opt.key} ${opt.value}` : opt.key))
       .join(" ");
 
     const optionsString = [envString, preCmdString, "%command%", flagArgsString]
-      .filter(part => part) // filter empty parts
+      .filter((part) => part) // filter empty parts
       .join(" ")
       .trim();
 

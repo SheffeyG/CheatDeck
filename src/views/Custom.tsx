@@ -1,12 +1,8 @@
 import { DialogButton, Focusable, showModal, ToggleField } from "@decky/ui";
-import { FC } from "react";
-import { IconType } from "react-icons";
+import type { FC } from "react";
+import type { IconType } from "react-icons";
 import { BsPencilFill, BsPlusSquareFill } from "react-icons/bs";
-import {
-  FaBarsProgress as TypeCmdIcon,
-  FaFlag as TypeFlagIcon,
-  FaKey as TypeEnvIcon,
-} from "react-icons/fa6";
+import { FaBarsProgress as TypeCmdIcon, FaKey as TypeEnvIcon, FaFlag as TypeFlagIcon } from "react-icons/fa6";
 
 import { SaveWithPreview } from "../components";
 import { useOptions, useSettings } from "../hooks";
@@ -95,7 +91,7 @@ const Custom: FC = () => {
           }
         `}
       </style>
-      {(customOptions.length > 0) && (
+      {customOptions.length > 0 &&
         customOptions.map((opt: CustomOption) => (
           <Focusable className="CheatDeckEntryContainer" key={opt.id}>
             <Focusable className="CheatDeckToggleContainer">
@@ -124,11 +120,7 @@ const Custom: FC = () => {
               className="CheatDeckEditButton"
               onClick={() => {
                 showModal(
-                  <EditCustomOption
-                    id={opt.id}
-                    optList={customOptions}
-                    onSave={opts => saveCustomOptions(opts)}
-                  />,
+                  <EditCustomOption id={opt.id} optList={customOptions} onSave={(opts) => saveCustomOptions(opts)} />,
                   window,
                 );
               }}
@@ -136,26 +128,18 @@ const Custom: FC = () => {
               <BsPencilFill className="CheatDeckEditIcon" />
             </DialogButton>
           </Focusable>
-        ))
-      )}
+        ))}
 
       <DialogButton
         className="CheatDeckAddButton"
         onClick={() => {
-          showModal(
-            <AddCustomOption
-              optList={customOptions}
-              onSave={opts => saveCustomOptions(opts)}
-            />,
-            window,
-          );
+          showModal(<AddCustomOption optList={customOptions} onSave={(opts) => saveCustomOptions(opts)} />, window);
         }}
       >
         <BsPlusSquareFill />
       </DialogButton>
 
       {customOptions.length > 0 && <SaveWithPreview />}
-
     </>
   );
 };

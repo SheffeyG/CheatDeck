@@ -1,9 +1,9 @@
 import { SidebarNavigation, useParams } from "@decky/ui";
-import { FC } from "react";
+import type { FC } from "react";
 import {
-  BsCheckSquareFill as IconNormal,
   BsExclamationSquareFill as IconAdvanced,
   BsPlusSquareFill as IconCustom,
+  BsCheckSquareFill as IconNormal,
 } from "react-icons/bs";
 
 import { OptionsProvider, SettingsProvider } from "../hooks";

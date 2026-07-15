@@ -1,12 +1,5 @@
-import {
-  Dropdown,
-  DropdownOption,
-  Field,
-  Focusable,
-  TextField,
-  ToggleField,
-} from "@decky/ui";
-import { FC, ReactNode } from "react";
+import { Dropdown, type DropdownOption, Field, Focusable, TextField, ToggleField } from "@decky/ui";
+import type { FC, ReactNode } from "react";
 
 import { t } from "../utils";
 
@@ -43,11 +36,7 @@ export const ToggleDropdown: FC<ToggleDropdownProps> = ({
       onChange={onToggle}
     />
     {checked && (
-      <Field
-        label={fieldLabel}
-        padding="none"
-        bottomSeparator="standard"
-      >
+      <Field label={fieldLabel} padding="none" bottomSeparator="standard">
         <Focusable
           style={{
             boxShadow: "none",

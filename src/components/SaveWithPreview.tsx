@@ -1,5 +1,5 @@
 import { DialogButton, Focusable } from "@decky/ui";
-import { FC } from "react";
+import type { FC } from "react";
 
 import { useOptions, useSettings } from "../hooks";
 import { sendNotice, t } from "../utils";
@@ -27,27 +27,29 @@ export const SaveWithPreview: FC<{ checkWine?: boolean }> = () => {
   };
 
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      width: "95%",
-      marginTop: "20px",
-      alignSelf: "center",
-      gap: "4px",
-    }}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "95%",
+        marginTop: "20px",
+        alignSelf: "center",
+        gap: "4px",
+      }}
     >
       {showPreview && optionsString.length > 0 && (
-        <Focusable style={{
-          background: "rgba(255,255,255,0.1)",
-          padding: "10px",
-          borderRadius: "2px",
-          fontSize: "12px",
-          textAlign: "left",
-          fontFamily: "monospace",
-          color: "#ccc",
-          minHeight: "20px",
-          boxSizing: "border-box",
-        }}
+        <Focusable
+          style={{
+            background: "rgba(255,255,255,0.1)",
+            padding: "10px",
+            borderRadius: "2px",
+            fontSize: "12px",
+            textAlign: "left",
+            fontFamily: "monospace",
+            color: "#ccc",
+            minHeight: "20px",
+            boxSizing: "border-box",
+          }}
         >
           {optionsString}
         </Focusable>

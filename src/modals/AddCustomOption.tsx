@@ -1,13 +1,5 @@
-import {
-  DialogButton,
-  DialogHeader,
-  Dropdown,
-  Field,
-  Focusable,
-  ModalRoot,
-  TextField,
-} from "@decky/ui";
-import { FC, useState } from "react";
+import { DialogButton, DialogHeader, Dropdown, Field, Focusable, ModalRoot, TextField } from "@decky/ui";
+import { type FC, useState } from "react";
 import { v4 as uuid } from "uuid";
 
 import { t } from "../utils";
@@ -34,56 +26,39 @@ export const AddCustomOption: FC<{
     <ModalRoot onCancel={closeModal}>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <DialogHeader>{t("CUSTOM_NEW_TITLE", "Add a New Option")}</DialogHeader>
-        <Field
-          label={t("CUSTOM_OPTION_LABEL", "Label")}
-          padding="none"
-          bottomSeparator="none"
-        >
-          <Focusable
-            style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
-          >
+        <Field label={t("CUSTOM_OPTION_LABEL", "Label")} padding="none" bottomSeparator="none">
+          <Focusable style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}>
             <TextField
               style={{ padding: "10px", fontSize: "14px", width: "435px" }}
               value={targetOpt.label}
-              onChange={e => setTargetOpt({ ...targetOpt, label: e.target.value })}
+              onChange={(e) => setTargetOpt({ ...targetOpt, label: e.target.value })}
             />
           </Focusable>
         </Field>
-        <Field
-          label={t("CUSTOM_OPTION_TYPE", "Type")}
-          padding="none"
-          bottomSeparator="none"
-        >
-          <Focusable
-            style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
-          >
+        <Field label={t("CUSTOM_OPTION_TYPE", "Type")} padding="none" bottomSeparator="none">
+          <Focusable style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}>
             <Dropdown
               rgOptions={paramTypeOptions}
               selectedOption={targetOpt.type}
               onChange={(v) => {
-                if (targetOpt.type !== v.data) setTargetOpt({
-                  label: targetOpt.label,
-                  id: targetOpt.id,
-                  type: v.data,
-                  key: "",
-                  value: undefined,
-                });
+                if (targetOpt.type !== v.data)
+                  setTargetOpt({
+                    label: targetOpt.label,
+                    id: targetOpt.id,
+                    type: v.data,
+                    key: "",
+                    value: undefined,
+                  });
               }}
             />
           </Focusable>
         </Field>
-        <Field
-          label={t("CUSTOM_OPTION_FIELDS", "Field & Value")}
-          padding="none"
-          bottomSeparator="none"
-        >
-          <Focusable
-            style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}
-          >
+        <Field label={t("CUSTOM_OPTION_FIELDS", "Field & Value")} padding="none" bottomSeparator="none">
+          <Focusable style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}>
             <TextField
               style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === "pre_cmd" ? "435px" : "200px" }}
               value={targetOpt.key}
-              onChange={e => setTargetOpt({ ...targetOpt, key: e.target.value })}
+              onChange={(e) => setTargetOpt({ ...targetOpt, key: e.target.value })}
             />
             {targetOpt.type !== "pre_cmd" && (
               <>

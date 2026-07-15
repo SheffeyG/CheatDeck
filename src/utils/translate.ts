@@ -24,9 +24,7 @@ const languages: Languages = {
 
 function getCurrentLangCode(): string {
   const steamLang = window.LocalizationManager?.m_rgLocalesToUse?.[0] ?? "en";
-  const langCode = steamLang.replace(
-    /-([a-z])/g, (_, letter: string) => letter.toUpperCase(),
-  );
+  const langCode = steamLang.replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase());
   logger.info(`LanguageCode: ${langCode}`);
   return langCode;
 }
@@ -34,9 +32,7 @@ function getCurrentLangCode(): string {
 function translate() {
   const langCode: string = getCurrentLangCode();
   const lang: Lang = languages[langCode] ?? languages.en;
-  return function (label: string, defaultString: string): string {
-    return lang[label] ?? defaultString;
-  };
+  return (label: string, defaultString: string): string => lang[label] ?? defaultString;
 }
 
 export const t = translate();

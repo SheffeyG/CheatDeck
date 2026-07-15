@@ -1,5 +1,5 @@
-import { DropdownOption, Focusable } from "@decky/ui";
-import { FC, useState } from "react";
+import { type DropdownOption, Focusable } from "@decky/ui";
+import { type FC, useState } from "react";
 import { FaGamepad, FaLanguage } from "react-icons/fa";
 
 import { SaveWithPreview, ToggleDropdown, ToggleFilePicker } from "../components";
@@ -16,7 +16,7 @@ const Normal: FC = () => {
 
   const handleBrowse = async () => {
     const savedPath = options.getKeyValue("PRESSURE_VESSEL_FILESYSTEMS_RW")?.replace(/^"|"$/g, "");
-    const defaultPath = savedPath ?? await getHomePath();
+    const defaultPath = savedPath ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, true, ["exe", "bat"]);
     const selectedCheatPath = filePickerRes.path.replace(/(['"])/g, "\\$1"); // Escape quotes
     const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, ""); // Get parent directory
@@ -38,13 +38,9 @@ const Normal: FC = () => {
 
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
-
       <ToggleFilePicker
         label={t("NORMAL_CHEAT_TOGGLE_LABEL", "Enable Cheat")}
-        description={t(
-          "NORMAL_CHEAT_TOGGLE_DESC",
-          "Select the cheat or trainer exe file from storage",
-        )}
+        description={t("NORMAL_CHEAT_TOGGLE_DESC", "Select the cheat or trainer exe file from storage")}
         icon={<FaGamepad />}
         checked={showCheat}
         onToggle={(enable: boolean) => {
@@ -87,7 +83,6 @@ const Normal: FC = () => {
       />
 
       <SaveWithPreview />
-
     </Focusable>
   );
 };

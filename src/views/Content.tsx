@@ -9,7 +9,7 @@ import {
   showModal,
   ToggleField,
 } from "@decky/ui";
-import { FC } from "react";
+import type { FC } from "react";
 import { HiQrCode } from "react-icons/hi2";
 
 import { useSettings } from "../hooks";
@@ -53,7 +53,7 @@ const Content: FC = () => {
       <PanelSection title={t("CONTENT_INFORMATION", "information")}>
         <Focusable
           focusWithinClassName="gpfocuswithin"
-          onActivate={() => { }}
+          onActivate={() => {}}
           style={{
             width: "100%",
             margin: 0,
@@ -113,7 +113,7 @@ const Content: FC = () => {
         {translator.length > 0 && (
           <DialogBodyText>
             <p>
-              <b>{t("TRANSLATION", "Translator") + ": "}</b>
+              <b>{`${t("TRANSLATION", "Translator")}: `}</b>
               {translator}
             </p>
           </DialogBodyText>

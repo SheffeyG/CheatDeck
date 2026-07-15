@@ -1,5 +1,5 @@
 import { Focusable, ToggleField } from "@decky/ui";
-import { FC, useState } from "react";
+import { type FC, useState } from "react";
 
 import { SaveWithPreview, ToggleFilePicker } from "../components";
 import { useOptions } from "../hooks";
@@ -13,7 +13,7 @@ const Advanced: FC = () => {
 
   const handleBrowse = async () => {
     const savedPath = options.getKeyValue("STEAM_COMPAT_DATA_PATH")?.replace(/^"|"$/g, "");
-    const defaultPath = savedPath ?? await getHomePath();
+    const defaultPath = savedPath ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, false);
 
     const newOptions = new Options(optionsString);
@@ -27,7 +27,6 @@ const Advanced: FC = () => {
 
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
-
       <ToggleField
         label={t("ADVANCED_DXVK_ASYNC_LABEL", "DXVK_ASYNC")}
         description={t(
@@ -68,10 +67,7 @@ const Advanced: FC = () => {
 
       <ToggleFilePicker
         label={t("ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL", "STEAM_COMPAT_DATA_PATH")}
-        description={t(
-          "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC",
-          "Specify a folder as the shared prefix for the game",
-        )}
+        description={t("ADVANCED_STEAM_COMPAT_DATA_PATH_DESC", "Specify a folder as the shared prefix for the game")}
         checked={showPrefix}
         onToggle={(enable: boolean) => {
           setShowPrefix(enable);
@@ -146,7 +142,6 @@ const Advanced: FC = () => {
       />
 
       <SaveWithPreview />
-
     </Focusable>
   );
 };

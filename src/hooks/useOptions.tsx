@@ -1,13 +1,5 @@
-import { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
-import {
-  createContext,
-  FC,
-  ReactNode,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import type { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
+import { createContext, type FC, type ReactNode, useContext, useEffect, useRef, useState } from "react";
 
 import { logger, Options } from "../utils";
 
@@ -39,22 +31,19 @@ export const OptionsProvider: FC<{
     }
 
     // Initialize command and options with the current AppDetails
-    const { unregister } = SteamClient.Apps.RegisterForAppDetails(
-      appid,
-      (detail: AppDetails) => {
-        if (!detail) {
-          logger.error("Invalid AppDetails:", detail);
-          return;
-        }
-        if (detail.strShortcutExe !== undefined) {
-          cmd.current = detail.strShortcutExe;
-        }
-        if (detail.strLaunchOptions !== undefined) {
-          const savedOptions = new Options(detail.strLaunchOptions);
-          setOptions(savedOptions);
-        }
-      },
-    );
+    const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
+      if (!detail) {
+        logger.error("Invalid AppDetails:", detail);
+        return;
+      }
+      if (detail.strShortcutExe !== undefined) {
+        cmd.current = detail.strShortcutExe;
+      }
+      if (detail.strLaunchOptions !== undefined) {
+        const savedOptions = new Options(detail.strLaunchOptions);
+        setOptions(savedOptions);
+      }
+    });
 
     // Unregister in 1s
     const timeoutId = setTimeout(() => {
@@ -78,11 +67,7 @@ export const OptionsProvider: FC<{
     setOptions,
   };
 
-  return (
-    <OptionsContext.Provider value={value}>
-      {children}
-    </OptionsContext.Provider>
-  );
+  return <OptionsContext.Provider value={value}>{children}</OptionsContext.Provider>;
 };
 
 export const useOptions = () => useContext(OptionsContext);
