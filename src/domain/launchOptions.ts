@@ -145,7 +145,7 @@ const findUnquotedEquals = (raw: string): number => {
 };
 
 const envEntry = (token: Token): Entry | undefined => {
-  if (!token.complete) return undefined;
+  if (!token.complete || token.value.startsWith("-")) return undefined;
   const equals = findUnquotedEquals(token.raw);
   if (equals <= 0) return undefined;
 
@@ -164,6 +164,11 @@ const envEntry = (token: Token): Entry | undefined => {
 };
 
 const isNegativeNumber = (value: string): boolean => /^-\d+(?:\.\d+)?$/.test(value);
+
+const isFlagToken = (token: Token | undefined): token is Token => {
+  if (!token) return false;
+  return token.complete && token.raw.startsWith("-") && token.value.startsWith("-");
+};
 
 const parseSource = (source: string): ParsedSource => {
   const tokens = lex(source);
@@ -230,9 +235,9 @@ const parseSource = (source: string): ParsedSource => {
   const after = tokens.slice(markerIndex + 1);
   for (let index = 0; index < after.length; index++) {
     const token = after[index];
-    if (!token.complete || !token.value.startsWith("-")) continue;
+    if (!isFlagToken(token)) continue;
     const next = after[index + 1];
-    const hasValue = next?.complete && (!next.value.startsWith("-") || isNegativeNumber(next.value));
+    const hasValue = next?.complete && (!isFlagToken(next) || isNegativeNumber(next.value));
     entries.push({
       type: "flag_args",
       key: token.value,
@@ -270,6 +275,11 @@ const applyPatches = (source: string, patches: Patch[]): string =>
 
 const escapeDoubleQuoted = (value: string): string => value.replace(/[\\"$`]/g, "\\$&");
 
+const quoteShellArgument = (value: string): string => `'${value.split("'").join(`'"'"'`)}'`;
+
+const renderFlagValue = (value: string): string =>
+  /^[A-Za-z0-9_.,:@%+/-]+$/.test(value) && !value.startsWith("-") ? value : `"${escapeDoubleQuoted(value)}"`;
+
 const renderEnvValue = (value: string): string =>
   /^[A-Za-z0-9_.,:@%+/-]*$/.test(value) ? value : `"${escapeDoubleQuoted(value)}"`;
 
@@ -280,7 +290,7 @@ const parentPath = (path: string): string => {
 };
 
 const unwrapTrainerPath = (value: string | undefined): string | undefined => {
-  if (value?.startsWith("'") && value.endsWith("'")) return value.slice(1, -1);
+  if (value?.startsWith("'") && value.endsWith("'")) return value.slice(1, -1).split(`'"'"'`).join("'");
   return value;
 };
 
@@ -347,12 +357,13 @@ export class LaunchOptions {
 
   setTrainer(path: string): LaunchOptionsEditResult {
     const directory = parentPath(path);
+    const quotedPath = quoteShellArgument(path);
     return this.edit([
       {
         type: "env",
         key: keys.trainer,
-        value: `'${path}'`,
-        rendered: `${keys.trainer}="'${escapeDoubleQuoted(path)}'"`,
+        value: quotedPath,
+        rendered: `${keys.trainer}="${escapeDoubleQuoted(quotedPath)}"`,
       },
       {
         type: "env",
@@ -458,24 +469,28 @@ export class LaunchOptions {
     if (!(["env", "pre_cmd", "flag_args"] as unknown[]).includes(option.type)) return undefined;
     const key = option.key.trim();
     if (!key || key !== option.key) return undefined;
+    if (option.type === "pre_cmd" && option.value !== undefined) return undefined;
 
     const rendered =
       option.type === "env"
         ? `${key}=${option.value ?? ""}`
         : option.value === undefined
           ? key
-          : `${key} ${option.value}`;
+          : `${key} ${renderFlagValue(option.value)}`;
     const source = option.type === "flag_args" ? `%command% ${rendered}` : `${rendered} %command%`;
     const parsed = parseSource(source);
     const entry = parsed.entries[0];
     const expectedStart = option.type === "flag_args" ? "%command% ".length : 0;
     const expectedEnd = expectedStart + rendered.length;
+    const expectedValue = option.type === "env" ? (option.value ?? "") : option.value;
 
     if (
       parsed.markerCount !== 1 ||
       parsed.entries.length !== 1 ||
       !entry ||
       entry.type !== option.type ||
+      (option.type !== "pre_cmd" && entry.key !== key) ||
+      entry.value !== expectedValue ||
       entry.start !== expectedStart ||
       entry.end !== expectedEnd
     ) {
@@ -484,7 +499,7 @@ export class LaunchOptions {
 
     return {
       type: entry.type,
-      key: entry.key,
+      key: option.type === "pre_cmd" ? key : entry.key,
       value: entry.value,
       rendered,
       exactValue: true,
@@ -540,7 +555,9 @@ export class LaunchOptions {
   }
 
   private upsert(option: ManagedEntry): LaunchOptions {
-    const matches = this.matchingEntries(option);
+    // Enabling a value replaces every existing entry with the same type and key.
+    // Exact-value matching is only for checked state and disabling.
+    const matches = this.findEntries(option.type, option.key);
     if (matches.length === 0) return this.insert(option);
 
     const [first, ...duplicates] = matches;
@@ -574,11 +591,11 @@ export class LaunchOptions {
 
   private deletionPatch(entry: Entry): Patch {
     if (entry.type !== "pre_cmd") return { start: entry.start, end: entry.end, replacement: "" };
-    if (entry.separatorAfter) {
-      return { start: entry.start, end: entry.separatorAfter.end, replacement: "" };
-    }
     if (entry.separatorBefore) {
       return { start: entry.separatorBefore.start, end: entry.end, replacement: "" };
+    }
+    if (entry.separatorAfter) {
+      return { start: entry.start, end: entry.separatorAfter.end, replacement: "" };
     }
     return { start: entry.start, end: entry.end, replacement: "" };
   }

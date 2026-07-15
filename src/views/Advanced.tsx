@@ -14,7 +14,9 @@ const Advanced: FC = () => {
   const handleBrowse = async () => {
     const defaultPath = options.compatibilityPath ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, false);
-    applyEdit(options.setCompatibilityPath(filePickerRes.path));
+    const result = options.setCompatibilityPath(filePickerRes.path);
+    if (!result.ok) setShowPrefix(false);
+    applyEdit(result);
   };
 
   return (

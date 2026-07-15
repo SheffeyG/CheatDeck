@@ -17,7 +17,9 @@ const Normal: FC = () => {
   const handleBrowse = async () => {
     const defaultPath = options.trainerDirectory ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, true, ["exe", "bat"]);
-    applyEdit(options.setTrainer(filePickerRes.path));
+    const result = options.setTrainer(filePickerRes.path);
+    if (!result.ok) setShowCheat(false);
+    applyEdit(result);
   };
 
   return (
@@ -57,7 +59,11 @@ const Normal: FC = () => {
         }}
         fieldLabel={t("NORMAL_LANG_LABEL", "Language Code")}
         value={options.language}
-        onInput={(value: string) => applyEdit(options.setLanguage(value))}
+        onInput={(value: string) => {
+          const result = options.setLanguage(value);
+          if (!result.ok) setShowLang(false);
+          applyEdit(result);
+        }}
         preset={LangCodes as DropdownOption[]}
       />
 

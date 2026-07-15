@@ -7,7 +7,7 @@
     "jsxFactory": "window.SP_REACT.createElement",
     "jsxFragmentFactory": "window.SP_REACT.Fragment",
     "declaration": false,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "esModuleInterop": true,
@@ -17,8 +17,7 @@
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true,
   },
-  "include": ["src", "tests", "vitest.config.ts"],
+  "include": ["src"],
   "exclude": ["node_modules"],
 }

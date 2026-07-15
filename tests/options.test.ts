@@ -180,6 +180,16 @@ describe("LaunchOptions", () => {
       expect(options.toString()).toBe("");
     });
 
+    it("matches and deduplicates a quoted prefix command", () => {
+      const option: LaunchOption = { type: "pre_cmd", key: 'echo "a b"' };
+      const enabled = editedValue(LaunchOptions.parse("").setCustomOption(option, true));
+      const enabledAgain = editedValue(enabled.setCustomOption(option, true));
+
+      expect(enabled.isCustomOptionEnabled(option)).toBe(true);
+      expect(enabledAgain.isCustomOptionEnabled(option)).toBe(true);
+      expect(enabledAgain.toString().match(/echo/g)).toHaveLength(1);
+    });
+
     it("does not remove a valued option when disabling a no-value option with the same key", () => {
       const source = "%command% -width 1920";
       const edited = editedValue(
@@ -188,11 +198,31 @@ describe("LaunchOptions", () => {
       expect(edited.toString()).toBe(source);
     });
 
+    it("replaces an existing value with the same type and key when enabling", () => {
+      const env = editedValue(
+        LaunchOptions.parse("FOO=old %command%").setCustomOption({ type: "env", key: "FOO", value: "new" }, true),
+      );
+      const flag = editedValue(
+        LaunchOptions.parse("%command% -width 1280").setCustomOption(
+          { type: "flag_args", key: "-width", value: "1920" },
+          true,
+        ),
+      );
+
+      expect(env.toString().match(/FOO=/g)).toHaveLength(1);
+      expect(env.isCustomOptionEnabled({ type: "env", key: "FOO", value: "new" })).toBe(true);
+      expect(flag.toString().match(/-width/g)).toHaveLength(1);
+      expect(flag.isCustomOptionEnabled({ type: "flag_args", key: "-width", value: "1920" })).toBe(true);
+    });
+
     it.each<LaunchOption>([
       { type: "env", key: " BAD", value: "1" },
       { type: "env", key: "BAD KEY", value: "1" },
+      { type: "env", key: "BAD=KEY", value: "1" },
       { type: "pre_cmd", key: "cmd -- other" },
+      { type: "pre_cmd", key: "cmd", value: "ignored" },
       { type: "flag_args", key: "windowed" },
+      { type: "flag_args", key: "-width 1920" },
       { type: "flag_args", key: "-flag", value: "%command%" },
     ])("rejects invalid custom option %#", (option) => {
       const original = LaunchOptions.parse("%command%");
@@ -260,6 +290,28 @@ describe("LaunchOptions", () => {
       expect(secondRemoved.toString().trim()).toMatch(/^cmd1\s+%command%$/);
       expect(firstRemoved.toString()).not.toContain("--");
       expect(secondRemoved.toString()).not.toContain("--");
+    });
+
+    it("removes duplicate prefix commands without leaving a separator", () => {
+      const option: LaunchOption = { type: "pre_cmd", key: "cmd" };
+      const edited = editedValue(LaunchOptions.parse("cmd -- cmd -- cmd %command%").setCustomOption(option, true));
+
+      expect(edited.toString().match(/cmd/g)).toHaveLength(1);
+      expect(edited.toString()).not.toContain("--");
+    });
+
+    it("keeps prefix arguments containing equals signs out of environment entries", () => {
+      const option: LaunchOption = { type: "pre_cmd", key: "gamescope --foo=bar" };
+      const enabled = editedValue(LaunchOptions.parse("").setCustomOption(option, true));
+
+      expect(enabled.isCustomOptionEnabled(option)).toBe(true);
+    });
+
+    it("treats a quoted leading-hyphen token as a flag value", () => {
+      const options = LaunchOptions.parse('%command% -x "-foo"');
+
+      expect(options.isCustomOptionEnabled({ type: "flag_args", key: "-x", value: "-foo" })).toBe(true);
+      expect(options.isCustomOptionEnabled({ type: "flag_args", key: "-foo" })).toBe(false);
     });
 
     it("parses a negative flag argument as its exact value", () => {

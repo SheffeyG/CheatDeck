@@ -16,6 +16,7 @@ interface LoadedOptions {
   appid: number;
   command: string;
   options: LaunchOptions;
+  editFailure?: LaunchOptionsEditFailure;
 }
 
 const OptionsContext = createContext<OptionsContextProps | undefined>(undefined);
@@ -25,7 +26,6 @@ export const OptionsProvider: FC<{
   appid: number;
 }> = ({ children, appid }) => {
   const [loaded, setLoaded] = useState<LoadedOptions>();
-  const [editFailure, setEditFailure] = useState<LaunchOptionsEditFailure>();
 
   useEffect(() => {
     if (!appid) {
@@ -40,12 +40,12 @@ export const OptionsProvider: FC<{
         logger.error("Invalid AppDetails:", detail);
         return;
       }
+      if (detail.strLaunchOptions === undefined) return;
       setLoaded({
         appid,
         command: detail.strShortcutExe ?? "",
-        options: LaunchOptions.parse(detail.strLaunchOptions ?? ""),
+        options: LaunchOptions.parse(detail.strLaunchOptions),
       });
-      setEditFailure(undefined);
     });
 
     const timeoutId = setTimeout(unregister, 1000);
@@ -60,16 +60,17 @@ export const OptionsProvider: FC<{
     return <div>Loading options...</div>;
   }
 
+  const sourceOptions = loaded.options;
   const applyEdit = (result: LaunchOptionsEditResult) => {
-    if (result.ok) {
-      setLoaded((current) => (current?.appid === appid ? { ...current, options: result.value } : current));
-      setEditFailure(undefined);
-    } else {
-      setEditFailure(result.error);
-    }
+    setLoaded((current) => {
+      if (current?.appid !== appid || current.options !== sourceOptions) return current;
+      return result.ok
+        ? { ...current, options: result.value, editFailure: undefined }
+        : { ...current, editFailure: result.error };
+    });
   };
 
-  return <OptionsContext.Provider value={{ ...loaded, editFailure, applyEdit }}>{children}</OptionsContext.Provider>;
+  return <OptionsContext.Provider value={{ ...loaded, applyEdit }}>{children}</OptionsContext.Provider>;
 };
 
 export const useOptions = (): OptionsContextProps => {

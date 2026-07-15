@@ -34,8 +34,7 @@ jobs:
       - name: Validate frontend source
         run: |
           pnpm install --frozen-lockfile
-          pnpm run lint
-          pnpm run typecheck
+          pnpm run check
 
   lint-backend:
     if: github.event_name == 'pull_request'

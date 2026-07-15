@@ -8,8 +8,8 @@
     "watch": "rollup -c -w",
     "lint": "biome check src tests vitest.config.ts",
     "lint:frontend": "pnpm run lint",
-    "format": "biome check --write src",
-    "typecheck": "tsc --noEmit",
+    "format": "biome check --write src tests vitest.config.ts",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "check": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build",
     "test": "vitest run",
     "test:watch": "vitest"
