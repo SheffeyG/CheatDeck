@@ -1,4 +1,14 @@
-import { logger } from "./logger";
+import { logger } from "../utils/logger";
+
+export type OptionPosition = "before" | "after";
+
+export type OptionType = "env" | "pre_cmd" | "flag_args";
+
+export interface LaunchOption {
+  type: OptionType;
+  key: string;
+  value?: string;
+}
 
 export class Options {
   #parsedOptions: LaunchOption[] = [];

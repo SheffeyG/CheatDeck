@@ -2,8 +2,11 @@ import { Focusable, ToggleField } from "@decky/ui";
 import { type FC, useState } from "react";
 
 import { SaveWithPreview, ToggleFilePicker } from "../components";
+import { Options } from "../domain/launchOptions";
 import { useOptions } from "../hooks";
-import { browseFiles, getHomePath, Options, t } from "../utils";
+import { browseFiles } from "../infra/client";
+import { getHomePath } from "../infra/environment";
+import { t } from "../utils/translate";
 
 const Advanced: FC = () => {
   const { options, setOptions } = useOptions();

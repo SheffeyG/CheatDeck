@@ -1,7 +1,8 @@
 import type { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 import { createContext, type FC, type ReactNode, useContext, useEffect, useRef, useState } from "react";
 
-import { logger, Options } from "../utils";
+import { Options } from "../domain/launchOptions";
+import { logger } from "../utils/logger";
 
 interface OptionsContextProps {
   appid: number;

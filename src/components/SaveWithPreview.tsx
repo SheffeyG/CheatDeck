@@ -2,7 +2,8 @@ import { DialogButton, Focusable } from "@decky/ui";
 import type { FC } from "react";
 
 import { useOptions, useSettings } from "../hooks";
-import { sendNotice, t } from "../utils";
+import { sendNotice } from "../infra/client";
+import { t } from "../utils/translate";
 
 export const SaveWithPreview: FC<{ checkWine?: boolean }> = () => {
   const { showPreview, skipWineCheck } = useSettings();

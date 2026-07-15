@@ -1,7 +1,7 @@
 import { Dropdown, type DropdownOption, Field, Focusable, TextField, ToggleField } from "@decky/ui";
 import type { FC, ReactNode } from "react";
 
-import { t } from "../utils";
+import { t } from "../utils/translate";
 
 interface ToggleDropdownProps {
   label: string;

@@ -14,7 +14,7 @@ import { HiQrCode } from "react-icons/hi2";
 
 import { useSettings } from "../hooks";
 import { QrCode } from "../modals";
-import { t } from "../utils";
+import { t } from "../utils/translate";
 
 const GITHUB = "https://github.com/SheffeyG/CheatDeck";
 

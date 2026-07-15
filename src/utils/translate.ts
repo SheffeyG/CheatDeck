@@ -1,11 +1,11 @@
-import * as de from "../data/i18n/de.json";
-import * as en from "../data/i18n/en.json";
-import * as fr from "../data/i18n/fr.json";
-import * as ja from "../data/i18n/ja.json";
-import * as ko from "../data/i18n/ko.json";
-import * as ru from "../data/i18n/ru.json";
-import * as zhCn from "../data/i18n/zh-cn.json";
-import * as zhTw from "../data/i18n/zh-tw.json";
+import * as de from "../data/locales/de.json";
+import * as en from "../data/locales/en.json";
+import * as fr from "../data/locales/fr.json";
+import * as ja from "../data/locales/ja.json";
+import * as ko from "../data/locales/ko.json";
+import * as ru from "../data/locales/ru.json";
+import * as zhCn from "../data/locales/zh-cn.json";
+import * as zhTw from "../data/locales/zh-tw.json";
 import { logger } from "./logger";
 
 type Lang = { [key: string]: string };

@@ -7,7 +7,7 @@ import {
 } from "react-icons/bs";
 
 import { OptionsProvider, SettingsProvider } from "../hooks";
-import { t } from "../utils";
+import { t } from "../utils/translate";
 import Advanced from "./Advanced";
 import Custom from "./Custom";
 import Normal from "./Normal";

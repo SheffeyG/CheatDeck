@@ -2,7 +2,9 @@ import { DialogButton, DialogHeader, Dropdown, Field, Focusable, ModalRoot, Text
 import { type FC, useState } from "react";
 import { v4 as uuid } from "uuid";
 
-import { t } from "../utils";
+import type { OptionType } from "../domain/launchOptions";
+import type { CustomOption } from "../domain/settings";
+import { t } from "../utils/translate";
 
 export const AddCustomOption: FC<{
   closeModal?: () => void;

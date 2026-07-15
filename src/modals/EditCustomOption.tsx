@@ -1,7 +1,9 @@
 import { DialogButton, DialogHeader, Dropdown, Field, Focusable, ModalRoot, TextField } from "@decky/ui";
 import { type FC, useState } from "react";
 
-import { t } from "../utils";
+import type { OptionType } from "../domain/launchOptions";
+import type { CustomOption } from "../domain/settings";
+import { t } from "../utils/translate";
 
 type Action = "Change" | "Delete";
 

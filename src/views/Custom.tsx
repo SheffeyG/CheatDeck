@@ -5,9 +5,10 @@ import { BsPencilFill, BsPlusSquareFill } from "react-icons/bs";
 import { FaBarsProgress as TypeCmdIcon, FaKey as TypeEnvIcon, FaFlag as TypeFlagIcon } from "react-icons/fa6";
 
 import { SaveWithPreview } from "../components";
+import { Options, type OptionType } from "../domain/launchOptions";
+import type { CustomOption } from "../domain/settings";
 import { useOptions, useSettings } from "../hooks";
 import { AddCustomOption, EditCustomOption } from "../modals";
-import { Options } from "../utils";
 
 const Custom: FC = () => {
   // Launch options from current game details

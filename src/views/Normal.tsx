@@ -3,9 +3,12 @@ import { type FC, useState } from "react";
 import { FaGamepad, FaLanguage } from "react-icons/fa";
 
 import { SaveWithPreview, ToggleDropdown, ToggleFilePicker } from "../components";
-import { LangCodes } from "../data/langcode.json";
+import { LangCodes } from "../data/languageCodes.json";
+import { Options } from "../domain/launchOptions";
 import { useOptions } from "../hooks";
-import { browseFiles, getHomePath, Options, t } from "../utils";
+import { browseFiles } from "../infra/client";
+import { getHomePath } from "../infra/environment";
+import { t } from "../utils/translate";
 
 const Normal: FC = () => {
   const { options, setOptions } = useOptions();

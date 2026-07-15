@@ -1,89 +1,83 @@
-import { createContext, type FC, type ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, type FC, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import {
-  getCustomOptions as backendGetCustomOptions,
-  getShowPreview as backendGetShowPreview,
-  getSkipWineCheck as backendGetSkipWineCheck,
-  setCustomOptions as backendSetCustomOptions,
-  setShowPreview as backendSetShowPreview,
-  setSkipWineCheck as backendSetSkipWineCheck,
-} from "../utils";
+import type { CustomOption, SettingsSnapshot } from "../domain/settings";
+import { settingsStorage } from "../infra/settingsStorage";
 import { logger } from "../utils/logger";
 
 interface SettingsContextType {
   showPreview: boolean;
   skipWineCheck: boolean;
   customOptions: CustomOption[];
-  saveShowPreview: (value: boolean) => void;
-  saveSkipWineCheck: (value: boolean) => void;
-  saveCustomOptions: (options: CustomOption[]) => void;
+  saveShowPreview: (value: boolean) => Promise<void>;
+  saveSkipWineCheck: (value: boolean) => Promise<void>;
+  saveCustomOptions: (options: CustomOption[]) => Promise<void>;
 }
 
-const SettingsContext = createContext<SettingsContextType>({
+const defaultSettings: SettingsSnapshot = {
   showPreview: false,
   skipWineCheck: false,
   customOptions: [],
-  saveShowPreview: () => {},
-  saveSkipWineCheck: () => {},
-  saveCustomOptions: () => {},
-});
+};
+
+const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export const SettingsProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [showPreview, setShowPreview] = useState<boolean>(false);
-  const [customOptions, setCustomOptions] = useState<CustomOption[]>([]);
-  const [skipWineCheck, setSkipWineCheck] = useState<boolean>(false);
+  const [settings, setSettings] = useState<SettingsSnapshot>(defaultSettings);
 
   useEffect(() => {
-    backendGetShowPreview()
-      .then(setShowPreview)
+    let active = true;
+
+    settingsStorage
+      .load()
+      .then((loadedSettings) => {
+        if (active) setSettings(loadedSettings);
+      })
       .catch((error) => {
-        logger.error("Failed to load ShowPreview setting", error);
+        logger.error("Failed to load plugin settings", error);
       });
 
-    backendGetSkipWineCheck()
-      .then(setSkipWineCheck)
-      .catch((error) => {
-        logger.error("Failed to load SkipWineCheck setting", error);
-      });
-
-    backendGetCustomOptions()
-      .then(setCustomOptions)
-      .catch((error) => {
-        logger.error("Failed to load CustomOptions setting", error);
-      });
+    return () => {
+      active = false;
+    };
   }, []);
 
-  const saveShowPreview = (value: boolean) => {
-    setShowPreview(value);
-    backendSetShowPreview(value).catch((error) => {
+  const saveShowPreview = useCallback(async (showPreview: boolean) => {
+    setSettings((current) => ({ ...current, showPreview }));
+    try {
+      await settingsStorage.saveShowPreview(showPreview);
+    } catch (error) {
       logger.error("Failed to save ShowPreview setting", error);
-    });
-  };
+    }
+  }, []);
 
-  const saveSkipWineCheck = (value: boolean) => {
-    setSkipWineCheck(value);
-    backendSetSkipWineCheck(value).catch((error) => {
+  const saveSkipWineCheck = useCallback(async (skipWineCheck: boolean) => {
+    setSettings((current) => ({ ...current, skipWineCheck }));
+    try {
+      await settingsStorage.saveSkipWineCheck(skipWineCheck);
+    } catch (error) {
       logger.error("Failed to save SkipWineCheck setting", error);
-    });
-  };
+    }
+  }, []);
 
-  const saveCustomOptions = (value: CustomOption[]) => {
-    setCustomOptions(value);
-    backendSetCustomOptions(value).catch((error) => {
+  const saveCustomOptions = useCallback(async (customOptions: CustomOption[]) => {
+    setSettings((current) => ({ ...current, customOptions }));
+    try {
+      await settingsStorage.saveCustomOptions(customOptions);
+    } catch (error) {
       logger.error("Failed to save CustomOptions setting", error);
-    });
-  };
+    }
+  }, []);
 
-  const value: SettingsContextType = {
-    showPreview,
-    skipWineCheck,
-    customOptions,
-    saveShowPreview,
-    saveSkipWineCheck,
-    saveCustomOptions,
-  };
+  const value = useMemo<SettingsContextType>(
+    () => ({ ...settings, saveShowPreview, saveSkipWineCheck, saveCustomOptions }),
+    [settings, saveShowPreview, saveSkipWineCheck, saveCustomOptions],
+  );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
 };
 
-export const useSettings = () => useContext(SettingsContext);
+export const useSettings = (): SettingsContextType => {
+  const context = useContext(SettingsContext);
+  if (!context) throw new Error("useSettings must be used within a SettingsProvider");
+  return context;
+};
