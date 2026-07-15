@@ -2,7 +2,8 @@ import { DialogButton, Focusable } from "@decky/ui";
 import type { FC } from "react";
 
 import { useOptions, useSettings } from "../hooks";
-import { sendNotice } from "../infra/client";
+import { sendNotice } from "../infra/decky";
+import { setAppLaunchOptions } from "../infra/steam";
 import { t } from "../utils/translate";
 
 export const SaveWithPreview: FC<{ checkWine?: boolean }> = () => {
@@ -26,7 +27,7 @@ export const SaveWithPreview: FC<{ checkWine?: boolean }> = () => {
     } else if (!skipWineCheck && !isWineGame(commandString)) {
       sendNotice(t("MESSAGE_NON_STEAM", "This launcher is not supported; settings were not saved."));
     } else {
-      SteamClient.Apps.SetAppLaunchOptions(appid, optionsString);
+      setAppLaunchOptions(appid, optionsString);
       sendNotice(t("MESSAGE_SAVED", "Game launch options have been saved."));
     }
   };

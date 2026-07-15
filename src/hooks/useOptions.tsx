@@ -1,7 +1,7 @@
-import type { AppDetails } from "@decky/ui/dist/globals/steam-client/App";
 import { createContext, type FC, type ReactNode, useContext, useEffect, useState } from "react";
 
 import { LaunchOptions, type LaunchOptionsEditFailure, type LaunchOptionsEditResult } from "../domain/launchOptions";
+import { registerForAppDetails } from "../infra/steam";
 import { logger } from "../utils/logger";
 
 interface OptionsContextProps {
@@ -34,7 +34,7 @@ export const OptionsProvider: FC<{
     }
 
     let active = true;
-    const { unregister } = SteamClient.Apps.RegisterForAppDetails(appid, (detail: AppDetails) => {
+    const { unregister } = registerForAppDetails(appid, (detail) => {
       if (!active) return;
       if (!detail) {
         logger.error("Invalid AppDetails:", detail);

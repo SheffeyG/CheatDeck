@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid";
 
 import type { OptionType } from "../domain/launchOptions";
 import type { CustomOption, SettingsSnapshot } from "../domain/settings";
-import { backendClient } from "./backendClient";
+import { deckyBackend } from "./decky";
 
 type StoredCustomOption = Omit<CustomOption, "id">;
 
@@ -29,9 +29,9 @@ const isStoredCustomOption = (value: unknown): value is StoredCustomOption => {
 export const settingsStorage = {
   async load(): Promise<SettingsSnapshot> {
     const [storedShowPreview, storedSkipWineCheck, storedOptions] = await Promise.all([
-      backendClient.getSetting<unknown>(settingKeys.showPreview, false),
-      backendClient.getSetting<unknown>(settingKeys.skipWineCheck, false),
-      backendClient.getSetting<unknown>(settingKeys.customOptions, []),
+      deckyBackend.getSetting<unknown>(settingKeys.showPreview, false),
+      deckyBackend.getSetting<unknown>(settingKeys.skipWineCheck, false),
+      deckyBackend.getSetting<unknown>(settingKeys.customOptions, []),
     ]);
 
     return {
@@ -44,15 +44,15 @@ export const settingsStorage = {
   },
 
   saveShowPreview(value: boolean): Promise<void> {
-    return backendClient.setSetting(settingKeys.showPreview, value);
+    return deckyBackend.setSetting(settingKeys.showPreview, value);
   },
 
   saveSkipWineCheck(value: boolean): Promise<void> {
-    return backendClient.setSetting(settingKeys.skipWineCheck, value);
+    return deckyBackend.setSetting(settingKeys.skipWineCheck, value);
   },
 
   saveCustomOptions(options: CustomOption[]): Promise<void> {
     const storedOptions = options.map(({ id: _id, ...option }) => option);
-    return backendClient.setSetting(settingKeys.customOptions, storedOptions);
+    return deckyBackend.setSetting(settingKeys.customOptions, storedOptions);
   },
 };

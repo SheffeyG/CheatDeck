@@ -5,8 +5,7 @@ import { FaGamepad, FaLanguage } from "react-icons/fa";
 import { SaveWithPreview, ToggleDropdown, ToggleFilePicker } from "../components";
 import { LangCodes } from "../data/languageCodes.json";
 import { useOptions } from "../hooks";
-import { browseFiles } from "../infra/client";
-import { getHomePath } from "../infra/environment";
+import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
 
 const Normal: FC = () => {
