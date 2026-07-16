@@ -105,7 +105,13 @@ const Custom: FC = () => {
               className="CheatDeckEditButton"
               onClick={() => {
                 showModal(
-                  <EditCustomOption id={opt.id} optList={customOptions} onSave={(opts) => saveCustomOptions(opts)} />,
+                  <EditCustomOption
+                    option={opt}
+                    onUpdate={(updatedOption) =>
+                      saveCustomOptions(customOptions.map((option) => (option.id === opt.id ? updatedOption : option)))
+                    }
+                    onDelete={(id) => saveCustomOptions(customOptions.filter((option) => option.id !== id))}
+                  />,
                   window,
                 );
               }}
@@ -118,7 +124,7 @@ const Custom: FC = () => {
       <DialogButton
         className="CheatDeckAddButton"
         onClick={() => {
-          showModal(<AddCustomOption optList={customOptions} onSave={(opts) => saveCustomOptions(opts)} />, window);
+          showModal(<AddCustomOption onAdd={(option) => saveCustomOptions([...customOptions, option])} />, window);
         }}
       >
         <BsPlusSquareFill />

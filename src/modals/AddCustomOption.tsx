@@ -1,89 +1,32 @@
-import { DialogButton, DialogHeader, Dropdown, Field, Focusable, ModalRoot, TextField } from "@decky/ui";
+import { DialogButton, DialogHeader, Focusable, ModalRoot } from "@decky/ui";
 import { type FC, useState } from "react";
 import { v4 as uuid } from "uuid";
 
-import type { OptionType } from "../domain/launchOptions";
 import type { CustomOption } from "../domain/settings";
 import { t } from "../utils/translate";
+import { CustomOptionForm, isValidCustomOption, normalizeCustomOption } from "./CustomOptionForm";
 
 export const AddCustomOption: FC<{
   closeModal?: () => void;
-  optList: CustomOption[];
-  onSave: (data: CustomOption[]) => void;
-}> = ({ closeModal, optList, onSave }) => {
-  const [targetOpt, setTargetOpt] = useState<CustomOption>({
+  onAdd: (option: CustomOption) => void;
+}> = ({ closeModal, onAdd }) => {
+  const [option, setOption] = useState<CustomOption>(() => ({
     id: uuid(),
     label: "",
     type: "env",
     key: "",
-  } as CustomOption);
-
-  const paramTypeOptions: { label: string; data: OptionType }[] = [
-    { label: t("CUSTOM_TYPE_ENV", "Environment Variable"), data: "env" },
-    { label: t("CUSTOM_TYPE_CMD", "Prefix Commands"), data: "pre_cmd" },
-    { label: t("CUSTOM_TYPE_FLAG", "Flag & Arguments"), data: "flag_args" },
-  ];
+  }));
 
   return (
     <ModalRoot onCancel={closeModal}>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <DialogHeader>{t("CUSTOM_NEW_TITLE", "Add a New Option")}</DialogHeader>
-        <Field label={t("CUSTOM_OPTION_LABEL", "Label")} padding="none" bottomSeparator="none">
-          <Focusable style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}>
-            <TextField
-              style={{ padding: "10px", fontSize: "14px", width: "435px" }}
-              value={targetOpt.label}
-              onChange={(e) => setTargetOpt({ ...targetOpt, label: e.target.value })}
-            />
-          </Focusable>
-        </Field>
-        <Field label={t("CUSTOM_OPTION_TYPE", "Type")} padding="none" bottomSeparator="none">
-          <Focusable style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}>
-            <Dropdown
-              rgOptions={paramTypeOptions}
-              selectedOption={targetOpt.type}
-              onChange={(v) => {
-                if (targetOpt.type !== v.data)
-                  setTargetOpt({
-                    label: targetOpt.label,
-                    id: targetOpt.id,
-                    type: v.data,
-                    key: "",
-                    value: undefined,
-                  });
-              }}
-            />
-          </Focusable>
-        </Field>
-        <Field label={t("CUSTOM_OPTION_FIELDS", "Field & Value")} padding="none" bottomSeparator="none">
-          <Focusable style={{ boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" }}>
-            <TextField
-              style={{ padding: "10px", fontSize: "14px", width: targetOpt.type === "pre_cmd" ? "435px" : "200px" }}
-              value={targetOpt.key}
-              onChange={(e) => setTargetOpt({ ...targetOpt, key: e.target.value })}
-            />
-            {targetOpt.type !== "pre_cmd" && (
-              <>
-                <div style={{ display: "flex", alignItems: "center", margin: "3px" }}>
-                  <b>{targetOpt.type === "env" ? "=" : " "}</b>
-                </div>
-                <TextField
-                  style={{ padding: "10px", fontSize: "14px", width: "200px" }}
-                  value={targetOpt.value || ""}
-                  onChange={(e) => {
-                    const value = e.target.value.trim() === "" ? undefined : e.target.value;
-                    setTargetOpt({ ...targetOpt, value: value });
-                  }}
-                />
-              </>
-            )}
-          </Focusable>
-        </Field>
+        <CustomOptionForm value={option} onChange={setOption} />
         <Focusable style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <DialogButton
+            disabled={!isValidCustomOption(option)}
             onClick={() => {
-              const updatedOpts = [...optList, targetOpt];
-              onSave(updatedOpts);
+              onAdd(normalizeCustomOption(option));
               closeModal?.();
             }}
             style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
