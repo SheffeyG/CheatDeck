@@ -2,7 +2,7 @@ import { type DropdownOption, Focusable } from "@decky/ui";
 import { type FC, useState } from "react";
 import { FaGamepad, FaLanguage } from "react-icons/fa";
 
-import { SaveWithPreview, ToggleDropdown, ToggleFilePicker } from "../components";
+import { LaunchOptionsPreview, ToggleDropdown, ToggleFilePicker } from "../components";
 import { LangCodes } from "../data/languageCodes.json";
 import { useOptions } from "../hooks";
 import { browseFiles, getHomePath } from "../infra/decky";
@@ -66,7 +66,7 @@ const Normal: FC = () => {
         preset={LangCodes as DropdownOption[]}
       />
 
-      <SaveWithPreview />
+      <LaunchOptionsPreview />
     </Focusable>
   );
 };

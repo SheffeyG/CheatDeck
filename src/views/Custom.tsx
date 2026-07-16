@@ -4,7 +4,7 @@ import type { IconType } from "react-icons";
 import { BsPencilFill, BsPlusSquareFill } from "react-icons/bs";
 import { FaBarsProgress as TypeCmdIcon, FaKey as TypeEnvIcon, FaFlag as TypeFlagIcon } from "react-icons/fa6";
 
-import { SaveWithPreview } from "../components";
+import { LaunchOptionsPreview } from "../components";
 import type { OptionType } from "../domain/launchOptions";
 import type { CustomOption } from "../domain/settings";
 import { useOptions, useSettings } from "../hooks";
@@ -130,7 +130,7 @@ const Custom: FC = () => {
         <BsPlusSquareFill />
       </DialogButton>
 
-      {customOptions.length > 0 && <SaveWithPreview />}
+      {customOptions.length > 0 && <LaunchOptionsPreview />}
     </>
   );
 };

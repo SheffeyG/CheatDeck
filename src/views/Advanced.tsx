@@ -1,7 +1,7 @@
 import { Focusable, ToggleField } from "@decky/ui";
 import { type FC, useState } from "react";
 
-import { SaveWithPreview, ToggleFilePicker } from "../components";
+import { LaunchOptionsPreview, ToggleFilePicker } from "../components";
 import { useOptions } from "../hooks";
 import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
@@ -93,7 +93,7 @@ const Advanced: FC = () => {
         onChange={(enable: boolean) => applyEdit(options.setFramegenUnpatch(enable))}
       />
 
-      <SaveWithPreview />
+      <LaunchOptionsPreview />
     </Focusable>
   );
 };
