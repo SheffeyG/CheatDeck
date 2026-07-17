@@ -266,7 +266,7 @@ export class LaunchOptions {
 
     const rendered =
       option.type === "env"
-        ? `${key}=${option.value ?? ""}`
+        ? `${key}=${renderEnvValue(option.value ?? "")}`
         : option.value === undefined
           ? key
           : `${key} ${renderFlagValue(option.value)}`;

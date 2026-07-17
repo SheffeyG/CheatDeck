@@ -164,6 +164,20 @@ describe("LaunchOptions", () => {
       expect(options.isCustomOptionEnabled({ type: "flag_args", key: "-novid" })).toBe(true);
     });
 
+    it("matches and preserves a quoted environment value containing spaces and equals signs", () => {
+      const source = 'ENV="foo=x, bar=b" %command%';
+      const option: LaunchOption = { type: "env", key: "ENV", value: "foo=x, bar=b" };
+      const original = LaunchOptions.parse(source);
+      const enabled = expectSuccess(original.setCustomOption(option, true));
+
+      expect(original.isCustomOptionEnabled(option)).toBe(true);
+      expect(enabled.isCustomOptionEnabled(option)).toBe(true);
+      expect(enabled.toString()).toBe(source);
+
+      const disabled = expectSuccess(enabled.setCustomOption(option, false));
+      expect(disabled.toString()).toBe("");
+    });
+
     it("enables and disables each custom option type", () => {
       const customOptions: LaunchOption[] = [
         { type: "env", key: "WINEDLLOVERRIDES", value: "dinput8=n,b" },
@@ -198,6 +212,18 @@ describe("LaunchOptions", () => {
       expect(edited.toString()).toBe(source);
     });
 
+    it("removes only the exact value when options share a key", () => {
+      const edited = expectSuccess(
+        LaunchOptions.parse("%command% -width 1280 -width 1920").setCustomOption(
+          { type: "flag_args", key: "-width", value: "1920" },
+          false,
+        ),
+      );
+
+      expect(edited.isCustomOptionEnabled({ type: "flag_args", key: "-width", value: "1280" })).toBe(true);
+      expect(edited.isCustomOptionEnabled({ type: "flag_args", key: "-width", value: "1920" })).toBe(false);
+    });
+
     it("replaces an existing value with the same type and key when enabling", () => {
       const env = expectSuccess(
         LaunchOptions.parse("FOO=old %command%").setCustomOption({ type: "env", key: "FOO", value: "new" }, true),
@@ -213,6 +239,16 @@ describe("LaunchOptions", () => {
       expect(env.isCustomOptionEnabled({ type: "env", key: "FOO", value: "new" })).toBe(true);
       expect(flag.toString().match(/-width/g)).toHaveLength(1);
       expect(flag.isCustomOptionEnabled({ type: "flag_args", key: "-width", value: "1920" })).toBe(true);
+    });
+
+    it("replaces and deduplicates repeated flag values", () => {
+      const option: LaunchOption = { type: "flag_args", key: "-width", value: "1920" };
+      const edited = expectSuccess(
+        LaunchOptions.parse("%command% -width 1280 -width 1920 -width 1920").setCustomOption(option, true),
+      );
+
+      expect(edited.isCustomOptionEnabled(option)).toBe(true);
+      expect(edited.toString().match(/-width/g)).toHaveLength(1);
     });
 
     it.each<LaunchOption>([
@@ -246,10 +282,11 @@ describe("LaunchOptions", () => {
       expect(edited.toString()).toContain("%command%");
     });
 
-    it("supports enabling and then disabling an initially empty configuration", () => {
-      const enabled = expectSuccess(LaunchOptions.parse("").setDxvkAsync(true));
-      const disabled = expectSuccess(enabled.setDxvkAsync(false));
-      expect(disabled.toString()).toBe("");
+    it("treats disabling an option in blank input as a successful no-op", () => {
+      const original = LaunchOptions.parse("");
+      const result = original.setDxvkAsync(false);
+
+      expect(result).toEqual({ ok: true, value: original });
     });
   });
 
