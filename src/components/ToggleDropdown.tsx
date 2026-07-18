@@ -1,7 +1,12 @@
-import { Dropdown, type DropdownOption, Field, Focusable, TextField, ToggleField } from "@decky/ui";
+import { Dropdown, Field, Focusable, TextField, ToggleField } from "@decky/ui";
 import type { FC, ReactNode } from "react";
 
 import { t } from "../utils/translate";
+
+export interface DropdownPreset {
+  label: ReactNode;
+  data: unknown;
+}
 
 interface ToggleDropdownProps {
   label: string;
@@ -13,7 +18,7 @@ interface ToggleDropdownProps {
   fieldLabel?: string;
   value: string | undefined;
   onInput: (value: string) => void;
-  preset: DropdownOption[];
+  preset: DropdownPreset[];
 }
 
 export const ToggleDropdown: FC<ToggleDropdownProps> = ({

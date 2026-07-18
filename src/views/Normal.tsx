@@ -1,8 +1,8 @@
-import { type DropdownOption, Focusable } from "@decky/ui";
+import { Focusable } from "@decky/ui";
 import { type FC, useState } from "react";
 import { FaGamepad, FaLanguage } from "react-icons/fa";
 
-import { LaunchOptionsPreview, ToggleDropdown, ToggleFilePicker } from "../components";
+import { type DropdownPreset, LaunchOptionsPreview, ToggleDropdown, ToggleFilePicker } from "../components";
 import { LangCodes } from "../data/languageCodes.json";
 import { useOptions } from "../hooks";
 import { browseFiles, getHomePath } from "../infra/decky";
@@ -61,7 +61,7 @@ const Normal: FC = () => {
           const result = options.setLanguage(value);
           if (!result.ok || !applyEdit(result)) setShowLang(false);
         }}
-        preset={LangCodes as DropdownOption[]}
+        preset={LangCodes as DropdownPreset[]}
       />
 
       <LaunchOptionsPreview />
