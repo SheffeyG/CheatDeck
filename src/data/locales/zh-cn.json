@@ -7,6 +7,7 @@
     "CANCEL": "取消",
     "MESSAGE_SAVED": "游戏启动项已保存。",
     "MESSAGE_NON_STEAM": "警告: 不支持该启动器, 设置将不会被保存。",
+    "MESSAGE_INVALID_LAUNCH_OPTIONS": "启动项包含无法安全编辑的语法。",
 
     "CONTENT_SETTINGS": "设置",
     "CONTENT_INFORMATION": "信息",
@@ -50,7 +51,7 @@
     "CUSTOM_OPTION_FIELDS": "字段 & 值",
     "CUSTOM_TYPE_ENV": "环境变量",
     "CUSTOM_TYPE_CMD": "前置命令",
-    "CUSTOM_TYPE_FLAG": "标志参数",
+    "CUSTOM_TYPE_FLAG": "参数",
     "CUSTOM_EDIT_TITLE": "编辑启动项",
     "CUSTOM_NEW_TITLE": "新建启动项"
 }

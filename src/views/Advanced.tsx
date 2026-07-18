@@ -7,15 +7,14 @@ import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
 
 const Advanced: FC = () => {
-  const { options, applyEdit } = useOptions();
+  const { options, editable, applyEdit } = useOptions();
   const [showPrefix, setShowPrefix] = useState(options.compatibilityPath !== undefined);
 
   const handleBrowse = async () => {
     const defaultPath = options.compatibilityPath ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, false);
     const result = options.setCompatibilityPath(filePickerRes.path);
-    if (!result.ok) setShowPrefix(false);
-    applyEdit(result);
+    if (!result.ok || !applyEdit(result)) setShowPrefix(false);
   };
 
   return (
@@ -27,6 +26,7 @@ const Advanced: FC = () => {
           "Optimize the ProtonGE compatibility layer to reduce frame time and input lag",
         )}
         bottomSeparator="standard"
+        disabled={!editable}
         checked={options.isDxvkAsyncEnabled}
         onChange={(enable: boolean) => applyEdit(options.setDxvkAsync(enable))}
       />
@@ -38,6 +38,7 @@ const Advanced: FC = () => {
           "Optimize the shader cache behavior of the ProtonGE compatibility layer",
         )}
         bottomSeparator="standard"
+        disabled={!editable}
         checked={options.isRadvPerftestEnabled}
         onChange={(enable: boolean) => applyEdit(options.setRadvPerftest(enable))}
       />
@@ -45,6 +46,7 @@ const Advanced: FC = () => {
       <ToggleFilePicker
         label={t("ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL", "STEAM_COMPAT_DATA_PATH")}
         description={t("ADVANCED_STEAM_COMPAT_DATA_PATH_DESC", "Specify a folder as the shared prefix for the game")}
+        disabled={!editable}
         checked={showPrefix || options.compatibilityPath !== undefined}
         onToggle={(enable: boolean) => {
           if (enable) {
@@ -52,8 +54,7 @@ const Advanced: FC = () => {
             return;
           }
           const result = options.disableCompatibilityPath();
-          if (result.ok) setShowPrefix(false);
-          applyEdit(result);
+          if (result.ok && applyEdit(result)) setShowPrefix(false);
         }}
         value={options.compatibilityPath}
         onBrowse={handleBrowse}
@@ -67,6 +68,7 @@ const Advanced: FC = () => {
           "Patch the game to use Framegen (requires the Lossless-Scaling plugin)",
         )}
         bottomSeparator="standard"
+        disabled={!editable}
         checked={options.isLosslessScalingEnabled}
         onChange={(enable: boolean) => applyEdit(options.setLosslessScaling(enable))}
       />
@@ -78,6 +80,7 @@ const Advanced: FC = () => {
           "Patch the game to use Framegen (requires the Decky-Framegen plugin)",
         )}
         bottomSeparator="standard"
+        disabled={!editable}
         checked={options.isFramegenPatchEnabled}
         onChange={(enable: boolean) => applyEdit(options.setFramegenPatch(enable))}
       />
@@ -89,6 +92,7 @@ const Advanced: FC = () => {
           "Unpatch the game for Decky Framegen (requires the Decky-Framegen plugin)",
         )}
         bottomSeparator="standard"
+        disabled={!editable}
         checked={options.isFramegenUnpatchEnabled}
         onChange={(enable: boolean) => applyEdit(options.setFramegenUnpatch(enable))}
       />

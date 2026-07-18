@@ -4,18 +4,14 @@ import { v4 as uuid } from "uuid";
 
 import type { CustomOption } from "../domain/settings";
 import { t } from "../utils/translate";
-import { CustomOptionForm, isValidCustomOption, normalizeCustomOption } from "./CustomOptionForm";
+import { CustomOptionForm, compileCustomOption, createCustomOptionDraft } from "./CustomOptionForm";
 
 export const AddCustomOption: FC<{
   closeModal?: () => void;
   onAdd: (option: CustomOption) => void;
 }> = ({ closeModal, onAdd }) => {
-  const [option, setOption] = useState<CustomOption>(() => ({
-    id: uuid(),
-    label: "",
-    type: "env",
-    key: "",
-  }));
+  const [option, setOption] = useState(() => createCustomOptionDraft(uuid()));
+  const compiled = compileCustomOption(option);
 
   return (
     <ModalRoot onCancel={closeModal}>
@@ -24,9 +20,9 @@ export const AddCustomOption: FC<{
         <CustomOptionForm value={option} onChange={setOption} />
         <Focusable style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
           <DialogButton
-            disabled={!isValidCustomOption(option)}
+            disabled={!compiled}
             onClick={() => {
-              onAdd(normalizeCustomOption(option));
+              if (compiled) onAdd(compiled);
               closeModal?.();
             }}
             style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}

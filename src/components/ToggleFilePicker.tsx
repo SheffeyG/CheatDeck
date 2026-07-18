@@ -7,6 +7,7 @@ interface ToggleFilePickerProps {
   description?: string;
   icon?: ReactNode;
   checked: boolean;
+  disabled?: boolean;
   onToggle: (checked: boolean) => void;
   value: string | undefined;
   onBrowse: () => void;
@@ -18,6 +19,7 @@ export const ToggleFilePicker: FC<ToggleFilePickerProps> = ({
   description,
   icon,
   checked,
+  disabled,
   onToggle,
   value,
   onBrowse,
@@ -29,6 +31,7 @@ export const ToggleFilePicker: FC<ToggleFilePickerProps> = ({
       description={description}
       icon={icon}
       checked={checked}
+      disabled={disabled}
       onChange={onToggle}
       bottomSeparator={checked ? "none" : "standard"}
     />
@@ -52,6 +55,7 @@ export const ToggleFilePicker: FC<ToggleFilePickerProps> = ({
             value={value}
           />
           <DialogButton
+            disabled={disabled}
             onClick={onBrowse}
             style={{
               display: "flex",

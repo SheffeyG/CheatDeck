@@ -5,22 +5,22 @@ import { BsPencilFill, BsPlusSquareFill } from "react-icons/bs";
 import { FaBarsProgress as TypeCmdIcon, FaKey as TypeEnvIcon, FaFlag as TypeFlagIcon } from "react-icons/fa6";
 
 import { LaunchOptionsPreview } from "../components";
-import type { OptionType } from "../domain/launchOptions";
+import type { CustomLaunchOptionDefinition } from "../domain/options";
 import type { CustomOption } from "../domain/settings";
 import { useOptions, useSettings } from "../hooks";
 import { AddCustomOption, EditCustomOption } from "../modals";
 
 const Custom: FC = () => {
   // Launch options from current game details
-  const { options, applyEdit } = useOptions();
+  const { options, editable, applyEdit } = useOptions();
   // Custom options from users' plugin settings
   const { customOptions, saveCustomOptions } = useSettings();
 
-  const CusOptTitle: FC<{ label: string; type: OptionType }> = ({ label, type }) => {
-    const typeMap: Record<OptionType, IconType> = {
-      env: TypeEnvIcon,
-      pre_cmd: TypeCmdIcon,
-      flag_args: TypeFlagIcon,
+  const CusOptTitle: FC<{ label: string; type: CustomLaunchOptionDefinition["kind"] }> = ({ label, type }) => {
+    const typeMap: Record<CustomLaunchOptionDefinition["kind"], IconType> = {
+      environment: TypeEnvIcon,
+      prefix: TypeCmdIcon,
+      argument: TypeFlagIcon,
     };
     const TypeIcon = typeMap[type];
     return (
@@ -96,9 +96,10 @@ const Custom: FC = () => {
             <Focusable className="CheatDeckToggleContainer">
               <ToggleField
                 bottomSeparator="none"
-                label={<CusOptTitle label={opt.label} type={opt.type} />}
-                checked={options.isCustomOptionEnabled(opt)}
-                onChange={(enable: boolean) => applyEdit(options.setCustomOption(opt, enable))}
+                label={<CusOptTitle label={opt.label} type={opt.definition.kind} />}
+                disabled={!editable}
+                checked={options.isEnabled(opt.definition)}
+                onChange={(enable: boolean) => applyEdit(options.setEnabled(opt.definition, enable))}
               />
             </Focusable>
             <DialogButton
@@ -107,10 +108,28 @@ const Custom: FC = () => {
                 showModal(
                   <EditCustomOption
                     option={opt}
-                    onUpdate={(updatedOption) =>
-                      saveCustomOptions(customOptions.map((option) => (option.id === opt.id ? updatedOption : option)))
-                    }
-                    onDelete={(id) => saveCustomOptions(customOptions.filter((option) => option.id !== id))}
+                    onUpdate={(updatedOption) => {
+                      const result = options.replaceDefinition(opt.definition, updatedOption.definition);
+                      if (result.ok && applyEdit(result)) {
+                        void saveCustomOptions(
+                          customOptions.map((option) => (option.id === opt.id ? updatedOption : option)),
+                        );
+                        return true;
+                      }
+                      return false;
+                    }}
+                    onDelete={(id) => {
+                      if (!editable) {
+                        void saveCustomOptions(customOptions.filter((option) => option.id !== id));
+                        return true;
+                      }
+                      const result = options.setEnabled(opt.definition, false);
+                      if (result.ok && applyEdit(result)) {
+                        void saveCustomOptions(customOptions.filter((option) => option.id !== id));
+                        return true;
+                      }
+                      return false;
+                    }}
                   />,
                   window,
                 );

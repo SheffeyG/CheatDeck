@@ -8,6 +8,7 @@ interface ToggleDropdownProps {
   description?: string;
   icon?: ReactNode;
   checked: boolean;
+  disabled?: boolean;
   onToggle: (checked: boolean) => void;
   fieldLabel?: string;
   value: string | undefined;
@@ -20,6 +21,7 @@ export const ToggleDropdown: FC<ToggleDropdownProps> = ({
   description,
   icon,
   checked,
+  disabled,
   onToggle,
   fieldLabel,
   value,
@@ -32,6 +34,7 @@ export const ToggleDropdown: FC<ToggleDropdownProps> = ({
       description={description}
       icon={icon}
       checked={checked}
+      disabled={disabled}
       bottomSeparator={checked ? "none" : "standard"}
       onChange={onToggle}
     />
@@ -53,12 +56,14 @@ export const ToggleDropdown: FC<ToggleDropdownProps> = ({
               marginRight: ".5em",
             }}
             value={value}
+            disabled={disabled}
             onChange={(e) => {
               e.persist();
               onInput(e.target.value);
             }}
           />
           <Dropdown
+            disabled={disabled}
             rgOptions={preset}
             selectedOption={preset[0]}
             onChange={(v) => {

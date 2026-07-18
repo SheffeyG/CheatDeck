@@ -7,6 +7,7 @@
     "CANCEL": "Abbrechen",
     "MESSAGE_SAVED": "Spielstartoptionen wurden gespeichert.",
     "MESSAGE_NON_STEAM": "Warnung: Dies ist KEIN Steam-Spiel! Einstellungen werden möglicherweise nicht gespeichert.",
+    "MESSAGE_INVALID_LAUNCH_OPTIONS": "Die Startoptionen können nicht sicher bearbeitet werden.",
 
     "CONTENT_SETTINGS": "Einstellungen",
     "CONTENT_INFORMATION": "Informationen",
@@ -50,7 +51,7 @@
     "CUSTOM_OPTION_FIELDS": "Feld & Wert",
     "CUSTOM_TYPE_ENV": "Umgebungsvariable",
     "CUSTOM_TYPE_CMD": "Präfix-Befehle",
-    "CUSTOM_TYPE_FLAG": "Flagge & Parameter",
+    "CUSTOM_TYPE_FLAG": "Argument",
     "CUSTOM_EDIT_TITLE": "Option bearbeiten",
     "CUSTOM_NEW_TITLE": "Neue Option hinzufügen"
 }

@@ -7,6 +7,7 @@
     "CANCEL": "取消",
     "MESSAGE_SAVED": "遊戲啟動項已儲存。",
     "MESSAGE_NON_STEAM": "警告: 此啟動器未受支援；設定未被儲存。",
+    "MESSAGE_INVALID_LAUNCH_OPTIONS": "啟動選項包含無法安全編輯的語法。",
 
     "CONTENT_SETTINGS": "設定",
     "CONTENT_INFORMATION": "資訊",
@@ -50,7 +51,7 @@
     "CUSTOM_OPTION_FIELDS": "欄位 & 值",
     "CUSTOM_TYPE_ENV": "環境變數",
     "CUSTOM_TYPE_CMD": "前置命令",
-    "CUSTOM_TYPE_FLAG": "旗標參數",
+    "CUSTOM_TYPE_FLAG": "參數",
     "CUSTOM_EDIT_TITLE": "編輯啟動項",
     "CUSTOM_NEW_TITLE": "新增啟動項"
 }

@@ -7,6 +7,7 @@
     "CANCEL": "キャンセル",
     "MESSAGE_SAVED": "ゲームの起動オプションが保存されました。",
     "MESSAGE_NON_STEAM": "警告: このランチャーはサポートされていません。設定は保存されません。",
+    "MESSAGE_INVALID_LAUNCH_OPTIONS": "起動オプションを安全に編集できません。",
 
     "CONTENT_SETTINGS": "設定",
     "CONTENT_INFORMATION": "情報",
@@ -50,7 +51,7 @@
     "CUSTOM_OPTION_FIELDS": "フィールドと値",
     "CUSTOM_TYPE_ENV": "環境変数",
     "CUSTOM_TYPE_CMD": "プレフィックスコマンド",
-    "CUSTOM_TYPE_FLAG": "フラグ＆パラメータ",
+    "CUSTOM_TYPE_FLAG": "引数",
     "CUSTOM_EDIT_TITLE": "オプションを編集",
     "CUSTOM_NEW_TITLE": "新しいオプションを追加"
 }

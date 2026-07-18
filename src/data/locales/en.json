@@ -7,6 +7,7 @@
     "CANCEL": "Cancel",
     "MESSAGE_SAVED": "Game launch options have been saved.",
     "MESSAGE_NON_STEAM": "This launcher is not supported; settings were not saved.",
+    "MESSAGE_INVALID_LAUNCH_OPTIONS": "Launch options could not be edited safely.",
 
     "CONTENT_SETTINGS": "Settings",
     "CONTENT_INFORMATION": "Information",
@@ -50,7 +51,7 @@
     "CUSTOM_OPTION_FIELDS": "Field & Value",
     "CUSTOM_TYPE_ENV": "Environment Variable",
     "CUSTOM_TYPE_CMD": "Prefix Commands",
-    "CUSTOM_TYPE_FLAG": "Flag & Parameter",
+    "CUSTOM_TYPE_FLAG": "Argument",
     "CUSTOM_EDIT_TITLE": "Edit Option",
     "CUSTOM_NEW_TITLE": "Add a New Option"
 }

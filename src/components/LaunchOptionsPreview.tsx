@@ -1,6 +1,5 @@
 import { Focusable } from "@decky/ui";
 import type { FC } from "react";
-
 import { useOptions, useSettings } from "../hooks";
 
 export const LaunchOptionsPreview: FC = () => {

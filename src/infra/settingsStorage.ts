@@ -1,30 +1,11 @@
-import { v4 as uuid } from "uuid";
-
-import type { OptionType } from "../domain/launchOptions";
-import type { CustomOption, SettingsSnapshot } from "../domain/settings";
+import { type CustomOption, decodeStoredCustomOptions, type SettingsSnapshot } from "../domain/settings";
 import { deckyBackend } from "./decky";
 
-type StoredCustomOption = Omit<CustomOption, "id">;
-
 const settingKeys = {
-  customOptions: "CustomOptions",
+  customOptions: "CustomOptionsV2",
   showPreview: "ShowPreview",
   skipWineCheck: "SkipWineCheck",
 } as const;
-
-const optionTypes: OptionType[] = ["env", "pre_cmd", "flag_args"];
-
-const isStoredCustomOption = (value: unknown): value is StoredCustomOption => {
-  if (!value || typeof value !== "object") return false;
-
-  const option = value as Record<string, unknown>;
-  return (
-    typeof option.label === "string" &&
-    typeof option.key === "string" &&
-    optionTypes.includes(option.type as OptionType) &&
-    (option.value === undefined || typeof option.value === "string")
-  );
-};
 
 export const settingsStorage = {
   async load(): Promise<SettingsSnapshot> {
@@ -37,9 +18,7 @@ export const settingsStorage = {
     return {
       showPreview: typeof storedShowPreview === "boolean" ? storedShowPreview : false,
       skipWineCheck: typeof storedSkipWineCheck === "boolean" ? storedSkipWineCheck : false,
-      customOptions: Array.isArray(storedOptions)
-        ? storedOptions.filter(isStoredCustomOption).map((option) => ({ ...option, id: uuid() }))
-        : [],
+      customOptions: decodeStoredCustomOptions(storedOptions),
     };
   },
 
@@ -52,7 +31,6 @@ export const settingsStorage = {
   },
 
   saveCustomOptions(options: CustomOption[]): Promise<void> {
-    const storedOptions = options.map(({ id: _id, ...option }) => option);
-    return deckyBackend.setSetting(settingKeys.customOptions, storedOptions);
+    return deckyBackend.setSetting(settingKeys.customOptions, options);
   },
 };

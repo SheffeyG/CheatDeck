@@ -7,6 +7,7 @@
     "CANCEL": "Отмена",
     "MESSAGE_SAVED": "Параметры запуска игры сохранены.",
     "MESSAGE_NON_STEAM": "Внимание: этот лаунчер не поддерживается; настройки не были сохранены.",
+    "MESSAGE_INVALID_LAUNCH_OPTIONS": "Параметры запуска нельзя безопасно изменить.",
 
     "CONTENT_SETTINGS": "Настройки",
     "CONTENT_INFORMATION": "Информация",
@@ -50,7 +51,7 @@
     "CUSTOM_OPTION_FIELDS": "Поле & значение",
     "CUSTOM_TYPE_ENV": "Переменная среды",
     "CUSTOM_TYPE_CMD": "Префиксные команды",
-    "CUSTOM_TYPE_FLAG": "Флаг и параметр",
+    "CUSTOM_TYPE_FLAG": "Аргумент",
     "CUSTOM_EDIT_TITLE": "Редактировать параметр",
     "CUSTOM_NEW_TITLE": "Добавить новый параметр"
 }

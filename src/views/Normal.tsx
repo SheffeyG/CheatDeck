@@ -9,7 +9,7 @@ import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
 
 const Normal: FC = () => {
-  const { options, applyEdit } = useOptions();
+  const { options, editable, applyEdit } = useOptions();
   const [showCheat, setShowCheat] = useState(options.isTrainerEnabled);
   const [showLang, setShowLang] = useState(options.isLanguageEnabled);
 
@@ -17,8 +17,7 @@ const Normal: FC = () => {
     const defaultPath = options.trainerDirectory ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, true, ["exe", "bat"]);
     const result = options.setTrainer(filePickerRes.path);
-    if (!result.ok) setShowCheat(false);
-    applyEdit(result);
+    if (!result.ok || !applyEdit(result)) setShowCheat(false);
   };
 
   return (
@@ -27,6 +26,7 @@ const Normal: FC = () => {
         label={t("NORMAL_CHEAT_TOGGLE_LABEL", "Enable Cheat")}
         description={t("NORMAL_CHEAT_TOGGLE_DESC", "Select the cheat or trainer exe file from storage")}
         icon={<FaGamepad />}
+        disabled={!editable}
         checked={showCheat || options.isTrainerEnabled}
         onToggle={(enable: boolean) => {
           if (enable) {
@@ -34,8 +34,7 @@ const Normal: FC = () => {
             return;
           }
           const result = options.disableTrainer();
-          if (result.ok) setShowCheat(false);
-          applyEdit(result);
+          if (result.ok && applyEdit(result)) setShowCheat(false);
         }}
         value={options.trainerPath}
         onBrowse={handleBrowse}
@@ -46,6 +45,7 @@ const Normal: FC = () => {
         label={t("NORMAL_LANG_TOGGLE_LABEL", "Language")}
         description={t("NORMAL_LANG_TOGGLE_DESC", "Try to specify the game language")}
         icon={<FaLanguage />}
+        disabled={!editable}
         checked={showLang || options.isLanguageEnabled}
         onToggle={(enable: boolean) => {
           if (enable) {
@@ -53,15 +53,13 @@ const Normal: FC = () => {
             return;
           }
           const result = options.disableLanguage();
-          if (result.ok) setShowLang(false);
-          applyEdit(result);
+          if (result.ok && applyEdit(result)) setShowLang(false);
         }}
         fieldLabel={t("NORMAL_LANG_LABEL", "Language Code")}
         value={options.language}
         onInput={(value: string) => {
           const result = options.setLanguage(value);
-          if (!result.ok) setShowLang(false);
-          applyEdit(result);
+          if (!result.ok || !applyEdit(result)) setShowLang(false);
         }}
         preset={LangCodes as DropdownOption[]}
       />

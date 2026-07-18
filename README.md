@@ -63,17 +63,17 @@ CheatDeck provides several launch-option presets for quick access in the *Advanc
 
 ## Custom Options
 
-The most game launch options could be constructed as follow:
+CheatDeck edits a restricted, source-preserving launch-options grammar:
 ```
-[enviroments] [prefix commands] %command% [flags & arguments]
+[environment assignments] [prefix commands] %command% [flags and arguments]
 ```
-you can add your custom launch options and quickly access them for any games.
+Environment assignments must appear first and names must match `[A-Za-z_][A-Za-z0-9_]*`. Multiple prefix commands use a standalone `--` separator. Custom arguments explicitly declare whether they consume no value or one value, so adjacent game arguments are never inferred or removed. Unsupported shell operators, redirects, comments, malformed quoting, and ambiguous markers make the document read-only rather than risking a partial edit.
 
-|Type                |Example                       |Note                                  |
-|--------------------|------------------------------|--------------------------------------|
-|Environment Variable|`key=value` `key="with space"`|Quote the value if it contains spaces.|
-|Prefix Commands     |`mangohub` `~/script.sh run`  |Supports multiple prefix commands.    |
-|Flags and Arguments |`--flag` `--key value` `--args=val`|The second field can be left empty. Arguments like `--args=val` should be placed in the first field while leaving the second field empty.|
+|Type|Example|Note|
+|----|-------|----|
+|Environment Variable|`ENV=value`|Values are rendered as literal shell words.|
+|Prefix Command|`gamemoderun gamescope`|The form parses a literal executable and argv list.|
+|Argument|`--flag` or `--key value`|The option definition explicitly selects zero or one value.|
 
 ## Acknowledgments
 

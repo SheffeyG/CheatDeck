@@ -7,6 +7,7 @@
     "CANCEL": "취소",
     "MESSAGE_SAVED": "게임 실행 옵션이 저장되었습니다.",
     "MESSAGE_NON_STEAM": "경고: 이 런처는 지원되지 않습니다. 설정이 저장되지 않았습니다.",
+    "MESSAGE_INVALID_LAUNCH_OPTIONS": "실행 옵션을 안전하게 편집할 수 없습니다.",
 
     "CONTENT_SETTINGS": "설정",
     "CONTENT_INFORMATION": "정보",
@@ -50,7 +51,7 @@
     "CUSTOM_OPTION_FIELDS": "필드 및 값",
     "CUSTOM_TYPE_ENV": "환경 변수",
     "CUSTOM_TYPE_CMD": "접두사 명령",
-    "CUSTOM_TYPE_FLAG": "플래그 및 매개변수",
+    "CUSTOM_TYPE_FLAG": "인수",
     "CUSTOM_EDIT_TITLE": "옵션 편집",
     "CUSTOM_NEW_TITLE": "새 옵션 추가"
 }

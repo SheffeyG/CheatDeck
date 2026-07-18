@@ -1,6 +1,6 @@
 import { createContext, type FC, type ReactNode, useContext, useEffect, useRef, useState } from "react";
 
-import { LaunchOptions, type LaunchOptionsEditResult } from "../domain/launchOptions";
+import { LaunchOptions, type LaunchOptionsEditResult } from "../domain/options";
 import { sendNotice } from "../infra/decky";
 import { registerForAppDetails, setAppLaunchOptions } from "../infra/steam";
 import { logger } from "../utils/logger";
@@ -11,7 +11,9 @@ interface OptionsContextProps {
   appid: number;
   command: string;
   options: LaunchOptions;
-  applyEdit: (result: LaunchOptionsEditResult) => void;
+  editable: boolean;
+  diagnostics: LaunchOptions["diagnostics"];
+  applyEdit: (result: LaunchOptionsEditResult) => boolean;
 }
 
 interface LoadedOptions {
@@ -84,21 +86,19 @@ export const OptionsProvider: FC<{
   const sourceOptions = loaded.options;
   const applyEdit = (result: LaunchOptionsEditResult) => {
     const current = loadedRef.current;
-    if (current?.appid !== appid || current.options !== sourceOptions) return;
+    if (current?.appid !== appid || current.options !== sourceOptions) return false;
 
     if (!result.ok) {
-      const message =
-        result.error === "missing-command-marker"
-          ? t("MESSAGE_MISSING_COMMAND", "Launch options must contain exactly one %command% marker.")
-          : t("MESSAGE_INVALID_CUSTOM_OPTION", "The custom launch option is invalid and was not applied.");
+      const message = t("MESSAGE_INVALID_LAUNCH_OPTIONS", "Launch options could not be edited safely.");
       sendNotice(message);
-      return;
+      return false;
     }
+    if (!result.changed) return true;
 
     const command = current.command.toLowerCase();
     if (!skipWineCheck && (command.includes("flatpak") || command.includes("appimage"))) {
       sendNotice(t("MESSAGE_NON_STEAM", "This launcher is not supported; settings were not saved."));
-      return;
+      return false;
     }
 
     const nextLoaded = { ...current, options: result.value };
@@ -107,9 +107,26 @@ export const OptionsProvider: FC<{
     pendingSave.current = { appid, options: result.value };
     clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(flushPendingSave, 250);
+    return true;
   };
 
-  return <OptionsContext.Provider value={{ ...loaded, applyEdit }}>{children}</OptionsContext.Provider>;
+  return (
+    <OptionsContext.Provider
+      value={{
+        ...loaded,
+        editable: loaded.options.editable,
+        diagnostics: loaded.options.diagnostics,
+        applyEdit,
+      }}
+    >
+      {!loaded.options.editable && (
+        <div style={{ padding: "12px 16px", color: "#ffb3b3", fontSize: "12px" }}>
+          {t("MESSAGE_INVALID_LAUNCH_OPTIONS", "Launch options could not be edited safely.")}
+        </div>
+      )}
+      {children}
+    </OptionsContext.Provider>
+  );
 };
 
 export const useOptions = (): OptionsContextProps => {

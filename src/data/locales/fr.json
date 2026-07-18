@@ -7,6 +7,7 @@
     "CANCEL": "Annuler",
     "MESSAGE_SAVED": "Les options de lancement du jeu ont été enregistrées.",
     "MESSAGE_NON_STEAM": "Attention : Ce lanceur n'est pas pris en charge ; les paramètres n'ont pas été enregistrés.",
+    "MESSAGE_INVALID_LAUNCH_OPTIONS": "Les options de lancement ne peuvent pas être modifiées en toute sécurité.",
 
     "CONTENT_SETTINGS": "Paramètres",
     "CONTENT_INFORMATION": "Informations",
@@ -50,7 +51,7 @@
     "CUSTOM_OPTION_FIELDS": "Champ & Valeur",
     "CUSTOM_TYPE_ENV": "Variable d'environnement",
     "CUSTOM_TYPE_CMD": "Commandes de préfixe",
-    "CUSTOM_TYPE_FLAG": "Drapeau & Paramètre",
+    "CUSTOM_TYPE_FLAG": "Argument",
     "CUSTOM_EDIT_TITLE": "Modifier l'option",
     "CUSTOM_NEW_TITLE": "Ajouter une nouvelle option"
 }
