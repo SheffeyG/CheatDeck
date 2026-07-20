@@ -6,7 +6,6 @@ import { CustomOptionItem, LaunchOptionsPreview } from "../components";
 import type { CustomOption } from "../domain/settings";
 import { useOptions, useSettings } from "../hooks";
 import { AddCustomOption, EditCustomOption } from "../modals";
-import { t } from "../utils/translate";
 
 const addButtonStyle = {
   display: "flex",
@@ -78,10 +77,6 @@ const Custom: FC = () => {
 
       <div style={addButtonStyle}>
         <DialogButton
-          {...{
-            "aria-label": t("CUSTOM_NEW_TITLE", "Add a New Option"),
-            title: t("CUSTOM_NEW_TITLE", "Add a New Option"),
-          }}
           style={addButtonControlStyle}
           onClick={() => {
             showModal(<AddCustomOption onAdd={(option) => saveCustomOptions([...customOptions, option])} />, window);

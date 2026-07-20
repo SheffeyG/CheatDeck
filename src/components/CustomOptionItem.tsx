@@ -6,7 +6,6 @@ import { FaBarsProgress as TypeCmdIcon, FaKey as TypeEnvIcon, FaFlag as TypeFlag
 
 import type { LaunchOptionDefinition } from "../domain/options";
 import type { CustomOption } from "../domain/settings";
-import { t } from "../utils/translate";
 import { Toggle } from "./Toggle";
 
 const typeMap: Record<LaunchOptionDefinition["kind"], IconType> = {
@@ -80,11 +79,7 @@ export const CustomOptionItem: FC<CustomOptionItemProps> = ({ option, checked, d
       compact={true}
       onChange={onToggle}
     />
-    <DialogButton
-      {...{ "aria-label": t("CUSTOM_EDIT_TITLE", "Edit Option"), title: t("CUSTOM_EDIT_TITLE", "Edit Option") }}
-      style={editButtonStyle}
-      onClick={onEdit}
-    >
+    <DialogButton style={editButtonStyle} onClick={onEdit}>
       <BsPencilFill />
     </DialogButton>
   </div>
