@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { isValidLaunchOption, LaunchOptions, type LaunchOptionsEditResult } from "../src/domain/options";
+import {
+  isValidLaunchOption,
+  LaunchOptions,
+  type LaunchOptionsEditResult,
+  parseLaunchOptionDefinition,
+  renderLaunchOptionDefinition,
+} from "../src/domain/options";
 
 const success = (result: LaunchOptionsEditResult): LaunchOptions => {
   expect(result.ok).toBe(true);
@@ -29,6 +35,65 @@ describe("LaunchOptions", () => {
     expect(isValidLaunchOption({ kind: "prefix", command: "cmd", argv: ["arg"] })).toBe(true);
     expect(isValidLaunchOption({ kind: "prefix", command: "cmd", argv: ["'arg with spaces'"] })).toBe(true);
     expect(isValidLaunchOption({ kind: "prefix", command: "cmd", argv: ["arg with spaces"] })).toBe(false);
+  });
+
+  it.each([
+    ["ENV=1", { kind: "environment", name: "ENV", value: "1" }],
+    ["ENV='hello world'", { kind: "environment", name: "ENV", value: "hello world" }],
+    ["ENV=", { kind: "environment", name: "ENV", value: "" }],
+    ["ENV='$HOME'", { kind: "environment", name: "ENV", value: "$HOME" }],
+    ["gamescope -W 1280", { kind: "prefix", command: "gamescope", argv: ["-W", "1280"] }],
+    ["~/lsfg", { kind: "prefix", command: "~/lsfg", argv: [] }],
+    ["-novid", { kind: "argument", flag: "-novid", argv: [] }],
+    ["-resolution 1920 1080", { kind: "argument", flag: "-resolution", argv: ["1920", "1080"] }],
+  ])("infers a definition from raw input: %s", (source, expected) => {
+    expect(parseLaunchOptionDefinition(source)).toEqual(expected);
+  });
+
+  it("preserves raw prefix and argument words while inferring definitions", () => {
+    expect(parseLaunchOptionDefinition(`wrapper "hello world" $HOME/file`)).toEqual({
+      kind: "prefix",
+      command: "wrapper",
+      argv: [`"hello world"`, "$HOME/file"],
+    });
+    expect(parseLaunchOptionDefinition(`-name "hello world" $HOME/file`)).toEqual({
+      kind: "argument",
+      flag: "-name",
+      argv: [`"hello world"`, "$HOME/file"],
+    });
+  });
+
+  it.each([
+    "",
+    "BAD-NAME=1",
+    "ENV=1 gamescope",
+    "ENV=1 OTHER=2",
+    "ENV=$HOME",
+    ["ENV=", "$", "{HOME}"].join(""),
+    "ENV=$(command)",
+    "ENV=`command`",
+    'ENV="$HOME"',
+    "ENV=~/path",
+    "ENV=*.txt",
+    "%command%",
+    "--",
+    "-",
+    "cmd && bad",
+    "cmd 'broken",
+  ])("rejects an ambiguous or unsupported raw definition: %s", (source) => {
+    expect(parseLaunchOptionDefinition(source)).toBeUndefined();
+  });
+
+  it("round-trips structured definitions through raw text", () => {
+    const definitions = [
+      { kind: "environment", name: "ENV", value: "hello world" },
+      { kind: "prefix", command: "wrapper", argv: [`"hello world"`, "$HOME/file"] },
+      { kind: "argument", flag: "-resolution", argv: ["1920", "1080"] },
+    ] as const;
+
+    for (const definition of definitions) {
+      expect(parseLaunchOptionDefinition(renderLaunchOptionDefinition(definition))).toEqual(definition);
+    }
   });
 
   it("enables custom definitions idempotently and preserves unrelated source", () => {

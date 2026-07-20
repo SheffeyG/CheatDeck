@@ -47,11 +47,7 @@
 
     "CUSTOM_TITLE": "Пользовательский",
     "CUSTOM_OPTION_LABEL": "Метка",
-    "CUSTOM_OPTION_TYPE": "Тип",
-    "CUSTOM_OPTION_FIELDS": "Поле & значение",
-    "CUSTOM_TYPE_ENV": "Переменная среды",
-    "CUSTOM_TYPE_CMD": "Префиксные команды",
-    "CUSTOM_TYPE_FLAG": "Аргумент",
+    "CUSTOM_OPTION_DEFINITION": "Определение",
     "CUSTOM_EDIT_TITLE": "Редактировать параметр",
     "CUSTOM_NEW_TITLE": "Добавить новый параметр"
 }

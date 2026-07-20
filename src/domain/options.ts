@@ -57,7 +57,7 @@ export const isValidLaunchOption = (definition: LaunchOptionDefinition): boolean
   }
 };
 
-const renderDefinition = (definition: LaunchOptionDefinition): string => {
+export const renderLaunchOptionDefinition = (definition: LaunchOptionDefinition): string => {
   switch (definition.kind) {
     case "environment":
       return `${definition.name}=${renderWord(definition.value)}`;
@@ -66,6 +66,29 @@ const renderDefinition = (definition: LaunchOptionDefinition): string => {
     case "argument":
       return [definition.flag, ...definition.argv].join(" ");
   }
+};
+
+export const parseLaunchOptionDefinition = (source: string): LaunchOptionDefinition | undefined => {
+  const raw = source.trim();
+  const words = parseRawWords(raw);
+  if (!words) return undefined;
+
+  const parsed = parseLaunchOptions(`${raw} %command%`);
+  if (parsed.diagnostics.length > 0) return undefined;
+  if (parsed.assignments.length > 0) {
+    if (parsed.assignments.length !== 1 || parsed.prefixes.length > 0) return undefined;
+    const { name, value } = parsed.assignments[0];
+    if (value === undefined) return undefined;
+    const definition = { kind: "environment" as const, name, value };
+    return isValidLaunchOption(definition) ? definition : undefined;
+  }
+
+  const [first, ...argv] = words;
+  if (first.includes("=")) return undefined;
+  const definition: LaunchOptionDefinition = first.startsWith("-")
+    ? { kind: "argument", flag: first, argv }
+    : { kind: "prefix", command: first, argv };
+  return isValidLaunchOption(definition) ? definition : undefined;
 };
 
 const prefixCommandMatches = (prefix: ParsedPrefix, command: string): boolean => prefix.words[0]?.raw === command;
@@ -220,7 +243,7 @@ const replacementDeletionEdits = (parsed: ParsedLaunchOptions, definition: Launc
 };
 
 const insertionEdit = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): TextEdit => {
-  const rendered = renderDefinition(definition);
+  const rendered = renderLaunchOptionDefinition(definition);
   if (parsed.implicitMarker) {
     const replacement = definition.kind === "argument" ? `%command% ${rendered}` : `${rendered} %command%`;
     return { span: { start: 0, end: parsed.source.length }, replacement };

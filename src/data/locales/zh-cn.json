@@ -47,11 +47,7 @@
 
     "CUSTOM_TITLE": "自定义",
     "CUSTOM_OPTION_LABEL": "标签",
-    "CUSTOM_OPTION_TYPE": "类型",
-    "CUSTOM_OPTION_FIELDS": "字段 & 值",
-    "CUSTOM_TYPE_ENV": "环境变量",
-    "CUSTOM_TYPE_CMD": "前置命令",
-    "CUSTOM_TYPE_FLAG": "参数",
+    "CUSTOM_OPTION_DEFINITION": "定义",
     "CUSTOM_EDIT_TITLE": "编辑启动项",
     "CUSTOM_NEW_TITLE": "新建启动项"
 }

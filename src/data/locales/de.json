@@ -47,11 +47,7 @@
 
     "CUSTOM_TITLE": "Benutzerdefiniert",
     "CUSTOM_OPTION_LABEL": "Bezeichnung",
-    "CUSTOM_OPTION_TYPE": "Typ",
-    "CUSTOM_OPTION_FIELDS": "Feld & Wert",
-    "CUSTOM_TYPE_ENV": "Umgebungsvariable",
-    "CUSTOM_TYPE_CMD": "Präfix-Befehle",
-    "CUSTOM_TYPE_FLAG": "Argument",
+    "CUSTOM_OPTION_DEFINITION": "Definition",
     "CUSTOM_EDIT_TITLE": "Option bearbeiten",
     "CUSTOM_NEW_TITLE": "Neue Option hinzufügen"
 }

@@ -47,11 +47,7 @@
 
     "CUSTOM_TITLE": "自訂",
     "CUSTOM_OPTION_LABEL": "標籤",
-    "CUSTOM_OPTION_TYPE": "類型",
-    "CUSTOM_OPTION_FIELDS": "欄位 & 值",
-    "CUSTOM_TYPE_ENV": "環境變數",
-    "CUSTOM_TYPE_CMD": "前置命令",
-    "CUSTOM_TYPE_FLAG": "參數",
+    "CUSTOM_OPTION_DEFINITION": "定義",
     "CUSTOM_EDIT_TITLE": "編輯啟動項",
     "CUSTOM_NEW_TITLE": "新增啟動項"
 }

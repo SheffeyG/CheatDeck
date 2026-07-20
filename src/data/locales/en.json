@@ -47,11 +47,7 @@
 
     "CUSTOM_TITLE": "Custom",
     "CUSTOM_OPTION_LABEL": "Label",
-    "CUSTOM_OPTION_TYPE": "Type",
-    "CUSTOM_OPTION_FIELDS": "Field & Value",
-    "CUSTOM_TYPE_ENV": "Environment Variable",
-    "CUSTOM_TYPE_CMD": "Prefix Commands",
-    "CUSTOM_TYPE_FLAG": "Argument",
+    "CUSTOM_OPTION_DEFINITION": "Definition",
     "CUSTOM_EDIT_TITLE": "Edit Option",
     "CUSTOM_NEW_TITLE": "Add a New Option"
 }

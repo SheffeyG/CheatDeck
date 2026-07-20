@@ -47,11 +47,7 @@
 
     "CUSTOM_TITLE": "Personnalisé",
     "CUSTOM_OPTION_LABEL": "Étiquette",
-    "CUSTOM_OPTION_TYPE": "Type",
-    "CUSTOM_OPTION_FIELDS": "Champ & Valeur",
-    "CUSTOM_TYPE_ENV": "Variable d'environnement",
-    "CUSTOM_TYPE_CMD": "Commandes de préfixe",
-    "CUSTOM_TYPE_FLAG": "Argument",
+    "CUSTOM_OPTION_DEFINITION": "Définition",
     "CUSTOM_EDIT_TITLE": "Modifier l'option",
     "CUSTOM_NEW_TITLE": "Ajouter une nouvelle option"
 }

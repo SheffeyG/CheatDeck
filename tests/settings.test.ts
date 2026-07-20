@@ -45,4 +45,17 @@ describe("settings", () => {
 
     expect(decodeStoredCustomOptions(value)).toEqual([value[0], value[1], value[2], value[3]]);
   });
+
+  it("rejects structured definitions containing reserved words", () => {
+    expect(
+      decodeStoredCustomOptions([
+        { id: "separator", label: "Separator", definition: { kind: "prefix", command: "--", argv: [] } },
+        {
+          id: "marker",
+          label: "Marker",
+          definition: { kind: "argument", flag: "-x", argv: ["%command%"] },
+        },
+      ]),
+    ).toEqual([]);
+  });
 });
