@@ -4,19 +4,20 @@ import { FaGamepad, FaLanguage } from "react-icons/fa";
 
 import { type DropdownPreset, LaunchOptionsPreview, ToggleDropdown, ToggleFilePicker } from "../components";
 import { LangCodes } from "../data/languageCodes.json";
+import { language, trainer } from "../domain/features";
 import { useOptions } from "../hooks";
 import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
 
 const Normal: FC = () => {
   const { options, editable, applyEdit } = useOptions();
-  const [showCheat, setShowCheat] = useState(options.isTrainerEnabled);
-  const [showLang, setShowLang] = useState(options.isLanguageEnabled);
+  const [showCheat, setShowCheat] = useState(trainer.isEnabled(options));
+  const [showLang, setShowLang] = useState(language.isEnabled(options));
 
   const handleBrowse = async () => {
-    const defaultPath = options.trainerDirectory ?? (await getHomePath());
+    const defaultPath = trainer.directory(options) ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, true, ["exe", "bat"]);
-    const result = options.setTrainer(filePickerRes.path);
+    const result = trainer.set(options, filePickerRes.path);
     if (!result.ok || !applyEdit(result)) setShowCheat(false);
   };
 
@@ -27,16 +28,16 @@ const Normal: FC = () => {
         description={t("NORMAL_CHEAT_TOGGLE_DESC", "Select the cheat or trainer exe file from storage")}
         icon={<FaGamepad />}
         disabled={!editable}
-        checked={showCheat || options.isTrainerEnabled}
+        checked={showCheat || trainer.isEnabled(options)}
         onToggle={(enable: boolean) => {
           if (enable) {
             setShowCheat(true);
             return;
           }
-          const result = options.disableTrainer();
+          const result = trainer.disable(options);
           if (result.ok && applyEdit(result)) setShowCheat(false);
         }}
-        value={options.trainerPath}
+        value={trainer.path(options)}
         onBrowse={handleBrowse}
         fieldLabel={t("NORMAL_CHEAT_LABEL", "EXE Path")}
       />
@@ -46,19 +47,19 @@ const Normal: FC = () => {
         description={t("NORMAL_LANG_TOGGLE_DESC", "Try to specify the game language")}
         icon={<FaLanguage />}
         disabled={!editable}
-        checked={showLang || options.isLanguageEnabled}
+        checked={showLang || language.isEnabled(options)}
         onToggle={(enable: boolean) => {
           if (enable) {
             setShowLang(true);
             return;
           }
-          const result = options.disableLanguage();
+          const result = language.disable(options);
           if (result.ok && applyEdit(result)) setShowLang(false);
         }}
         fieldLabel={t("NORMAL_LANG_LABEL", "Language Code")}
-        value={options.language}
+        value={language.value(options)}
         onInput={(value: string) => {
-          const result = options.setLanguage(value);
+          const result = language.set(options, value);
           if (!result.ok || !applyEdit(result)) setShowLang(false);
         }}
         preset={LangCodes as DropdownPreset[]}

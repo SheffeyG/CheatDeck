@@ -1,9 +1,9 @@
-import { type CustomLaunchOptionDefinition, validateLaunchOption } from "./options";
+import { isValidLaunchOption, type LaunchOptionDefinition } from "./options";
 
 export interface CustomOption {
   id: string;
   label: string;
-  definition: CustomLaunchOptionDefinition;
+  definition: LaunchOptionDefinition;
 }
 
 export interface SettingsSnapshot {
@@ -25,7 +25,7 @@ const isCustomOption = (value: unknown): value is CustomOption => {
     return false;
   }
   const definition = option.definition as Record<string, unknown>;
-  let candidate: CustomLaunchOptionDefinition | undefined;
+  let candidate: LaunchOptionDefinition | undefined;
   if (
     definition.kind === "environment" &&
     typeof definition.name === "string" &&
@@ -34,22 +34,20 @@ const isCustomOption = (value: unknown): value is CustomOption => {
     candidate = { kind: "environment", name: definition.name, value: definition.value };
   } else if (
     definition.kind === "prefix" &&
+    typeof definition.command === "string" &&
     Array.isArray(definition.argv) &&
-    definition.argv.length > 0 &&
     definition.argv.every((word) => typeof word === "string")
   ) {
-    candidate = { kind: "prefix", argv: definition.argv as [string, ...string[]] };
-  } else if (definition.kind === "argument" && definition.arity === 0 && typeof definition.token === "string") {
-    candidate = { kind: "argument", arity: 0, token: definition.token };
+    candidate = { kind: "prefix", command: definition.command, argv: definition.argv as string[] };
   } else if (
     definition.kind === "argument" &&
-    definition.arity === 1 &&
-    typeof definition.token === "string" &&
-    typeof definition.argument === "string"
+    typeof definition.flag === "string" &&
+    Array.isArray(definition.argv) &&
+    definition.argv.every((word) => typeof word === "string")
   ) {
-    candidate = { kind: "argument", arity: 1, token: definition.token, argument: definition.argument };
+    candidate = { kind: "argument", flag: definition.flag, argv: definition.argv as string[] };
   }
-  return candidate !== undefined && validateLaunchOption(candidate).length === 0;
+  return candidate !== undefined && isValidLaunchOption(candidate);
 };
 
 export const decodeStoredCustomOptions = (value: unknown): CustomOption[] => {

@@ -5,13 +5,13 @@ import { BsPencilFill, BsPlusSquareFill } from "react-icons/bs";
 import { FaBarsProgress as TypeCmdIcon, FaKey as TypeEnvIcon, FaFlag as TypeFlagIcon } from "react-icons/fa6";
 
 import { IconButton, LaunchOptionsPreview, Toggle } from "../components";
-import type { CustomLaunchOptionDefinition } from "../domain/options";
+import type { LaunchOptionDefinition } from "../domain/options";
 import type { CustomOption } from "../domain/settings";
 import { useOptions, useSettings } from "../hooks";
 import { AddCustomOption, EditCustomOption } from "../modals";
 import { t } from "../utils/translate";
 
-const typeMap: Record<CustomLaunchOptionDefinition["kind"], IconType> = {
+const typeMap: Record<LaunchOptionDefinition["kind"], IconType> = {
   environment: TypeEnvIcon,
   prefix: TypeCmdIcon,
   argument: TypeFlagIcon,
@@ -49,7 +49,7 @@ const rowStyle = {
   width: "100%",
 } satisfies CSSProperties;
 
-const CustomOptionTitle: FC<{ label: string; type: CustomLaunchOptionDefinition["kind"] }> = ({ label, type }) => {
+const CustomOptionTitle: FC<{ label: string; type: LaunchOptionDefinition["kind"] }> = ({ label, type }) => {
   const TypeIcon = typeMap[type];
   return (
     <span style={titleStyle}>

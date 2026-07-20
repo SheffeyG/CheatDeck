@@ -3,7 +3,7 @@ export interface SourceSpan {
   end: number;
 }
 
-export type ParseDiagnosticCode =
+type ParseDiagnosticCode =
   | "unterminated-single-quote"
   | "unterminated-double-quote"
   | "unterminated-expansion"
@@ -22,13 +22,13 @@ export interface ParseDiagnostic {
   span: SourceSpan;
 }
 
-export interface ParsedWord {
+interface ParsedWord {
   span: SourceSpan;
   raw: string;
   literal?: string;
 }
 
-export interface ParsedAssignment {
+interface ParsedAssignment {
   span: SourceSpan;
   name: string;
   value?: string;
@@ -52,10 +52,10 @@ export interface ParsedLaunchOptions {
 }
 
 type WordPart =
-  | { kind: "bare"; span: SourceSpan; raw: string }
-  | { kind: "literal"; span: SourceSpan; raw: string; value: string }
-  | { kind: "dynamic"; span: SourceSpan; raw: string }
-  | { kind: "continuation"; span: SourceSpan; raw: string };
+  | { kind: "bare"; raw: string }
+  | { kind: "literal"; value: string }
+  | { kind: "dynamic" }
+  | { kind: "continuation" };
 
 interface InternalWord extends ParsedWord {
   parts: readonly WordPart[];
@@ -136,7 +136,7 @@ const scanWord = (
   let index = start;
   let bareStart = start;
   const pushBare = (end: number) => {
-    if (bareStart < end) parts.push({ kind: "bare", span: span(bareStart, end), raw: source.slice(bareStart, end) });
+    if (bareStart < end) parts.push({ kind: "bare", raw: source.slice(bareStart, end) });
   };
 
   while (index < source.length) {
@@ -154,10 +154,10 @@ const scanWord = (
         diagnostics.push({ code: "trailing-escape", span: span(index, index + 1) });
         index++;
       } else if (next === "\n") {
-        parts.push({ kind: "continuation", span: span(index, index + 2), raw: source.slice(index, index + 2) });
+        parts.push({ kind: "continuation" });
         index += 2;
       } else {
-        parts.push({ kind: "literal", span: span(index, index + 2), raw: source.slice(index, index + 2), value: next });
+        parts.push({ kind: "literal", value: next });
         index += 2;
       }
       bareStart = index;
@@ -170,8 +170,6 @@ const scanWord = (
       if (close < 0) diagnostics.push({ code: "unterminated-single-quote", span: span(index, end) });
       parts.push({
         kind: "literal",
-        span: span(index, end),
-        raw: source.slice(index, end),
         value: source.slice(index + 1, close < 0 ? end : close),
       });
       index = end;
@@ -181,16 +179,7 @@ const scanWord = (
     if (char === '"') {
       pushBare(index);
       const quoted = scanDoubleQuote(source, index, diagnostics);
-      parts.push(
-        quoted.value === undefined
-          ? { kind: "dynamic", span: span(index, quoted.end), raw: source.slice(index, quoted.end) }
-          : {
-              kind: "literal",
-              span: span(index, quoted.end),
-              raw: source.slice(index, quoted.end),
-              value: quoted.value,
-            },
-      );
+      parts.push(quoted.value === undefined ? { kind: "dynamic" } : { kind: "literal", value: quoted.value });
       index = quoted.end;
       bareStart = index;
       continue;
@@ -202,7 +191,7 @@ const scanWord = (
       const closed = end < source.length;
       end = closed ? end + 1 : source.length;
       if (!closed) diagnostics.push({ code: "unterminated-backtick", span: span(index, end) });
-      parts.push({ kind: "dynamic", span: span(index, end), raw: source.slice(index, end) });
+      parts.push({ kind: "dynamic" });
       index = end;
       bareStart = index;
       continue;
@@ -211,7 +200,7 @@ const scanWord = (
       pushBare(index);
       const balanced = scanBalanced(source, index);
       if (!balanced.closed) diagnostics.push({ code: "unterminated-expansion", span: span(index, balanced.end) });
-      parts.push({ kind: "dynamic", span: span(index, balanced.end), raw: source.slice(index, balanced.end) });
+      parts.push({ kind: "dynamic" });
       index = balanced.end;
       bareStart = index;
       continue;
@@ -220,7 +209,7 @@ const scanWord = (
       pushBare(index);
       let end = index + 2;
       if (/[A-Za-z_]/.test(source[index + 1])) while (end < source.length && /[A-Za-z0-9_]/.test(source[end])) end++;
-      parts.push({ kind: "dynamic", span: span(index, end), raw: source.slice(index, end) });
+      parts.push({ kind: "dynamic" });
       index = end;
       bareStart = index;
       continue;
@@ -268,10 +257,7 @@ const parseAssignment = (word: InternalWord): ParsedAssignment | undefined => {
   if (!environmentName.test(name)) return undefined;
   const remainder = first.raw.slice(equals + 1);
   const valueParts: WordPart[] = remainder
-    ? [
-        { kind: "bare", span: span(first.span.start + equals + 1, first.span.end), raw: remainder },
-        ...word.parts.slice(1),
-      ]
+    ? [{ kind: "bare", raw: remainder }, ...word.parts.slice(1)]
     : [...word.parts.slice(1)];
   return { span: word.span, name, value: literalOf(valueParts) };
 };
@@ -353,11 +339,10 @@ export const parseLaunchOptions = (source: string): ParsedLaunchOptions => {
   };
 };
 
-export const parseLiteralWords = (source: string): readonly [string, ...string[]] | undefined => {
+export const parseRawWords = (source: string): readonly [string, ...string[]] | undefined => {
   if (source.trim() !== source || source.length === 0) return undefined;
   const diagnostics: ParseDiagnostic[] = [];
   const words = tokenize(source, diagnostics);
-  if (diagnostics.length > 0 || words.length === 0 || words.some((word) => word.literal === undefined))
-    return undefined;
-  return words.map((word) => word.literal) as [string, ...string[]];
+  if (diagnostics.length > 0 || words.length === 0) return undefined;
+  return words.map((word) => word.raw) as [string, ...string[]];
 };

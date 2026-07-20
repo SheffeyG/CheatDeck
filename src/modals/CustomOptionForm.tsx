@@ -1,7 +1,8 @@
 import { Dropdown, Field, Focusable, TextField } from "@decky/ui";
 import type { FC } from "react";
 
-import { parseLiteralArgv, renderLiteralArgv, validateLaunchOption } from "../domain/options";
+import { isValidLaunchOption } from "../domain/options";
+import { parseRawWords } from "../domain/parser";
 import type { CustomOption } from "../domain/settings";
 import { t } from "../utils/translate";
 
@@ -45,7 +46,7 @@ export const draftFromCustomOption = (option: CustomOption): CustomOptionDraft =
       id: option.id,
       label: option.label,
       kind: definition.kind,
-      primary: renderLiteralArgv(definition.argv),
+      primary: [definition.command, ...definition.argv].join(" "),
       value: "",
     };
   }
@@ -53,8 +54,8 @@ export const draftFromCustomOption = (option: CustomOption): CustomOptionDraft =
     id: option.id,
     label: option.label,
     kind: definition.kind,
-    primary: definition.token,
-    value: definition.arity === 1 ? definition.argument : "",
+    primary: definition.flag,
+    value: definition.argv.join(" "),
   };
 };
 
@@ -66,13 +67,19 @@ export const compileCustomOption = (draft: CustomOptionDraft): CustomOption | un
       ? { kind: "environment" as const, name: draft.primary.trim(), value: draft.value }
       : draft.kind === "prefix"
         ? (() => {
-            const argv = parseLiteralArgv(draft.primary.trim());
-            return argv ? { kind: "prefix" as const, argv } : undefined;
+            const words = parseRawWords(draft.primary.trim());
+            if (!words) return undefined;
+            const [command, ...argv] = words;
+            return { kind: "prefix" as const, command, argv };
           })()
-        : draft.value.length === 0
-          ? { kind: "argument" as const, arity: 0 as const, token: draft.primary.trim() }
-          : { kind: "argument" as const, arity: 1 as const, token: draft.primary.trim(), argument: draft.value };
-  if (!definition || validateLaunchOption(definition).length > 0) return undefined;
+        : (() => {
+            if (draft.value.length === 0) {
+              return { kind: "argument" as const, flag: draft.primary.trim(), argv: [] };
+            }
+            const argv = parseRawWords(draft.value.trim());
+            return argv ? { kind: "argument" as const, flag: draft.primary.trim(), argv } : undefined;
+          })();
+  if (!definition || !isValidLaunchOption(definition)) return undefined;
   return { id: draft.id, label, definition };
 };
 

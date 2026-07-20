@@ -67,13 +67,13 @@ CheatDeck edits a restricted, source-preserving launch-options grammar:
 ```
 [environment assignments] [prefix commands] %command% [flags and arguments]
 ```
-Environment assignments must appear first and names must match `[A-Za-z_][A-Za-z0-9_]*`. Multiple prefix commands use a standalone `--` separator. Custom arguments explicitly declare whether they consume no value or one value, so adjacent game arguments are never inferred or removed. Unsupported shell operators, redirects, comments, malformed quoting, and ambiguous markers make the document read-only rather than risking a partial edit.
+Environment assignments must appear first and names must match `[A-Za-z_][A-Za-z0-9_]*`. Multiple prefix commands use a standalone `--` separator. Custom arguments store their associated argv explicitly, so adjacent game arguments are never inferred or removed. Unsupported shell operators, redirects, comments, malformed quoting, and ambiguous markers make the document read-only rather than risking a partial edit.
 
 |Type|Example|Note|
 |----|-------|----|
 |Environment Variable|`ENV=value`|Values are rendered as literal shell words.|
-|Prefix Command|`gamemoderun gamescope`|The form parses a literal executable and argv list.|
-|Argument|`--flag` or `--key value`|The option definition explicitly selects zero or one value.|
+|Prefix Command|`gamemoderun gamescope`|The command and each argv word are stored exactly as entered; options sharing a command are merged.|
+|Argument|`--flag` or `--key value`|The flag and each associated argv word are stored explicitly.|
 
 ## Acknowledgments
 

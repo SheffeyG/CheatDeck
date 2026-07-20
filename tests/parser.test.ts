@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseLaunchOptions, parseLiteralWords } from "../src/domain/parser";
+import { parseLaunchOptions, parseRawWords } from "../src/domain/parser";
 
 describe("parser", () => {
   it("parses assignments, prefixes, marker, and argument words with exact spans", () => {
@@ -73,8 +73,8 @@ describe("parser", () => {
     expect(parsed.prefixes[0].separatorAfter).toEqual({ start: 10, end: 12 });
   });
 
-  it("parses only static literal argv", () => {
-    expect(parseLiteralWords("cmd 'a b'")).toEqual(["cmd", "a b"]);
-    expect(parseLiteralWords("cmd $HOME")).toBeUndefined();
+  it("parses argv as raw words", () => {
+    expect(parseRawWords("cmd 'a b' $HOME")).toEqual(["cmd", "'a b'", "$HOME"]);
+    expect(parseRawWords("cmd && bad")).toBeUndefined();
   });
 });

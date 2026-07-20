@@ -2,7 +2,7 @@ import { type CustomOption, decodeStoredCustomOptions, type SettingsSnapshot } f
 import { deckyBackend } from "./decky";
 
 const settingKeys = {
-  customOptions: "CustomOptionsV2",
+  customOptions: "CustomOptionsV6",
   showPreview: "ShowPreview",
   skipWineCheck: "SkipWineCheck",
 } as const;

@@ -3,75 +3,62 @@ import {
   type ParsedLaunchOptions,
   type ParsedPrefix,
   parseLaunchOptions,
-  parseLiteralWords,
+  parseRawWords,
   type SourceSpan,
 } from "./parser";
 
 export type LaunchOptionDefinition =
   | { kind: "environment"; name: string; value: string }
-  | { kind: "prefix"; argv: readonly [string, ...string[]] }
-  | { kind: "argument"; arity: 0; token: string }
-  | { kind: "argument"; arity: 1; token: string; argument: string }
-  | { kind: "trusted-prefix"; source: string };
-
-export type CustomLaunchOptionDefinition = Exclude<LaunchOptionDefinition, { kind: "trusted-prefix" }>;
-
-export interface DefinitionIssue {
-  field: "name" | "argv" | "token" | "argument";
-  code: string;
-}
+  | { kind: "prefix"; command: string; argv: readonly string[] }
+  | { kind: "argument"; flag: string; argv: readonly string[] };
 
 export type LaunchOptionsEditResult =
   | { ok: true; value: LaunchOptions; changed: boolean }
   | { ok: false; value: LaunchOptions; error: "document-not-editable" | "invalid-definition" | "invalid-result" };
-
-interface Match {
-  span: SourceSpan;
-  prefix?: ParsedPrefix;
-}
 
 interface TextEdit {
   span: SourceSpan;
   replacement: string;
 }
 
-type InternalEdit =
+type LaunchOptionsEdit =
   | { kind: "enable"; definition: LaunchOptionDefinition }
-  | { kind: "disable"; definition: LaunchOptionDefinition }
-  | { kind: "remove-environment"; name: string };
+  | { kind: "disable"; definition: LaunchOptionDefinition };
 
-const safeWord = /^[A-Za-z0-9_.,:@%+/-]+$/;
+const unquotedWord = /^[A-Za-z0-9_.,:@%+/-]+$/;
 const environmentName = /^[A-Za-z_][A-Za-z0-9_]*$/;
 const reservedWords = new Set(["%command%", "--"]);
 
-const renderLiteralWord = (value: string): string => `'${value.split("'").join(`'"'"'`)}'`;
+const quoteWord = (value: string): string => `'${value.split("'").join(`'"'"'`)}'`;
 const renderWord = (value: string): string =>
-  safeWord.test(value) && !reservedWords.has(value) ? value : renderLiteralWord(value);
+  unquotedWord.test(value) && !reservedWords.has(value) ? value : quoteWord(value);
 
-export const validateLaunchOption = (definition: LaunchOptionDefinition): readonly DefinitionIssue[] => {
-  const issues: DefinitionIssue[] = [];
-  if (definition.kind === "environment" && !environmentName.test(definition.name)) {
-    issues.push({ field: "name", code: "invalid-environment-name" });
-  }
-  if (definition.kind === "prefix" && (definition.argv.length === 0 || definition.argv.some((value) => !value))) {
-    issues.push({ field: "argv", code: "empty-prefix-word" });
+export const isValidLaunchOption = (definition: LaunchOptionDefinition): boolean => {
+  if (definition.kind === "environment") return environmentName.test(definition.name);
+  if (definition.kind === "prefix") {
+    const words = [definition.command, ...definition.argv];
+    const parsed = parseRawWords(words.join(" "));
+    return (
+      parsed !== undefined &&
+      parsed.length === words.length &&
+      parsed.every((word, index) => word === words[index] && word !== "--" && word !== "%command%")
+    );
   }
   if (
-    definition.kind === "argument" &&
-    (!definition.token.startsWith("-") ||
-      definition.token === "-" ||
-      definition.token === "--" ||
-      !safeWord.test(definition.token))
+    !definition.flag.startsWith("-") ||
+    definition.flag === "-" ||
+    definition.flag === "--" ||
+    !unquotedWord.test(definition.flag)
   ) {
-    issues.push({ field: "token", code: "invalid-argument-token" });
+    return false;
   }
-  if (definition.kind === "argument" && definition.arity === 1 && definition.argument.length === 0) {
-    issues.push({ field: "argument", code: "empty-argument" });
-  }
-  if (definition.kind === "trusted-prefix" && definition.source.trim() !== definition.source) {
-    issues.push({ field: "argv", code: "invalid-trusted-prefix" });
-  }
-  return issues;
+  if (definition.argv.length === 0) return true;
+  const parsed = parseRawWords(definition.argv.join(" "));
+  return (
+    parsed !== undefined &&
+    parsed.length === definition.argv.length &&
+    parsed.every((word, index) => word === definition.argv[index] && word !== "%command%")
+  );
 };
 
 const renderDefinition = (definition: LaunchOptionDefinition): string => {
@@ -79,45 +66,53 @@ const renderDefinition = (definition: LaunchOptionDefinition): string => {
     case "environment":
       return `${definition.name}=${renderWord(definition.value)}`;
     case "prefix":
-      return definition.argv.map(renderWord).join(" ");
+      return [definition.command, ...definition.argv].join(" ");
     case "argument":
-      return definition.arity === 0 ? definition.token : `${definition.token} ${renderWord(definition.argument)}`;
-    case "trusted-prefix":
-      return definition.source;
+      return [definition.flag, ...definition.argv].join(" ");
   }
 };
 
-export const parseLiteralArgv = parseLiteralWords;
-export const renderLiteralArgv = (argv: readonly [string, ...string[]]): string => argv.map(renderWord).join(" ");
+const prefixCommandMatches = (
+  prefix: ParsedPrefix,
+  definition: Extract<LaunchOptionDefinition, { kind: "prefix" }>,
+): boolean => prefix.words[0]?.raw === definition.command;
 
-const prefixMatches = (prefix: ParsedPrefix, definition: LaunchOptionDefinition): boolean => {
-  if (definition.kind === "trusted-prefix") return prefix.words.map((word) => word.raw).join(" ") === definition.source;
-  if (definition.kind !== "prefix" || prefix.words.length !== definition.argv.length) return false;
-  return prefix.words.every((word, index) => word.literal === definition.argv[index]);
+const prefixArgumentMatches = (prefix: ParsedPrefix, argv: readonly string[]): SourceSpan[] => {
+  if (argv.length === 0) return [];
+  const matches: SourceSpan[] = [];
+  for (let index = 1; index <= prefix.words.length - argv.length; ) {
+    if (argv.every((argument, offset) => prefix.words[index + offset].raw === argument)) {
+      matches.push({ start: prefix.words[index].span.start, end: prefix.words[index + argv.length - 1].span.end });
+      index += argv.length;
+    } else index++;
+  }
+  return matches;
 };
 
-const findMatches = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): Match[] => {
+const findMatches = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): SourceSpan[] => {
   if (definition.kind === "environment") {
     return parsed.assignments
       .filter((assignment) => assignment.name === definition.name && assignment.value === definition.value)
-      .map((assignment) => ({ span: assignment.span }));
+      .map((assignment) => assignment.span);
   }
-  if (definition.kind === "prefix" || definition.kind === "trusted-prefix") {
-    return parsed.prefixes
-      .filter((prefix) => prefixMatches(prefix, definition))
-      .map((prefix) => ({ span: prefix.span, prefix }));
+  if (definition.kind === "prefix") {
+    return parsed.prefixes.flatMap((prefix) => {
+      if (!prefixCommandMatches(prefix, definition)) return [];
+      if (definition.argv.length === 0) return [prefix.words[0].span];
+      return prefixArgumentMatches(prefix, definition.argv);
+    });
   }
-  const matches: Match[] = [];
+  const matches: SourceSpan[] = [];
   for (let index = 0; index < parsed.arguments.length; index++) {
     const word = parsed.arguments[index];
-    if (word.literal !== definition.token) continue;
-    if (definition.arity === 0) matches.push({ span: word.span });
-    else {
-      const argument = parsed.arguments[index + 1];
-      if (argument?.literal === definition.argument) {
-        matches.push({ span: { start: word.span.start, end: argument.span.end } });
-        index++;
-      }
+    if (word.raw !== definition.flag) continue;
+    if (definition.argv.length === 0) {
+      matches.push(word.span);
+      continue;
+    }
+    if (definition.argv.every((argument, offset) => parsed.arguments[index + offset + 1]?.raw === argument)) {
+      matches.push({ start: word.span.start, end: parsed.arguments[index + definition.argv.length].span.end });
+      index += definition.argv.length;
     }
   }
   return matches;
@@ -174,25 +169,54 @@ const argumentSlotEdits = (
   const edits: TextEdit[] = [];
   for (let index = 0; index < parsed.arguments.length; index++) {
     const word = parsed.arguments[index];
-    if (word.literal !== definition.token) continue;
-    const next = parsed.arguments[index + 1];
-    const end =
-      definition.arity === 1 && next?.literal !== undefined && !next.literal.startsWith("-")
-        ? next.span.end
-        : word.span.end;
+    if (word.raw !== definition.flag) continue;
+    let end = word.span.end;
+    let consumed = 0;
+    while (consumed < definition.argv.length) {
+      const next = parsed.arguments[index + consumed + 1];
+      if (!next || next.raw.startsWith("-")) break;
+      end = next.span.end;
+      consumed++;
+    }
     edits.push({ span: leadingOwnedSpan(parsed.source, { start: word.span.start, end }), replacement: "" });
-    if (end !== word.span.end) index++;
+    index += consumed;
   }
   return edits;
 };
 
-const exactDeletionEdits = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): TextEdit[] =>
-  findMatches(parsed, definition).map((match) => ({
-    span: match.prefix
-      ? prefixDeletionSpan(parsed, parsed.prefixes.indexOf(match.prefix))
-      : leadingOwnedSpan(parsed.source, match.span),
+const prefixDefinitionDeletionEdits = (
+  parsed: ParsedLaunchOptions,
+  definition: Extract<LaunchOptionDefinition, { kind: "prefix" }>,
+): TextEdit[] => {
+  const edits: TextEdit[] = [];
+  for (let index = 0; index < parsed.prefixes.length; index++) {
+    const prefix = parsed.prefixes[index];
+    if (!prefixCommandMatches(prefix, definition)) continue;
+    if (definition.argv.length === 0) {
+      edits.push({ span: prefixDeletionSpan(parsed, index), replacement: "" });
+      continue;
+    }
+    const matches = prefixArgumentMatches(prefix, definition.argv);
+    if (matches.length === 0) continue;
+    const remainingWords = prefix.words.length - matches.length * definition.argv.length;
+    if (remainingWords === 1) edits.push({ span: prefixDeletionSpan(parsed, index), replacement: "" });
+    else {
+      edits.push(...matches.map((span) => ({ span: leadingOwnedSpan(parsed.source, span), replacement: "" })));
+    }
+  }
+  return edits;
+};
+
+const exactDeletionEdits = (
+  parsed: ParsedLaunchOptions,
+  definition: Exclude<LaunchOptionDefinition, { kind: "environment" }>,
+): TextEdit[] => {
+  if (definition.kind === "prefix") return prefixDefinitionDeletionEdits(parsed, definition);
+  return findMatches(parsed, definition).map((span) => ({
+    span: leadingOwnedSpan(parsed.source, span),
     replacement: "",
   }));
+};
 
 const slotDeletionEdits = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): TextEdit[] => {
   if (definition.kind === "environment") {
@@ -201,7 +225,7 @@ const slotDeletionEdits = (parsed: ParsedLaunchOptions, definition: LaunchOption
       .map((assignment) => ({ span: leadingOwnedSpan(parsed.source, assignment.span), replacement: "" }));
   }
   if (definition.kind === "argument") return argumentSlotEdits(parsed, definition);
-  return exactDeletionEdits(parsed, definition);
+  return [];
 };
 
 const insertionEdit = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): TextEdit => {
@@ -215,7 +239,14 @@ const insertionEdit = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefi
     const position = parsed.prefixes[0]?.span.start ?? parsed.marker.span.start;
     return { span: { start: position, end: position }, replacement: `${rendered} ` };
   }
-  if (definition.kind === "prefix" || definition.kind === "trusted-prefix") {
+  if (definition.kind === "prefix") {
+    const existing = parsed.prefixes.find((prefix) => prefixCommandMatches(prefix, definition));
+    if (existing && definition.argv.length > 0) {
+      return {
+        span: { start: existing.span.end, end: existing.span.end },
+        replacement: ` ${definition.argv.join(" ")}`,
+      };
+    }
     if (parsed.prefixes.length > 0) {
       const position = parsed.prefixes[0].span.start;
       return { span: { start: position, end: position }, replacement: `${rendered} -- ` };
@@ -229,38 +260,10 @@ const insertionEdit = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefi
   return { span: { start: position, end: position }, replacement: ` ${rendered}` };
 };
 
-const definitions = {
-  dxvkAsync: { kind: "environment", name: "DXVK_ASYNC", value: "1" },
-  radvPerftest: { kind: "environment", name: "RADV_PERFTEST", value: "gpl" },
-  losslessScaling: { kind: "trusted-prefix", source: "~/lsfg" },
-  framegenPatch: { kind: "trusted-prefix", source: "~/fgmod/fgmod" },
-  framegenUnpatch: { kind: "trusted-prefix", source: "~/fgmod/fgmod-uninstaller.sh" },
-} as const satisfies Record<string, LaunchOptionDefinition>;
-
-const keys = {
-  trainer: "PROTON_REMOTE_DEBUG_CMD",
-  trainerDirectory: "PRESSURE_VESSEL_FILESYSTEMS_RW",
-  language: "LANG",
-  hostLanguage: "HOST_LC_ALL",
-  compatibilityPath: "STEAM_COMPAT_DATA_PATH",
-} as const;
-
-const environment = (name: string, value: string): LaunchOptionDefinition => ({ kind: "environment", name, value });
-const parentPath = (path: string): string => {
-  const separator = path.lastIndexOf("/");
-  if (separator < 0) return ".";
-  return separator === 0 ? path[0] : path.slice(0, separator);
-};
-const quoteShellArgument = (value: string): string => `'${value.split("'").join(`'"'"'`)}'`;
-const unwrapShellArgument = (value: string | undefined): string | undefined => {
-  if (value?.startsWith("'") && value.endsWith("'")) return value.slice(1, -1).split(`'"'"'`).join("'");
-  return value;
-};
-
 export class LaunchOptions {
-  readonly parsed: ParsedLaunchOptions;
+  private readonly parsed: ParsedLaunchOptions;
 
-  private constructor(readonly source: string) {
+  private constructor(private readonly source: string) {
     this.parsed = parseLaunchOptions(source);
   }
 
@@ -285,140 +288,27 @@ export class LaunchOptions {
   }
 
   setEnabled(definition: LaunchOptionDefinition, enabled: boolean): LaunchOptionsEditResult {
-    return this.apply([{ kind: enabled ? "enable" : "disable", definition }]);
+    return this.edit([{ kind: enabled ? "enable" : "disable", definition }]);
   }
 
   replaceDefinition(previous: LaunchOptionDefinition, next: LaunchOptionDefinition): LaunchOptionsEditResult {
+    if (!this.editable) return { ok: false, value: this, error: "document-not-editable" };
     if (!this.isEnabled(previous)) return { ok: true, value: this, changed: false };
-    return this.apply([
+    return this.edit([
       { kind: "disable", definition: previous },
       { kind: "enable", definition: next },
     ]);
   }
 
-  private environmentValue(name: string): string | undefined {
+  getEnvironment(name: string): string | undefined {
     return this.parsed.assignments.filter((assignment) => assignment.name === name).slice(-1)[0]?.value;
   }
 
-  private hasEnvironment(name: string): boolean {
+  hasEnvironment(name: string): boolean {
     return this.parsed.assignments.some((assignment) => assignment.name === name);
   }
 
-  get trainerPath(): string | undefined {
-    return unwrapShellArgument(this.environmentValue(keys.trainer));
-  }
-
-  get trainerDirectory(): string | undefined {
-    return this.environmentValue(keys.trainerDirectory);
-  }
-
-  get language(): string | undefined {
-    return this.environmentValue(keys.language);
-  }
-
-  get compatibilityPath(): string | undefined {
-    return this.environmentValue(keys.compatibilityPath);
-  }
-
-  get isTrainerEnabled(): boolean {
-    return this.hasEnvironment(keys.trainer);
-  }
-
-  get isLanguageEnabled(): boolean {
-    return this.hasEnvironment(keys.language) || this.hasEnvironment(keys.hostLanguage);
-  }
-
-  get isDxvkAsyncEnabled(): boolean {
-    return this.isEnabled(definitions.dxvkAsync);
-  }
-
-  get isRadvPerftestEnabled(): boolean {
-    return this.isEnabled(definitions.radvPerftest);
-  }
-
-  get isLosslessScalingEnabled(): boolean {
-    return this.isEnabled(definitions.losslessScaling);
-  }
-
-  get isFramegenPatchEnabled(): boolean {
-    return this.isEnabled(definitions.framegenPatch);
-  }
-
-  get isFramegenUnpatchEnabled(): boolean {
-    return this.isEnabled(definitions.framegenUnpatch);
-  }
-
-  setTrainer(path: string): LaunchOptionsEditResult {
-    return this.apply([
-      { kind: "enable", definition: environment(keys.trainer, quoteShellArgument(path)) },
-      { kind: "enable", definition: environment(keys.trainerDirectory, parentPath(path)) },
-    ]);
-  }
-
-  disableTrainer(): LaunchOptionsEditResult {
-    return this.apply([
-      { kind: "remove-environment", name: keys.trainer },
-      { kind: "remove-environment", name: keys.trainerDirectory },
-    ]);
-  }
-
-  setLanguage(value: string): LaunchOptionsEditResult {
-    return this.apply([
-      { kind: "enable", definition: environment(keys.language, value) },
-      { kind: "enable", definition: environment(keys.hostLanguage, value) },
-    ]);
-  }
-
-  disableLanguage(): LaunchOptionsEditResult {
-    return this.apply([
-      { kind: "remove-environment", name: keys.language },
-      { kind: "remove-environment", name: keys.hostLanguage },
-    ]);
-  }
-
-  setCompatibilityPath(value: string): LaunchOptionsEditResult {
-    return this.apply([{ kind: "enable", definition: environment(keys.compatibilityPath, value) }]);
-  }
-
-  disableCompatibilityPath(): LaunchOptionsEditResult {
-    return this.apply([{ kind: "remove-environment", name: keys.compatibilityPath }]);
-  }
-
-  setDxvkAsync(enabled: boolean): LaunchOptionsEditResult {
-    return this.setEnabled(definitions.dxvkAsync, enabled);
-  }
-
-  setRadvPerftest(enabled: boolean): LaunchOptionsEditResult {
-    return this.setEnabled(definitions.radvPerftest, enabled);
-  }
-
-  setLosslessScaling(enabled: boolean): LaunchOptionsEditResult {
-    return this.setEnabled(definitions.losslessScaling, enabled);
-  }
-
-  setFramegenPatch(enabled: boolean): LaunchOptionsEditResult {
-    return this.apply(
-      enabled
-        ? [
-            { kind: "disable", definition: definitions.framegenUnpatch },
-            { kind: "enable", definition: definitions.framegenPatch },
-          ]
-        : [{ kind: "disable", definition: definitions.framegenPatch }],
-    );
-  }
-
-  setFramegenUnpatch(enabled: boolean): LaunchOptionsEditResult {
-    return this.apply(
-      enabled
-        ? [
-            { kind: "disable", definition: definitions.framegenPatch },
-            { kind: "enable", definition: definitions.framegenUnpatch },
-          ]
-        : [{ kind: "disable", definition: definitions.framegenUnpatch }],
-    );
-  }
-
-  private apply(edits: readonly InternalEdit[]): LaunchOptionsEditResult {
+  edit(edits: readonly LaunchOptionsEdit[]): LaunchOptionsEditResult {
     if (!this.editable) return { ok: false, value: this, error: "document-not-editable" };
     let current: LaunchOptions = this;
     let changed = false;
@@ -431,23 +321,19 @@ export class LaunchOptions {
     return { ok: true, value: current, changed };
   }
 
-  private applyOne(edit: InternalEdit): LaunchOptionsEditResult {
-    if (edit.kind === "remove-environment") {
-      const deletions = this.parsed.assignments
-        .filter((assignment) => assignment.name === edit.name)
-        .map((assignment) => ({ span: leadingOwnedSpan(this.source, assignment.span), replacement: "" }));
-      return deletions.length === 0
-        ? { ok: true, value: this, changed: false }
-        : this.finish(applyTextEdits(this.source, deletions));
-    }
-    if (validateLaunchOption(edit.definition).length > 0) {
+  private applyOne(edit: LaunchOptionsEdit): LaunchOptionsEditResult {
+    if (!isValidLaunchOption(edit.definition)) {
       return { ok: false, value: this, error: "invalid-definition" };
     }
-    const matches = findMatches(this.parsed, edit.definition);
     if (edit.kind === "disable") {
-      if (matches.length === 0) return { ok: true, value: this, changed: false };
-      return this.finish(applyTextEdits(this.source, exactDeletionEdits(this.parsed, edit.definition)));
+      const deletions =
+        edit.definition.kind === "environment"
+          ? slotDeletionEdits(this.parsed, edit.definition)
+          : exactDeletionEdits(this.parsed, edit.definition);
+      if (deletions.length === 0) return { ok: true, value: this, changed: false };
+      return this.finish(applyTextEdits(this.source, deletions));
     }
+    const matches = findMatches(this.parsed, edit.definition);
     if (this.isCanonical(edit.definition, matches.length)) return { ok: true, value: this, changed: false };
     const withoutSlot = applyTextEdits(this.source, slotDeletionEdits(this.parsed, edit.definition));
     const intermediate = LaunchOptions.parse(withoutSlot);
@@ -456,14 +342,12 @@ export class LaunchOptions {
   }
 
   private isCanonical(definition: LaunchOptionDefinition, matchCount: number): boolean {
+    if (definition.kind === "prefix") return matchCount > 0;
     if (matchCount !== 1) return false;
     if (definition.kind === "environment") {
       return this.parsed.assignments.filter((assignment) => assignment.name === definition.name).length === 1;
     }
-    if (definition.kind === "argument") {
-      return this.parsed.arguments.filter((word) => word.literal === definition.token).length === 1;
-    }
-    return true;
+    return this.parsed.arguments.filter((word) => word.raw === definition.flag).length === 1;
   }
 
   private finish(source: string): LaunchOptionsEditResult {

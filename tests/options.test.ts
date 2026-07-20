@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { LaunchOptions, type LaunchOptionsEditResult, validateLaunchOption } from "../src/domain/options";
+import { isValidLaunchOption, LaunchOptions, type LaunchOptionsEditResult } from "../src/domain/options";
 
 const success = (result: LaunchOptionsEditResult): LaunchOptions => {
   expect(result.ok).toBe(true);
@@ -16,16 +16,19 @@ describe("LaunchOptions", () => {
 
   it("rejects edits when parsing failed", () => {
     const options = LaunchOptions.parse("%command% && bad");
-    const result = options.setDxvkAsync(true);
+    const result = options.setEnabled({ kind: "environment", name: "ENV", value: "1" }, true);
 
     expect(options.editable).toBe(false);
     expect(result).toEqual({ ok: false, value: options, error: "document-not-editable" });
   });
 
   it("validates structured definitions", () => {
-    expect(validateLaunchOption({ kind: "environment", name: "BAD-NAME", value: "1" })).not.toEqual([]);
-    expect(validateLaunchOption({ kind: "argument", arity: 0, token: "--" })).not.toEqual([]);
-    expect(validateLaunchOption({ kind: "prefix", argv: ["cmd", "arg"] })).toEqual([]);
+    expect(isValidLaunchOption({ kind: "environment", name: "BAD-NAME", value: "1" })).toBe(false);
+    expect(isValidLaunchOption({ kind: "argument", flag: "--", argv: [] })).toBe(false);
+    expect(isValidLaunchOption({ kind: "argument", flag: "-width", argv: ["value with spaces"] })).toBe(false);
+    expect(isValidLaunchOption({ kind: "prefix", command: "cmd", argv: ["arg"] })).toBe(true);
+    expect(isValidLaunchOption({ kind: "prefix", command: "cmd", argv: ["'arg with spaces'"] })).toBe(true);
+    expect(isValidLaunchOption({ kind: "prefix", command: "cmd", argv: ["arg with spaces"] })).toBe(false);
   });
 
   it("enables custom definitions idempotently and preserves unrelated source", () => {
@@ -39,13 +42,13 @@ describe("LaunchOptions", () => {
     expect(second).toEqual({ ok: true, value: first, changed: false });
   });
 
-  it("uses explicit arity when deleting or replacing arguments", () => {
+  it("uses argument presence when deleting or replacing arguments", () => {
     const noValue = success(
-      LaunchOptions.parse("%command% -foo positional").setEnabled({ kind: "argument", arity: 0, token: "-foo" }, false),
+      LaunchOptions.parse("%command% -foo positional").setEnabled({ kind: "argument", flag: "-foo", argv: [] }, false),
     );
     const replaced = success(
       LaunchOptions.parse("%command% -width 1280 -other keep").setEnabled(
-        { kind: "argument", arity: 1, token: "-width", argument: "1920" },
+        { kind: "argument", flag: "-width", argv: ["1920"] },
         true,
       ),
     );
@@ -57,24 +60,37 @@ describe("LaunchOptions", () => {
     expect(replaced.toString()).toContain("-other keep");
   });
 
-  it("does not consume another option-like word while replacing an arity-one slot", () => {
+  it("does not consume another option-like word while replacing a valued slot", () => {
     const replaced = success(
-      LaunchOptions.parse("%command% -x -other keep").setEnabled(
-        { kind: "argument", arity: 1, token: "-x", argument: "new" },
-        true,
-      ),
+      LaunchOptions.parse("%command% -x -other keep").setEnabled({ kind: "argument", flag: "-x", argv: ["new"] }, true),
     );
 
     expect(replaced.toString()).toContain("-other keep");
     expect(replaced.toString()).toContain("-x new");
   });
 
+  it("matches and replaces multiple argv words owned by one flag", () => {
+    const definition = { kind: "argument", flag: "-resolution", argv: ["1920", "1080"] } as const;
+    const replaced = success(
+      LaunchOptions.parse("%command% -resolution 1280 720 -other keep").setEnabled(definition, true),
+    );
+
+    expect(replaced.toString()).toContain("-resolution 1920 1080");
+    expect(replaced.toString()).not.toContain("1280 720");
+    expect(replaced.toString()).toContain("-other keep");
+    expect(replaced.isEnabled(definition)).toBe(true);
+    expect(success(replaced.setEnabled(definition, false)).toString()).toBe("%command% -other keep");
+  });
+
   it("maintains prefix separators and merges duplicate deletion ranges", () => {
     const first = success(
-      LaunchOptions.parse("cmd1 -- cmd2 %command%").setEnabled({ kind: "prefix", argv: ["cmd1"] }, false),
+      LaunchOptions.parse("cmd1 -- cmd2 %command%").setEnabled({ kind: "prefix", command: "cmd1", argv: [] }, false),
     );
     const duplicates = success(
-      LaunchOptions.parse("cmd -- cmd -- cmd %command%").setEnabled({ kind: "prefix", argv: ["cmd"] }, false),
+      LaunchOptions.parse("cmd -- cmd -- cmd %command%").setEnabled(
+        { kind: "prefix", command: "cmd", argv: [] },
+        false,
+      ),
     );
 
     expect(first.toString().trim()).toBe("cmd2 %command%");
@@ -82,51 +98,71 @@ describe("LaunchOptions", () => {
   });
 
   it("inserts new prefix commands as the outermost wrapper", () => {
-    const enabled = success(LaunchOptions.parse("gamescope %command%").setLosslessScaling(true));
+    const enabled = success(
+      LaunchOptions.parse("gamescope %command%").setEnabled({ kind: "prefix", command: "~/wrapper", argv: [] }, true),
+    );
 
-    expect(enabled.toString()).toBe("~/lsfg -- gamescope %command%");
+    expect(enabled.toString()).toBe("~/wrapper -- gamescope %command%");
+  });
+
+  it("renders and matches prefix argv as raw words", () => {
+    const definition = {
+      kind: "prefix",
+      command: "wrapper",
+      argv: [`"hello world"`, "$HOME/file"],
+    } as const;
+    const enabled = success(LaunchOptions.parse("").setEnabled(definition, true));
+
+    expect(enabled.toString()).toBe(`wrapper "hello world" $HOME/file %command%`);
+    expect(enabled.isEnabled(definition)).toBe(true);
+    expect(success(enabled.setEnabled(definition, false)).toString()).toBe("");
+  });
+
+  it("merges and removes options that share a prefix command", () => {
+    const showAll = { kind: "prefix", command: "ls", argv: ["-a"] } as const;
+    const longFormat = { kind: "prefix", command: "ls", argv: ["-l"] } as const;
+    const first = success(LaunchOptions.parse("").setEnabled(showAll, true));
+    const both = success(first.setEnabled(longFormat, true));
+
+    expect(both.toString()).toBe("ls -a -l %command%");
+    expect(both.isEnabled(showAll)).toBe(true);
+    expect(both.isEnabled(longFormat)).toBe(true);
+
+    const withoutShowAll = success(both.setEnabled(showAll, false));
+    expect(withoutShowAll.toString()).toBe("ls -l %command%");
+    expect(withoutShowAll.isEnabled(showAll)).toBe(false);
+    expect(withoutShowAll.isEnabled(longFormat)).toBe(true);
+    expect(success(withoutShowAll.setEnabled(longFormat, false)).toString()).toBe("");
   });
 
   it("uses the final assignment for checked state", () => {
     const definition = { kind: "environment", name: "ENV", value: "old" } as const;
-    expect(LaunchOptions.parse("ENV=old ENV=new %command%").isEnabled(definition)).toBe(false);
-  });
+    const options = LaunchOptions.parse("ENV=old ENV=new %command%");
 
-  it("round-trips trainer paths containing shell-special characters", () => {
-    const path = `/home/deck/C:\\Games/it's "$trainer".exe`;
-    const enabled = success(LaunchOptions.parse("").setTrainer(path));
-
-    expect(enabled.trainerPath).toBe(path);
-    expect(enabled.trainerDirectory).toBe("/home/deck/C:\\Games");
-    expect(success(enabled.disableTrainer()).toString()).toBe("");
-  });
-
-  it("sets and removes language assignments atomically", () => {
-    const enabled = success(LaunchOptions.parse("").setLanguage("de_DE.UTF-8"));
-
-    expect(enabled.toString()).toContain("LANG=de_DE.UTF-8");
-    expect(enabled.toString()).toContain("HOST_LC_ALL=de_DE.UTF-8");
-    expect(enabled.language).toBe("de_DE.UTF-8");
-    expect(success(enabled.disableLanguage()).toString()).toBe("");
-  });
-
-  it("keeps framegen patch and unpatch mutually exclusive", () => {
-    const patched = success(LaunchOptions.parse("").setFramegenPatch(true));
-    const unpatched = success(patched.setFramegenUnpatch(true));
-    const unchanged = unpatched.setFramegenPatch(false);
-
-    expect(unpatched.isFramegenPatchEnabled).toBe(false);
-    expect(unpatched.isFramegenUnpatchEnabled).toBe(true);
-    expect(unchanged).toEqual({ ok: true, value: unpatched, changed: false });
+    expect(options.isEnabled(definition)).toBe(false);
+    expect(options.getEnvironment("ENV")).toBe("new");
+    expect(options.hasEnvironment("ENV")).toBe(true);
+    expect(success(options.setEnabled(definition, false)).toString()).toBe("");
   });
 
   it("replaces an enabled definition atomically", () => {
-    const oldDefinition = { kind: "argument", arity: 1, token: "-width", argument: "1280" } as const;
-    const newDefinition = { kind: "argument", arity: 1, token: "-width", argument: "1920" } as const;
+    const oldDefinition = { kind: "argument", flag: "-width", argv: ["1280"] } as const;
+    const newDefinition = { kind: "argument", flag: "-width", argv: ["1920"] } as const;
     const original = success(LaunchOptions.parse("").setEnabled(oldDefinition, true));
     const replaced = success(original.replaceDefinition(oldDefinition, newDefinition));
 
     expect(replaced.isEnabled(oldDefinition)).toBe(false);
     expect(replaced.isEnabled(newDefinition)).toBe(true);
+  });
+
+  it("rolls back an atomic edit when a later definition is invalid", () => {
+    const options = LaunchOptions.parse("KEEP=1 %command%");
+    const result = options.edit([
+      { kind: "enable", definition: { kind: "environment", name: "VALID", value: "1" } },
+      { kind: "enable", definition: { kind: "environment", name: "INVALID-NAME", value: "1" } },
+    ]);
+
+    expect(result).toEqual({ ok: false, value: options, error: "invalid-definition" });
+    expect(options.toString()).toBe("KEEP=1 %command%");
   });
 });
