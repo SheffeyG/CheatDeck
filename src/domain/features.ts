@@ -1,4 +1,4 @@
-import type { LaunchOptionDefinition, LaunchOptions, LaunchOptionsEditResult } from "./options";
+import type { LaunchOptionDefinition, LaunchOptions } from "./options";
 
 const definitions = {
   dxvkAsync: { kind: "environment", name: "DXVK_ASYNC", value: "1" },
@@ -17,6 +17,9 @@ const keys = {
 } as const;
 
 const environment = (name: string, value: string): LaunchOptionDefinition => ({ kind: "environment", name, value });
+const enable = (definition: LaunchOptionDefinition) => ({ kind: "enable" as const, definition });
+const disable = (definition: LaunchOptionDefinition) => ({ kind: "disable" as const, definition });
+const unsetEnvironment = (name: string) => disable(environment(name, ""));
 
 const parentPath = (path: string): string => {
   const separator = path.lastIndexOf("/");
@@ -33,76 +36,47 @@ const unwrapShellArgument = (value: string | undefined): string | undefined => {
 
 const toggleFeature = (definition: LaunchOptionDefinition) => ({
   isEnabled: (options: LaunchOptions): boolean => options.isEnabled(definition),
-  setEnabled: (options: LaunchOptions, enabled: boolean): LaunchOptionsEditResult =>
-    options.setEnabled(definition, enabled),
+  setEnabled: (options: LaunchOptions, enabled: boolean) => options.setEnabled(definition, enabled),
+});
+
+const exclusiveToggleFeature = (definition: LaunchOptionDefinition, incompatible: LaunchOptionDefinition) => ({
+  isEnabled: (options: LaunchOptions): boolean => options.isEnabled(definition),
+  setEnabled: (options: LaunchOptions, enabled: boolean) =>
+    options.edit(enabled ? [disable(incompatible), enable(definition)] : [disable(definition)]),
 });
 
 export const trainer = {
   path: (options: LaunchOptions): string | undefined => unwrapShellArgument(options.getEnvironment(keys.trainer)),
   directory: (options: LaunchOptions): string | undefined => options.getEnvironment(keys.trainerDirectory),
   isEnabled: (options: LaunchOptions): boolean => options.hasEnvironment(keys.trainer),
-  set: (options: LaunchOptions, path: string): LaunchOptionsEditResult =>
+  set: (options: LaunchOptions, path: string) =>
     options.edit([
-      { kind: "enable", definition: environment(keys.trainer, quoteShellArgument(path)) },
-      { kind: "enable", definition: environment(keys.trainerDirectory, parentPath(path)) },
+      enable(environment(keys.trainer, quoteShellArgument(path))),
+      enable(environment(keys.trainerDirectory, parentPath(path))),
     ]),
-  disable: (options: LaunchOptions): LaunchOptionsEditResult =>
-    options.edit([
-      { kind: "disable", definition: environment(keys.trainer, "") },
-      { kind: "disable", definition: environment(keys.trainerDirectory, "") },
-    ]),
+  disable: (options: LaunchOptions) =>
+    options.edit([unsetEnvironment(keys.trainer), unsetEnvironment(keys.trainerDirectory)]),
 };
 
 export const language = {
   value: (options: LaunchOptions): string | undefined => options.getEnvironment(keys.language),
   isEnabled: (options: LaunchOptions): boolean =>
     options.hasEnvironment(keys.language) || options.hasEnvironment(keys.hostLanguage),
-  set: (options: LaunchOptions, value: string): LaunchOptionsEditResult =>
-    options.edit([
-      { kind: "enable", definition: environment(keys.language, value) },
-      { kind: "enable", definition: environment(keys.hostLanguage, value) },
-    ]),
-  disable: (options: LaunchOptions): LaunchOptionsEditResult =>
-    options.edit([
-      { kind: "disable", definition: environment(keys.language, "") },
-      { kind: "disable", definition: environment(keys.hostLanguage, "") },
-    ]),
+  set: (options: LaunchOptions, value: string) =>
+    options.edit([enable(environment(keys.language, value)), enable(environment(keys.hostLanguage, value))]),
+  disable: (options: LaunchOptions) =>
+    options.edit([unsetEnvironment(keys.language), unsetEnvironment(keys.hostLanguage)]),
 };
 
 export const compatibilityPath = {
   value: (options: LaunchOptions): string | undefined => options.getEnvironment(keys.compatibilityPath),
-  set: (options: LaunchOptions, value: string): LaunchOptionsEditResult =>
-    options.edit([{ kind: "enable", definition: environment(keys.compatibilityPath, value) }]),
-  disable: (options: LaunchOptions): LaunchOptionsEditResult =>
-    options.edit([{ kind: "disable", definition: environment(keys.compatibilityPath, "") }]),
+  set: (options: LaunchOptions, value: string) => options.setEnabled(environment(keys.compatibilityPath, value), true),
+  disable: (options: LaunchOptions) => options.edit([unsetEnvironment(keys.compatibilityPath)]),
 };
 
 export const dxvkAsync = toggleFeature(definitions.dxvkAsync);
 export const radvPerftest = toggleFeature(definitions.radvPerftest);
 export const losslessScaling = toggleFeature(definitions.losslessScaling);
 
-export const framegenPatch = {
-  isEnabled: (options: LaunchOptions): boolean => options.isEnabled(definitions.framegenPatch),
-  setEnabled: (options: LaunchOptions, enabled: boolean): LaunchOptionsEditResult =>
-    options.edit(
-      enabled
-        ? [
-            { kind: "disable", definition: definitions.framegenUnpatch },
-            { kind: "enable", definition: definitions.framegenPatch },
-          ]
-        : [{ kind: "disable", definition: definitions.framegenPatch }],
-    ),
-};
-
-export const framegenUnpatch = {
-  isEnabled: (options: LaunchOptions): boolean => options.isEnabled(definitions.framegenUnpatch),
-  setEnabled: (options: LaunchOptions, enabled: boolean): LaunchOptionsEditResult =>
-    options.edit(
-      enabled
-        ? [
-            { kind: "disable", definition: definitions.framegenPatch },
-            { kind: "enable", definition: definitions.framegenUnpatch },
-          ]
-        : [{ kind: "disable", definition: definitions.framegenUnpatch }],
-    ),
-};
+export const framegenPatch = exclusiveToggleFeature(definitions.framegenPatch, definitions.framegenUnpatch);
+export const framegenUnpatch = exclusiveToggleFeature(definitions.framegenUnpatch, definitions.framegenPatch);

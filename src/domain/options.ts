@@ -33,32 +33,28 @@ const quoteWord = (value: string): string => `'${value.split("'").join(`'"'"'`)}
 const renderWord = (value: string): string =>
   unquotedWord.test(value) && !reservedWords.has(value) ? value : quoteWord(value);
 
+const areValidRawWords = (words: readonly string[]): boolean => {
+  if (words.length === 0) return true;
+  const parsed = parseRawWords(words.join(" "));
+  return parsed !== undefined && parsed.length === words.length && parsed.every((word, index) => word === words[index]);
+};
+
+const isValidFlag = (flag: string): boolean =>
+  flag.startsWith("-") && flag !== "-" && flag !== "--" && unquotedWord.test(flag);
+
 export const isValidLaunchOption = (definition: LaunchOptionDefinition): boolean => {
-  if (definition.kind === "environment") return environmentName.test(definition.name);
-  if (definition.kind === "prefix") {
-    const words = [definition.command, ...definition.argv];
-    const parsed = parseRawWords(words.join(" "));
-    return (
-      parsed !== undefined &&
-      parsed.length === words.length &&
-      parsed.every((word, index) => word === words[index] && word !== "--" && word !== "%command%")
-    );
+  switch (definition.kind) {
+    case "environment":
+      return environmentName.test(definition.name);
+    case "prefix": {
+      const words = [definition.command, ...definition.argv];
+      return areValidRawWords(words) && words.every((word) => !reservedWords.has(word));
+    }
+    case "argument":
+      return (
+        isValidFlag(definition.flag) && areValidRawWords(definition.argv) && !definition.argv.includes("%command%")
+      );
   }
-  if (
-    !definition.flag.startsWith("-") ||
-    definition.flag === "-" ||
-    definition.flag === "--" ||
-    !unquotedWord.test(definition.flag)
-  ) {
-    return false;
-  }
-  if (definition.argv.length === 0) return true;
-  const parsed = parseRawWords(definition.argv.join(" "));
-  return (
-    parsed !== undefined &&
-    parsed.length === definition.argv.length &&
-    parsed.every((word, index) => word === definition.argv[index] && word !== "%command%")
-  );
 };
 
 const renderDefinition = (definition: LaunchOptionDefinition): string => {
@@ -72,56 +68,42 @@ const renderDefinition = (definition: LaunchOptionDefinition): string => {
   }
 };
 
-const prefixCommandMatches = (
-  prefix: ParsedPrefix,
-  definition: Extract<LaunchOptionDefinition, { kind: "prefix" }>,
-): boolean => prefix.words[0]?.raw === definition.command;
+const prefixCommandMatches = (prefix: ParsedPrefix, command: string): boolean => prefix.words[0]?.raw === command;
 
-const prefixArgumentMatches = (prefix: ParsedPrefix, argv: readonly string[]): SourceSpan[] => {
-  if (argv.length === 0) return [];
-  const matches: SourceSpan[] = [];
-  for (let index = 1; index <= prefix.words.length - argv.length; ) {
-    if (argv.every((argument, offset) => prefix.words[index + offset].raw === argument)) {
-      matches.push({ start: prefix.words[index].span.start, end: prefix.words[index + argv.length - 1].span.end });
-      index += argv.length;
-    } else index++;
-  }
-  return matches;
-};
-
-const findMatches = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): SourceSpan[] => {
-  if (definition.kind === "environment") {
-    return parsed.assignments
-      .filter((assignment) => assignment.name === definition.name && assignment.value === definition.value)
-      .map((assignment) => assignment.span);
-  }
-  if (definition.kind === "prefix") {
-    return parsed.prefixes.flatMap((prefix) => {
-      if (!prefixCommandMatches(prefix, definition)) return [];
-      if (definition.argv.length === 0) return [prefix.words[0].span];
-      return prefixArgumentMatches(prefix, definition.argv);
-    });
-  }
-  const matches: SourceSpan[] = [];
-  for (let index = 0; index < parsed.arguments.length; index++) {
-    const word = parsed.arguments[index];
-    if (word.raw !== definition.flag) continue;
-    if (definition.argv.length === 0) {
-      matches.push(word.span);
+const findWordSequenceSpans = (
+  words: readonly { raw: string; span: SourceSpan }[],
+  sequence: readonly string[],
+  start = 0,
+): SourceSpan[] => {
+  if (sequence.length === 0) return [];
+  const spans: SourceSpan[] = [];
+  for (let index = start; index <= words.length - sequence.length; ) {
+    if (!sequence.every((expected, offset) => words[index + offset].raw === expected)) {
+      index++;
       continue;
     }
-    if (definition.argv.every((argument, offset) => parsed.arguments[index + offset + 1]?.raw === argument)) {
-      matches.push({ start: word.span.start, end: parsed.arguments[index + definition.argv.length].span.end });
-      index += definition.argv.length;
-    }
+    spans.push({ start: words[index].span.start, end: words[index + sequence.length - 1].span.end });
+    index += sequence.length;
   }
-  return matches;
+  return spans;
 };
 
-const isEnabled = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): boolean => {
-  if (definition.kind !== "environment") return findMatches(parsed, definition).length > 0;
-  const effective = parsed.assignments.filter((assignment) => assignment.name === definition.name).slice(-1)[0];
-  return effective?.value === definition.value;
+const findDefinitionSpans = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): SourceSpan[] => {
+  switch (definition.kind) {
+    case "environment":
+      return parsed.assignments
+        .filter((assignment) => assignment.name === definition.name && assignment.value === definition.value)
+        .map((assignment) => assignment.span);
+    case "prefix":
+      return parsed.prefixes.flatMap((prefix) => {
+        if (!prefixCommandMatches(prefix, definition.command)) return [];
+        return definition.argv.length === 0
+          ? [prefix.words[0].span]
+          : findWordSequenceSpans(prefix.words, definition.argv, 1);
+      });
+    case "argument":
+      return findWordSequenceSpans(parsed.arguments, [definition.flag, ...definition.argv]);
+  }
 };
 
 const leadingOwnedSpan = (source: string, target: SourceSpan): SourceSpan => {
@@ -184,6 +166,11 @@ const argumentSlotEdits = (
   return edits;
 };
 
+const environmentDeletionEdits = (parsed: ParsedLaunchOptions, name: string): TextEdit[] =>
+  parsed.assignments
+    .filter((assignment) => assignment.name === name)
+    .map((assignment) => ({ span: leadingOwnedSpan(parsed.source, assignment.span), replacement: "" }));
+
 const prefixDefinitionDeletionEdits = (
   parsed: ParsedLaunchOptions,
   definition: Extract<LaunchOptionDefinition, { kind: "prefix" }>,
@@ -191,12 +178,12 @@ const prefixDefinitionDeletionEdits = (
   const edits: TextEdit[] = [];
   for (let index = 0; index < parsed.prefixes.length; index++) {
     const prefix = parsed.prefixes[index];
-    if (!prefixCommandMatches(prefix, definition)) continue;
+    if (!prefixCommandMatches(prefix, definition.command)) continue;
     if (definition.argv.length === 0) {
       edits.push({ span: prefixDeletionSpan(parsed, index), replacement: "" });
       continue;
     }
-    const matches = prefixArgumentMatches(prefix, definition.argv);
+    const matches = findWordSequenceSpans(prefix.words, definition.argv, 1);
     if (matches.length === 0) continue;
     const remainingWords = prefix.words.length - matches.length * definition.argv.length;
     if (remainingWords === 1) edits.push({ span: prefixDeletionSpan(parsed, index), replacement: "" });
@@ -207,25 +194,29 @@ const prefixDefinitionDeletionEdits = (
   return edits;
 };
 
-const exactDeletionEdits = (
-  parsed: ParsedLaunchOptions,
-  definition: Exclude<LaunchOptionDefinition, { kind: "environment" }>,
-): TextEdit[] => {
-  if (definition.kind === "prefix") return prefixDefinitionDeletionEdits(parsed, definition);
-  return findMatches(parsed, definition).map((span) => ({
-    span: leadingOwnedSpan(parsed.source, span),
-    replacement: "",
-  }));
+const removeDefinitionEdits = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): TextEdit[] => {
+  switch (definition.kind) {
+    case "environment":
+      return environmentDeletionEdits(parsed, definition.name);
+    case "prefix":
+      return prefixDefinitionDeletionEdits(parsed, definition);
+    case "argument":
+      return findDefinitionSpans(parsed, definition).map((span) => ({
+        span: leadingOwnedSpan(parsed.source, span),
+        replacement: "",
+      }));
+  }
 };
 
-const slotDeletionEdits = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): TextEdit[] => {
-  if (definition.kind === "environment") {
-    return parsed.assignments
-      .filter((assignment) => assignment.name === definition.name)
-      .map((assignment) => ({ span: leadingOwnedSpan(parsed.source, assignment.span), replacement: "" }));
+const replacementDeletionEdits = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): TextEdit[] => {
+  switch (definition.kind) {
+    case "environment":
+      return environmentDeletionEdits(parsed, definition.name);
+    case "argument":
+      return argumentSlotEdits(parsed, definition);
+    case "prefix":
+      return [];
   }
-  if (definition.kind === "argument") return argumentSlotEdits(parsed, definition);
-  return [];
 };
 
 const insertionEdit = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefinition): TextEdit => {
@@ -240,7 +231,7 @@ const insertionEdit = (parsed: ParsedLaunchOptions, definition: LaunchOptionDefi
     return { span: { start: position, end: position }, replacement: `${rendered} ` };
   }
   if (definition.kind === "prefix") {
-    const existing = parsed.prefixes.find((prefix) => prefixCommandMatches(prefix, definition));
+    const existing = parsed.prefixes.find((prefix) => prefixCommandMatches(prefix, definition.command));
     if (existing && definition.argv.length > 0) {
       return {
         span: { start: existing.span.end, end: existing.span.end },
@@ -284,7 +275,9 @@ export class LaunchOptions {
   }
 
   isEnabled(definition: LaunchOptionDefinition): boolean {
-    return this.editable && isEnabled(this.parsed, definition);
+    if (!this.editable) return false;
+    if (definition.kind === "environment") return this.getEnvironment(definition.name) === definition.value;
+    return findDefinitionSpans(this.parsed, definition).length > 0;
   }
 
   setEnabled(definition: LaunchOptionDefinition, enabled: boolean): LaunchOptionsEditResult {
@@ -326,16 +319,13 @@ export class LaunchOptions {
       return { ok: false, value: this, error: "invalid-definition" };
     }
     if (edit.kind === "disable") {
-      const deletions =
-        edit.definition.kind === "environment"
-          ? slotDeletionEdits(this.parsed, edit.definition)
-          : exactDeletionEdits(this.parsed, edit.definition);
+      const deletions = removeDefinitionEdits(this.parsed, edit.definition);
       if (deletions.length === 0) return { ok: true, value: this, changed: false };
       return this.finish(applyTextEdits(this.source, deletions));
     }
-    const matches = findMatches(this.parsed, edit.definition);
+    const matches = findDefinitionSpans(this.parsed, edit.definition);
     if (this.isCanonical(edit.definition, matches.length)) return { ok: true, value: this, changed: false };
-    const withoutSlot = applyTextEdits(this.source, slotDeletionEdits(this.parsed, edit.definition));
+    const withoutSlot = applyTextEdits(this.source, replacementDeletionEdits(this.parsed, edit.definition));
     const intermediate = LaunchOptions.parse(withoutSlot);
     if (!intermediate.editable) return { ok: false, value: this, error: "invalid-result" };
     return this.finish(applyTextEdits(withoutSlot, [insertionEdit(intermediate.parsed, edit.definition)]));

@@ -25,7 +25,6 @@ export interface ParseDiagnostic {
 interface ParsedWord {
   span: SourceSpan;
   raw: string;
-  literal?: string;
 }
 
 interface ParsedAssignment {
@@ -218,7 +217,7 @@ const scanWord = (
   }
   pushBare(index);
   const raw = source.slice(start, index);
-  return { word: { span: span(start, index), raw, literal: literalOf(parts), parts }, end: index };
+  return { word: { span: span(start, index), raw, parts }, end: index };
 };
 
 const tokenize = (source: string, diagnostics: ParseDiagnostic[]): InternalWord[] => {
@@ -269,7 +268,7 @@ export const parseLaunchOptions = (source: string): ParsedLaunchOptions => {
     return { source, assignments: [], prefixes: [], implicitMarker: true, arguments: [], diagnostics };
   }
 
-  const markers = words.filter((word) => word.raw === "%command%" && word.literal === "%command%");
+  const markers = words.filter((word) => word.raw === "%command%");
   if (markers.length !== 1) {
     diagnostics.push({
       code: markers.length === 0 ? "missing-command-marker" : "multiple-command-markers",
@@ -305,7 +304,7 @@ export const parseLaunchOptions = (source: string): ParsedLaunchOptions => {
   const beforeMarker = words.slice(0, markerIndex);
   for (let index = 0; index < beforeMarker.length; index++) {
     const word = beforeMarker[index];
-    if (word.raw === "--" && word.literal === "--") {
+    if (word.raw === "--") {
       assignmentZone = false;
       if (current.length === 0) diagnostics.push({ code: "empty-prefix-command", span: word.span });
       pushPrefix();

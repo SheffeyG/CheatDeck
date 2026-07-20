@@ -12,11 +12,11 @@ describe("parser", () => {
       ["FOO", "1"],
       ["BAR", "a b"],
     ]);
-    expect(parsed.prefixes.map((prefix) => prefix.words.map((word) => word.literal))).toEqual([
+    expect(parsed.prefixes.map((prefix) => prefix.words.map((word) => word.raw))).toEqual([
       ["gamescope"],
       ["mangohud"],
     ]);
-    expect(parsed.arguments.map((word) => word.literal)).toEqual(["-x", "1"]);
+    expect(parsed.arguments.map((word) => word.raw)).toEqual(["-x", "1"]);
     for (const word of [...parsed.prefixes.flatMap((prefix) => prefix.words), ...parsed.arguments]) {
       expect(source.slice(word.span.start, word.span.end)).toBe(word.raw);
     }
@@ -71,6 +71,15 @@ describe("parser", () => {
 
     expect(parsed.diagnostics).toEqual([]);
     expect(parsed.prefixes[0].separatorAfter).toEqual({ start: 10, end: 12 });
+  });
+
+  it("treats quoted structural words as ordinary words", () => {
+    expect(parseLaunchOptions("'%command%'").diagnostics.map(({ code }) => code)).toContain("missing-command-marker");
+
+    const parsed = parseLaunchOptions("wrapper '--' %command%");
+    expect(parsed.diagnostics).toEqual([]);
+    expect(parsed.prefixes).toHaveLength(1);
+    expect(parsed.prefixes[0].words.map(({ raw }) => raw)).toEqual(["wrapper", "'--'"]);
   });
 
   it("parses argv as raw words", () => {
