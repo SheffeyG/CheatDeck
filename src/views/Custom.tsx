@@ -1,39 +1,12 @@
-import { Focusable, showModal } from "@decky/ui";
+import { DialogButton, Focusable, showModal } from "@decky/ui";
 import type { CSSProperties, FC } from "react";
-import type { IconType } from "react-icons";
-import { BsPencilFill, BsPlusSquareFill } from "react-icons/bs";
-import { FaBarsProgress as TypeCmdIcon, FaKey as TypeEnvIcon, FaFlag as TypeFlagIcon } from "react-icons/fa6";
+import { BsPlusSquareFill } from "react-icons/bs";
 
-import { IconButton, LaunchOptionsPreview, Toggle } from "../components";
-import type { LaunchOptionDefinition } from "../domain/options";
+import { CustomOptionItem, LaunchOptionsPreview } from "../components";
 import type { CustomOption } from "../domain/settings";
 import { useOptions, useSettings } from "../hooks";
 import { AddCustomOption, EditCustomOption } from "../modals";
 import { t } from "../utils/translate";
-
-const typeMap: Record<LaunchOptionDefinition["kind"], IconType> = {
-  environment: TypeEnvIcon,
-  prefix: TypeCmdIcon,
-  argument: TypeFlagIcon,
-};
-
-const titleStyle = {
-  alignItems: "center",
-  display: "flex",
-  minWidth: 0,
-} satisfies CSSProperties;
-
-const typeIconStyle = {
-  flex: "0 0 auto",
-  marginRight: "6px",
-} satisfies CSSProperties;
-
-const labelStyle = {
-  maxWidth: "300px",
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
-} satisfies CSSProperties;
 
 const addButtonStyle = {
   display: "flex",
@@ -41,46 +14,16 @@ const addButtonStyle = {
   marginTop: "4px",
 } satisfies CSSProperties;
 
-const rowStyle = {
+const addButtonControlStyle = {
   alignItems: "center",
   display: "flex",
-  gap: "4px",
-  marginBottom: "4px",
-  width: "100%",
+  height: "40px",
+  justifyContent: "center",
+  maxWidth: "40px",
+  minWidth: "40px",
+  padding: 0,
+  width: "40px",
 } satisfies CSSProperties;
-
-const CustomOptionTitle: FC<{ label: string; type: LaunchOptionDefinition["kind"] }> = ({ label, type }) => {
-  const TypeIcon = typeMap[type];
-  return (
-    <span style={titleStyle}>
-      <TypeIcon style={typeIconStyle} />
-      <span style={labelStyle}>{label}</span>
-    </span>
-  );
-};
-
-interface CustomOptionItemProps {
-  option: CustomOption;
-  checked: boolean;
-  disabled: boolean;
-  onToggle: (enabled: boolean) => void;
-  onEdit: () => void;
-}
-
-const CustomOptionItem: FC<CustomOptionItemProps> = ({ option, checked, disabled, onToggle, onEdit }) => (
-  <div style={rowStyle}>
-    <Toggle
-      label={<CustomOptionTitle label={option.label} type={option.definition.kind} />}
-      disabled={disabled}
-      checked={checked}
-      compact={true}
-      onChange={onToggle}
-    />
-    <IconButton label={t("CUSTOM_EDIT_TITLE", "Edit Option")} onClick={onEdit}>
-      <BsPencilFill />
-    </IconButton>
-  </div>
-);
 
 const Custom: FC = () => {
   // Launch options from current game details
@@ -134,14 +77,18 @@ const Custom: FC = () => {
       ))}
 
       <div style={addButtonStyle}>
-        <IconButton
-          label={t("CUSTOM_NEW_TITLE", "Add a New Option")}
+        <DialogButton
+          {...{
+            "aria-label": t("CUSTOM_NEW_TITLE", "Add a New Option"),
+            title: t("CUSTOM_NEW_TITLE", "Add a New Option"),
+          }}
+          style={addButtonControlStyle}
           onClick={() => {
             showModal(<AddCustomOption onAdd={(option) => saveCustomOptions([...customOptions, option])} />, window);
           }}
         >
           <BsPlusSquareFill />
-        </IconButton>
+        </DialogButton>
       </div>
 
       {customOptions.length > 0 && <LaunchOptionsPreview />}

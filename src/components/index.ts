@@ -1,7 +1,7 @@
-import { IconButton } from "./IconButton";
+import { CustomOptionItem } from "./CustomOptionItem";
 import { LaunchOptionsPreview } from "./LaunchOptionsPreview";
 import { Toggle } from "./Toggle";
 import { type DropdownPreset, ToggleDropdown } from "./ToggleDropdown";
 import { ToggleFilePicker } from "./ToggleFilePicker";
 
-export { type DropdownPreset, IconButton, LaunchOptionsPreview, Toggle, ToggleDropdown, ToggleFilePicker };
+export { CustomOptionItem, type DropdownPreset, LaunchOptionsPreview, Toggle, ToggleDropdown, ToggleFilePicker };
