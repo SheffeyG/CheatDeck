@@ -58,7 +58,6 @@ const Advanced: FC = () => {
         }}
         value={compatibilityPath.value(options)}
         onBrowse={handleBrowse}
-        fieldLabel={t("ADVANCED_STEAM_COMPAT_DATA_PATH_NOTE")}
       />
 
       <Toggle

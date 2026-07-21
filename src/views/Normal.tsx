@@ -39,7 +39,6 @@ const Normal: FC = () => {
         }}
         value={trainer.path(options)}
         onBrowse={handleBrowse}
-        fieldLabel={t("NORMAL_CHEAT_LABEL")}
       />
 
       <ToggleDropdown
