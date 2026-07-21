@@ -48,7 +48,12 @@ export const isValidLaunchOption = (definition: LaunchOptionDefinition): boolean
       return environmentName.test(definition.name);
     case "prefix": {
       const words = [definition.command, ...definition.argv];
-      return areValidRawWords(words) && words.every((word) => !reservedWords.has(word));
+      return (
+        !definition.command.startsWith("-") &&
+        !definition.command.includes("=") &&
+        areValidRawWords(words) &&
+        words.every((word) => !reservedWords.has(word))
+      );
     }
     case "argument":
       return (

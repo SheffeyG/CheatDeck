@@ -32,6 +32,8 @@ describe("LaunchOptions", () => {
     expect(isValidLaunchOption({ kind: "environment", name: "BAD-NAME", value: "1" })).toBe(false);
     expect(isValidLaunchOption({ kind: "argument", flag: "--", argv: [] })).toBe(false);
     expect(isValidLaunchOption({ kind: "argument", flag: "-width", argv: ["value with spaces"] })).toBe(false);
+    expect(isValidLaunchOption({ kind: "prefix", command: "ENV=1", argv: [] })).toBe(false);
+    expect(isValidLaunchOption({ kind: "prefix", command: "-wrapper", argv: [] })).toBe(false);
     expect(isValidLaunchOption({ kind: "prefix", command: "cmd", argv: ["arg"] })).toBe(true);
     expect(isValidLaunchOption({ kind: "prefix", command: "cmd", argv: ["'arg with spaces'"] })).toBe(true);
     expect(isValidLaunchOption({ kind: "prefix", command: "cmd", argv: ["arg with spaces"] })).toBe(false);
@@ -92,6 +94,7 @@ describe("LaunchOptions", () => {
     ] as const;
 
     for (const definition of definitions) {
+      expect(isValidLaunchOption(definition)).toBe(true);
       expect(parseLaunchOptionDefinition(renderLaunchOptionDefinition(definition))).toEqual(definition);
     }
   });
