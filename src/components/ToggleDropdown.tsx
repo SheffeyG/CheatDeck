@@ -58,17 +58,19 @@ export const ToggleDropdown: FC<ToggleDropdownProps> = ({
         onChange={onToggle}
       />
       {checked && (
-        <Field label={fieldLabel} padding="standard" bottomSeparator="standard" childrenContainerWidth="min">
-          <Focusable style={rowStyle}>
-            <Dropdown
-              disabled={disabled}
-              rgOptions={preset}
-              selectedOption={value}
-              strDefaultLabel={t("NORMAL_LANG_DEFAULT")}
-              onChange={(option) => onInput(option.data)}
-            />
-          </Focusable>
-        </Field>
+        <Focusable style={{ boxShadow: "none", marginTop: "-4px" }}>
+          <Field label={fieldLabel} padding="standard" bottomSeparator="standard" childrenContainerWidth="min">
+            <Focusable style={rowStyle}>
+              <Dropdown
+                disabled={disabled}
+                rgOptions={preset}
+                selectedOption={value}
+                strDefaultLabel={t("NORMAL_LANG_DEFAULT")}
+                onChange={(option) => onInput(option.data)}
+              />
+            </Focusable>
+          </Field>
+        </Focusable>
       )}
     </>
   );

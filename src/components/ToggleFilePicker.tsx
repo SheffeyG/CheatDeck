@@ -95,14 +95,16 @@ export const ToggleFilePicker: FC<ToggleFilePickerProps> = ({
         bottomSeparator={checked ? "none" : "standard"}
       />
       {checked && (
-        <Field padding="standard" bottomSeparator="standard" childrenLayout="below">
-          <Focusable style={rowStyle} ref={rowRef}>
-            <TextField style={pathStyle} disabled={true} value={value} />
-            <DialogButton disabled={disabled} onClick={onBrowse} style={browseButtonStyle}>
-              <FaFolderOpen />
-            </DialogButton>
-          </Focusable>
-        </Field>
+        <Focusable style={{ boxShadow: "none", marginTop: "-4px" }}>
+          <Field padding="standard" bottomSeparator="standard" childrenLayout="below">
+            <Focusable style={rowStyle} ref={rowRef}>
+              <TextField style={pathStyle} disabled={true} value={value} />
+              <DialogButton disabled={disabled} onClick={onBrowse} style={browseButtonStyle}>
+                <FaFolderOpen />
+              </DialogButton>
+            </Focusable>
+          </Field>
+        </Focusable>
       )}
     </>
   );
