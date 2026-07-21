@@ -3,6 +3,7 @@ import {
   type ParsedLaunchOptions,
   type ParsedPrefix,
   parseLaunchOptions,
+  parseLiteralWord,
   parseRawWords,
   type SourceSpan,
 } from "./parser";
@@ -49,6 +50,7 @@ export const isValidLaunchOption = (definition: LaunchOptionDefinition): boolean
     case "prefix": {
       const words = [definition.command, ...definition.argv];
       return (
+        parseLiteralWord(definition.command) !== "" &&
         !definition.command.startsWith("-") &&
         !definition.command.includes("=") &&
         areValidRawWords(words) &&

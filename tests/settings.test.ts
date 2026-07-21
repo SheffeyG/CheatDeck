@@ -49,6 +49,7 @@ describe("settings", () => {
   it("rejects invalid structured definitions", () => {
     expect(
       decodeStoredCustomOptions([
+        { id: "empty-command", label: "Empty", definition: { kind: "prefix", command: "''", argv: [] } },
         { id: "separator", label: "Separator", definition: { kind: "prefix", command: "--", argv: [] } },
         { id: "assignment", label: "Assignment", definition: { kind: "prefix", command: "ENV=1", argv: [] } },
         { id: "flag", label: "Flag", definition: { kind: "prefix", command: "-wrapper", argv: [] } },
