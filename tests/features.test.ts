@@ -24,9 +24,25 @@ describe("features", () => {
     const enabled = success(trainer.set(LaunchOptions.parse(""), path));
 
     expect(trainer.path(enabled)).toBe(path);
+    expect(enabled.getEnvironment("PROTON_REMOTE_DEBUG_CMD")).toBe(`'/home/deck/C:\\Games/it'"'"'s "$trainer".exe'`);
     expect(trainer.directory(enabled)).toBe("/home/deck/C:\\Games");
     expect(trainer.isEnabled(enabled)).toBe(true);
     expect(success(trainer.disable(enabled)).toString()).toBe("");
+  });
+
+  it.each([
+    [`PROTON_REMOTE_DEBUG_CMD="'/home/deck/My Trainer.exe'" %command%`, "/home/deck/My Trainer.exe"],
+    [`PROTON_REMOTE_DEBUG_CMD='"/home/deck/My Trainer.exe"' %command%`, "/home/deck/My Trainer.exe"],
+    [`PROTON_REMOTE_DEBUG_CMD='/home/deck/My\\ Trainer.exe' %command%`, "/home/deck/My Trainer.exe"],
+  ])("decodes a single trainer command word from %s", (source, expected) => {
+    expect(trainer.path(LaunchOptions.parse(source))).toBe(expected);
+  });
+
+  it.each([
+    `PROTON_REMOTE_DEBUG_CMD='trainer.exe --flag' %command%`,
+    `PROTON_REMOTE_DEBUG_CMD="'unterminated" %command%`,
+  ])("rejects an invalid trainer command from %s", (source) => {
+    expect(trainer.path(LaunchOptions.parse(source))).toBeUndefined();
   });
 
   it("sets and removes language assignments atomically", () => {

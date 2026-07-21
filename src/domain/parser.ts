@@ -345,3 +345,11 @@ export const parseRawWords = (source: string): readonly [string, ...string[]] | 
   if (diagnostics.length > 0 || words.length === 0) return undefined;
   return words.map((word) => word.raw) as [string, ...string[]];
 };
+
+export const parseLiteralWord = (source: string): string | undefined => {
+  if (source.trim() !== source || source.length === 0) return undefined;
+  const diagnostics: ParseDiagnostic[] = [];
+  const words = tokenize(source, diagnostics);
+  if (diagnostics.length > 0 || words.length !== 1) return undefined;
+  return literalOf(words[0].parts);
+};

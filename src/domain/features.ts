@@ -1,4 +1,5 @@
 import type { LaunchOptionDefinition, LaunchOptions } from "./options";
+import { parseLiteralWord } from "./parser";
 
 const definitions = {
   dxvkAsync: { kind: "environment", name: "DXVK_ASYNC", value: "1" },
@@ -27,11 +28,11 @@ const parentPath = (path: string): string => {
   return separator === 0 ? path[0] : path.slice(0, separator);
 };
 
-const quoteShellArgument = (value: string): string => `'${value.split("'").join(`'"'"'`)}'`;
+const encodeShlexWord = (value: string): string => `'${value.split("'").join(`'"'"'`)}'`;
 
-const unwrapShellArgument = (value: string | undefined): string | undefined => {
-  if (value?.startsWith("'") && value.endsWith("'")) return value.slice(1, -1).split(`'"'"'`).join("'");
-  return value;
+const decodeShlexWord = (value: string | undefined): string | undefined => {
+  if (value === undefined) return undefined;
+  return parseLiteralWord(value);
 };
 
 const toggleFeature = (definition: LaunchOptionDefinition) => ({
@@ -46,12 +47,12 @@ const exclusiveToggleFeature = (definition: LaunchOptionDefinition, incompatible
 });
 
 export const trainer = {
-  path: (options: LaunchOptions): string | undefined => unwrapShellArgument(options.getEnvironment(keys.trainer)),
+  path: (options: LaunchOptions): string | undefined => decodeShlexWord(options.getEnvironment(keys.trainer)),
   directory: (options: LaunchOptions): string | undefined => options.getEnvironment(keys.trainerDirectory),
   isEnabled: (options: LaunchOptions): boolean => options.hasEnvironment(keys.trainer),
   set: (options: LaunchOptions, path: string) =>
     options.edit([
-      enable(environment(keys.trainer, quoteShellArgument(path))),
+      enable(environment(keys.trainer, encodeShlexWord(path))),
       enable(environment(keys.trainerDirectory, parentPath(path))),
     ]),
   disable: (options: LaunchOptions) =>
