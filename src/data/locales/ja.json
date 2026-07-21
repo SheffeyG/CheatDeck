@@ -1,18 +1,17 @@
 {
     "TRANSLATION": "日本語",
     "CREDIT": "",
-
     "SAVE": "保存",
     "DELETE": "削除",
     "CANCEL": "キャンセル",
     "MESSAGE_SAVED": "ゲームの起動オプションが保存されました。",
     "MESSAGE_NON_STEAM": "警告: このランチャーはサポートされていません。設定は保存されません。",
     "MESSAGE_INVALID_LAUNCH_OPTIONS": "起動オプションを安全に編集できません。",
-
     "CONTENT_SETTINGS": "設定",
     "CONTENT_INFORMATION": "情報",
     "CONTENT_PREVIEW_LABEL": "プレビューを有効にする",
     "CONTENT_PREVIEW_DESC": "起動オプションのプレビューを有効にする",
+    "CONTENT_PREVIEW_PLACEHOLDER": "起動オプションが設定されていません",
     "CONTENT_CHECK_WINE_LABEL": "ランチャーのチェックをスキップ",
     "CONTENT_CHECK_WINE_DESC": "すべてのランチャーに適用を試みます",
     "CONTENT_NOTE0": "CheatDeckは現在、公式のSteamランチャーのみをサポートしています。",
@@ -20,7 +19,6 @@
     "CONTENT_NOTE2": "詳細情報とバグレポートについては、GitHubページをご覧ください。",
     "CONTENT_GH_DESC": "このプロジェクトにGitHubで貢献するか、スターを付けてください",
     "CONTENT_QR_DESC": "リンクQRを表示",
-
     "NORMAL_TITLE": "標準",
     "NORMAL_CHEAT_TOGGLE_LABEL": "チートを有効にする",
     "NORMAL_CHEAT_TOGGLE_DESC": "ストレージからチートまたはトレーナーexeファイルを選択します",
@@ -29,7 +27,6 @@
     "NORMAL_LANG_TOGGLE_DESC": "ゲーム環境の言語を設定します",
     "NORMAL_LANG_LABEL": "言語コード",
     "NORMAL_LANG_DEFAULT": "デフォルト",
-
     "ADVANCED_TITLE": "詳細設定",
     "ADVANCED_DXVK_ASYNC_LABEL": "DXVKシェーダー非同期コンパイル",
     "ADVANCED_DXVK_ASYNC_DESC": "Proton-GE互換レイヤーを最適化してフレーム時間と入力遅延を削減します",
@@ -44,7 +41,6 @@
     "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "DLSS入力を偽装してFSRアップスケーリングとフレーム生成を使用します（Decky-Framegenプラグインが必要）",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL": "OptiScalerを無効にする",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "OptiScalerパッチをアンインストールするために一度実行します（Decky-Framegenプラグインが必要）",
-
     "CUSTOM_TITLE": "カスタム",
     "CUSTOM_OPTION_LABEL": "ラベル",
     "CUSTOM_OPTION_DEFINITION": "定義",

@@ -1,18 +1,17 @@
 {
     "TRANSLATION": "Français",
     "CREDIT": "",
-
     "SAVE": "Enregistrer",
     "DELETE": "Supprimer",
     "CANCEL": "Annuler",
     "MESSAGE_SAVED": "Les options de lancement du jeu ont été enregistrées.",
     "MESSAGE_NON_STEAM": "Attention : Ce lanceur n'est pas pris en charge ; les paramètres n'ont pas été enregistrés.",
     "MESSAGE_INVALID_LAUNCH_OPTIONS": "Les options de lancement ne peuvent pas être modifiées en toute sécurité.",
-
     "CONTENT_SETTINGS": "Paramètres",
     "CONTENT_INFORMATION": "Informations",
     "CONTENT_PREVIEW_LABEL": "Activer l'aperçu",
     "CONTENT_PREVIEW_DESC": "Activer l'aperçu des options de lancement",
+    "CONTENT_PREVIEW_PLACEHOLDER": "Aucune option de lancement définie",
     "CONTENT_CHECK_WINE_LABEL": "Ignorer la vérification du lanceur",
     "CONTENT_CHECK_WINE_DESC": "Tenter de s'appliquer à tous les lanceurs",
     "CONTENT_NOTE0": "CheatDeck ne supporte que le lanceur Steam officiel pour le moment.",
@@ -20,7 +19,6 @@
     "CONTENT_NOTE2": "Consultez la page GitHub pour plus d'informations et les rapports de bugs.",
     "CONTENT_GH_DESC": "Contribuer à ce projet sur GitHub ou lui ajouter une étoile",
     "CONTENT_QR_DESC": "Afficher le QR Code du lien",
-
     "NORMAL_TITLE": "Normal",
     "NORMAL_CHEAT_TOGGLE_LABEL": "Activer la triche",
     "NORMAL_CHEAT_TOGGLE_DESC": "Sélectionnez le fichier exe de triche ou d'entraîneur dans le stockage",
@@ -29,7 +27,6 @@
     "NORMAL_LANG_TOGGLE_DESC": "Définir la langue de l'environnement du jeu",
     "NORMAL_LANG_LABEL": "Code de langue",
     "NORMAL_LANG_DEFAULT": "Par défaut",
-
     "ADVANCED_TITLE": "Avancé",
     "ADVANCED_DXVK_ASYNC_LABEL": "Compilation asynchrone des shaders DXVK",
     "ADVANCED_DXVK_ASYNC_DESC": "Optimise la couche de compatibilité Proton-GE pour réduire le temps d'image et la latence d'entrée",
@@ -44,7 +41,6 @@
     "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "Déguiser l'entrée DLSS pour utiliser l'upscaling FSR et la génération de frames (nécessite le plugin Decky-Framegen)",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL": "Désactiver OptiScaler",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "Exécuter une fois pour désinstaller le patch OptiScaler (nécessite le plugin Decky-Framegen)",
-
     "CUSTOM_TITLE": "Personnalisé",
     "CUSTOM_OPTION_LABEL": "Étiquette",
     "CUSTOM_OPTION_DEFINITION": "Définition",

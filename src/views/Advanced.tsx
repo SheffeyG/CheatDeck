@@ -27,6 +27,8 @@ const Advanced: FC = () => {
 
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
+      <LaunchOptionsPreview />
+
       <Toggle
         label={t("ADVANCED_DXVK_ASYNC_LABEL")}
         description={t("ADVANCED_DXVK_ASYNC_DESC")}
@@ -83,8 +85,6 @@ const Advanced: FC = () => {
         checked={framegenUnpatch.isEnabled(options)}
         onChange={(enable: boolean) => applyEdit(framegenUnpatch.setEnabled(options, enable))}
       />
-
-      <LaunchOptionsPreview />
     </Focusable>
   );
 };

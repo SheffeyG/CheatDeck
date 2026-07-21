@@ -1,31 +1,29 @@
-import { Focusable } from "@decky/ui";
+import { Field, Focusable } from "@decky/ui";
 import type { CSSProperties, FC } from "react";
 import { useOptions, useSettings } from "../hooks";
+import { t } from "../utils/translate";
 
-const containerStyle = {
-  alignSelf: "center",
+// SteamOS "Properties > Launch Options" preview style: a labeled row whose
+// read-only content renders below the label, in a subtle inset box. Matches
+// the row rhythm of the other refactored components (Field + below layout).
+const rowStyle = {
   display: "flex",
-  flexDirection: "column",
-  gap: "4px",
-  marginTop: "20px",
-  width: "95%",
+  width: "100%",
 } satisfies CSSProperties;
 
 const previewStyle = {
-  background: "rgba(255,255,255,0.1)",
+  background: "rgba(255, 255, 255, 0.1)",
   borderRadius: "2px",
   boxSizing: "border-box",
-  color: "#ccc",
+  color: "#888",
   fontFamily: "monospace",
   fontSize: "12px",
+  lineHeight: "1.4",
   minHeight: "20px",
   padding: "10px",
   textAlign: "left",
-} satisfies CSSProperties;
-
-const hiddenPreviewStyle = {
-  ...previewStyle,
-  visibility: "hidden",
+  width: "100%",
+  wordBreak: "break-word",
 } satisfies CSSProperties;
 
 export const LaunchOptionsPreview: FC = () => {
@@ -33,15 +31,14 @@ export const LaunchOptionsPreview: FC = () => {
   const { options } = useOptions();
 
   const optionsString = options.toString();
-  const hasOptions = optionsString.length > 0;
 
   if (!showPreview) return null;
 
   return (
-    <div style={containerStyle}>
-      <Focusable aria-hidden={!hasOptions} style={hasOptions ? previewStyle : hiddenPreviewStyle}>
-        {hasOptions ? optionsString : " "}
+    <Field description={t("CONTENT_PREVIEW_DESC")} padding="standard" bottomSeparator="standard" childrenLayout="below">
+      <Focusable style={rowStyle}>
+        <div style={previewStyle}>{optionsString.length > 0 ? optionsString : t("CONTENT_PREVIEW_PLACEHOLDER")}</div>
       </Focusable>
-    </div>
+    </Field>
   );
 };

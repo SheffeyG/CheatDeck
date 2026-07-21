@@ -1,18 +1,17 @@
 {
     "TRANSLATION": "Русский",
     "CREDIT": "",
-
     "SAVE": "Сохранить",
     "DELETE": "Удалить",
     "CANCEL": "Отмена",
     "MESSAGE_SAVED": "Параметры запуска игры сохранены.",
     "MESSAGE_NON_STEAM": "Внимание: этот лаунчер не поддерживается; настройки не были сохранены.",
     "MESSAGE_INVALID_LAUNCH_OPTIONS": "Параметры запуска нельзя безопасно изменить.",
-
     "CONTENT_SETTINGS": "Настройки",
     "CONTENT_INFORMATION": "Информация",
     "CONTENT_PREVIEW_LABEL": "Включить предварительный просмотр",
     "CONTENT_PREVIEW_DESC": "Включить предварительный просмотр параметров запуска",
+    "CONTENT_PREVIEW_PLACEHOLDER": "Параметры запуска не заданы",
     "CONTENT_CHECK_WINE_LABEL": "Пропустить проверку лаунчера",
     "CONTENT_CHECK_WINE_DESC": "Попытаться применить ко всем лаунчерам",
     "CONTENT_NOTE0": "CheatDeck в настоящее время поддерживает только официальный лаунчер Steam.",
@@ -20,7 +19,6 @@
     "CONTENT_NOTE2": "Дополнительную информацию и сообщения об ошибках см. на странице GitHub.",
     "CONTENT_GH_DESC": "Внесите вклад в этот проект на GitHub или отметьте его звездой",
     "CONTENT_QR_DESC": "Показать QR-код ссылки",
-
     "NORMAL_TITLE": "Обычный",
     "NORMAL_CHEAT_TOGGLE_LABEL": "Включить читы",
     "NORMAL_CHEAT_TOGGLE_DESC": "Выберите файл с читами или трейнером (exe) из хранилища",
@@ -29,7 +27,6 @@
     "NORMAL_LANG_TOGGLE_DESC": "Установить язык игровой среды",
     "NORMAL_LANG_LABEL": "Код языка",
     "NORMAL_LANG_DEFAULT": "По умолчанию",
-
     "ADVANCED_TITLE": "Дополнительно",
     "ADVANCED_DXVK_ASYNC_LABEL": "Асинхронная компиляция шейдеров DXVK",
     "ADVANCED_DXVK_ASYNC_DESC": "Оптимизировать слой совместимости ProtonGE для уменьшения времени кадра и задержки ввода",
@@ -44,7 +41,6 @@
     "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "Маскировать ввод DLSS для использования апскейлинга FSR и генерации кадров (требуется плагин Decky-Framegen)",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL": "Отключить OptiScaler",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "Запустить один раз для удаления патча OptiScaler (требуется плагин Decky-Framegen)",
-
     "CUSTOM_TITLE": "Пользовательский",
     "CUSTOM_OPTION_LABEL": "Метка",
     "CUSTOM_OPTION_DEFINITION": "Определение",

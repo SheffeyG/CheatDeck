@@ -1,18 +1,17 @@
 {
     "TRANSLATION": "English",
     "CREDIT": "",
-
     "SAVE": "Save",
     "DELETE": "Delete",
     "CANCEL": "Cancel",
     "MESSAGE_SAVED": "Game launch options have been saved.",
     "MESSAGE_NON_STEAM": "This launcher is not supported; settings were not saved.",
     "MESSAGE_INVALID_LAUNCH_OPTIONS": "Launch options could not be edited safely.",
-
     "CONTENT_SETTINGS": "Settings",
     "CONTENT_INFORMATION": "Information",
     "CONTENT_PREVIEW_LABEL": "Enable Preview",
     "CONTENT_PREVIEW_DESC": "Enable launch options preview",
+    "CONTENT_PREVIEW_PLACEHOLDER": "No launch options set",
     "CONTENT_CHECK_WINE_LABEL": "Skip launcher check",
     "CONTENT_CHECK_WINE_DESC": "Try to apply for all launchers",
     "CONTENT_NOTE0": "CheatDeck only support the official steam launcher for now.",
@@ -20,7 +19,6 @@
     "CONTENT_NOTE2": "Check the GitHub page for more informations and bug reports.",
     "CONTENT_GH_DESC": "Contributing to or starring this project on GitHub",
     "CONTENT_QR_DESC": "Show Link QR",
-
     "NORMAL_TITLE": "Normal",
     "NORMAL_CHEAT_TOGGLE_LABEL": "Enable Cheat",
     "NORMAL_CHEAT_TOGGLE_DESC": "Select the cheat or trainer exe file from storage",
@@ -29,7 +27,6 @@
     "NORMAL_LANG_TOGGLE_DESC": "Set the game enviroment language",
     "NORMAL_LANG_LABEL": "Language Code",
     "NORMAL_LANG_DEFAULT": "Default",
-
     "ADVANCED_TITLE": "Advanced",
     "ADVANCED_DXVK_ASYNC_LABEL": "DXVK Shader Async Compilation",
     "ADVANCED_DXVK_ASYNC_DESC": "Optimizes Proton-GE compatibility layer to reduce frame time and input latency",
@@ -44,7 +41,6 @@
     "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "Disguise DLSS input to use FSR upscaling and frame generation (requires Decky-Framegen plugin)",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL": "Disable OptiScaler",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "Run once to uninstall the OptiScaler patch (requires Decky-Framegen plugin)",
-
     "CUSTOM_TITLE": "Custom",
     "CUSTOM_OPTION_LABEL": "Label",
     "CUSTOM_OPTION_DEFINITION": "Definition",

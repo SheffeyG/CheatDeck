@@ -1,18 +1,17 @@
 {
     "TRANSLATION": "한국어",
     "CREDIT": "",
-
     "SAVE": "저장",
     "DELETE": "삭제",
     "CANCEL": "취소",
     "MESSAGE_SAVED": "게임 실행 옵션이 저장되었습니다.",
     "MESSAGE_NON_STEAM": "경고: 이 런처는 지원되지 않습니다. 설정이 저장되지 않았습니다.",
     "MESSAGE_INVALID_LAUNCH_OPTIONS": "실행 옵션을 안전하게 편집할 수 없습니다.",
-
     "CONTENT_SETTINGS": "설정",
     "CONTENT_INFORMATION": "정보",
     "CONTENT_PREVIEW_LABEL": "미리보기 활성화",
     "CONTENT_PREVIEW_DESC": "실행 옵션 미리보기 활성화",
+    "CONTENT_PREVIEW_PLACEHOLDER": "실행 옵션이 설정되지 않음",
     "CONTENT_CHECK_WINE_LABEL": "런처 확인 건너뛰기",
     "CONTENT_CHECK_WINE_DESC": "모든 런처에 적용을 시도합니다",
     "CONTENT_NOTE0": "CheatDeck은 현재 공식 Steam 런처만 지원합니다.",
@@ -20,7 +19,6 @@
     "CONTENT_NOTE2": "자세한 정보 및 버그 보고는 GitHub 페이지를 참고하세요.",
     "CONTENT_GH_DESC": "GitHub에서 이 프로젝트에 기여하거나 스타를 표시하세요",
     "CONTENT_QR_DESC": "링크 QR 표시",
-
     "NORMAL_TITLE": "일반",
     "NORMAL_CHEAT_TOGGLE_LABEL": "치트 활성화",
     "NORMAL_CHEAT_TOGGLE_DESC": "저장소에서 치트 또는 트레이너 exe 파일을 선택하십시오.",
@@ -29,7 +27,6 @@
     "NORMAL_LANG_TOGGLE_DESC": "게임 환경 언어를 설정하십시오.",
     "NORMAL_LANG_LABEL": "언어 코드",
     "NORMAL_LANG_DEFAULT": "기본값",
-
     "ADVANCED_TITLE": "고급",
     "ADVANCED_DXVK_ASYNC_LABEL": "DXVK 셰이더 비동기 컴파일",
     "ADVANCED_DXVK_ASYNC_DESC": "프레임 시간 및 입력 지연을 줄이기 위해 Proton-GE 호환성 레이어를 최적화합니다.",
@@ -44,7 +41,6 @@
     "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "FSR 업스케일링 및 프레임 생성을 사용하기 위해 DLSS 입력을 위장합니다 (Decky-Framegen 플러그인 필요)",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL": "OptiScaler 비활성화",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "OptiScaler 패치를 제거하기 위해 한 번 실행합니다 (Decky-Framegen 플러그인 필요)",
-
     "CUSTOM_TITLE": "사용자 지정",
     "CUSTOM_OPTION_LABEL": "레이블",
     "CUSTOM_OPTION_DEFINITION": "정의",

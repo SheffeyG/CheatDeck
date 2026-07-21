@@ -64,6 +64,8 @@ const Custom: FC = () => {
 
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
+      {customOptions.length > 0 && <LaunchOptionsPreview />}
+
       {customOptions.map((option) => (
         <CustomOptionItem
           key={option.id}
@@ -85,8 +87,6 @@ const Custom: FC = () => {
           <BsPlusSquareFill />
         </DialogButton>
       </div>
-
-      {customOptions.length > 0 && <LaunchOptionsPreview />}
     </Focusable>
   );
 };

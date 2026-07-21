@@ -23,6 +23,8 @@ const Normal: FC = () => {
 
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
+      <LaunchOptionsPreview />
+
       <ToggleFilePicker
         label={t("NORMAL_CHEAT_TOGGLE_LABEL")}
         description={t("NORMAL_CHEAT_TOGGLE_DESC")}
@@ -63,8 +65,6 @@ const Normal: FC = () => {
         }}
         preset={LangCodes as DropdownPreset[]}
       />
-
-      <LaunchOptionsPreview />
     </Focusable>
   );
 };

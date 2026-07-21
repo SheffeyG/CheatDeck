@@ -1,18 +1,17 @@
 {
     "TRANSLATION": "繁體中文",
     "CREDIT": "",
-
     "SAVE": "儲存",
     "DELETE": "刪除",
     "CANCEL": "取消",
     "MESSAGE_SAVED": "遊戲啟動項已儲存。",
     "MESSAGE_NON_STEAM": "警告: 此啟動器未受支援；設定未被儲存。",
     "MESSAGE_INVALID_LAUNCH_OPTIONS": "啟動選項包含無法安全編輯的語法。",
-
     "CONTENT_SETTINGS": "設定",
     "CONTENT_INFORMATION": "資訊",
     "CONTENT_PREVIEW_LABEL": "啟用預覽",
     "CONTENT_PREVIEW_DESC": "啟用啟動選項預覽",
+    "CONTENT_PREVIEW_PLACEHOLDER": "未設定啟動選項",
     "CONTENT_CHECK_WINE_LABEL": "略過啟動器檢查",
     "CONTENT_CHECK_WINE_DESC": "嘗試應用於所有啟動器",
     "CONTENT_NOTE0": "CheatDeck 目前僅支援官方 Steam 啟動器。",
@@ -20,7 +19,6 @@
     "CONTENT_NOTE2": "查看 GitHub 頁面以取得更多資訊和錯誤回報。",
     "CONTENT_GH_DESC": "在 GitHub 上為此專案做貢獻或 star 此專案",
     "CONTENT_QR_DESC": "顯示連結 QR Code",
-
     "NORMAL_TITLE": "一般",
     "NORMAL_CHEAT_TOGGLE_LABEL": "啟用修改器",
     "NORMAL_CHEAT_TOGGLE_DESC": "從系統儲存中選擇需要啟用的遊戲修改器",
@@ -29,7 +27,6 @@
     "NORMAL_LANG_TOGGLE_DESC": "設定遊戲環境語言",
     "NORMAL_LANG_LABEL": "語言編碼",
     "NORMAL_LANG_DEFAULT": "預設",
-
     "ADVANCED_TITLE": "進階",
     "ADVANCED_DXVK_ASYNC_LABEL": "DXVK 著色器非同步編譯",
     "ADVANCED_DXVK_ASYNC_DESC": "最佳化 Proton-GE 相容層減少幀時間和輸入延遲",
@@ -44,7 +41,6 @@
     "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC": "偽裝 DLSS 輸入以使用 FSR 上採樣和幀生成（需要 Decky-Framegen 插件）",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL": "停用 OptiScaler",
     "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC": "執行一次以解除安裝 OptiScaler 補丁（需要 Decky-Framegen 插件）",
-
     "CUSTOM_TITLE": "自訂",
     "CUSTOM_OPTION_LABEL": "標籤",
     "CUSTOM_OPTION_DEFINITION": "定義",
