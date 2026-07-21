@@ -1,9 +1,28 @@
 import { DialogButton, DialogHeader, Focusable, ModalRoot } from "@decky/ui";
-import { type FC, useState } from "react";
+import { type CSSProperties, type FC, useState } from "react";
 
 import type { CustomOption } from "../domain/settings";
 import { t } from "../utils/translate";
 import { CustomOptionForm, compileCustomOption, draftFromCustomOption } from "./CustomOptionForm";
+
+const contentStyle = {
+  display: "flex",
+  flexDirection: "column",
+} satisfies CSSProperties;
+
+const actionsStyle = {
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+} satisfies CSSProperties;
+
+const actionButtonStyle = {
+  alignSelf: "center",
+  fontSize: "14px",
+  marginTop: "20px",
+  textAlign: "center",
+  width: "200px",
+} satisfies CSSProperties;
 
 export const EditCustomOption: FC<{
   closeModal?: () => void;
@@ -16,16 +35,16 @@ export const EditCustomOption: FC<{
 
   return (
     <ModalRoot onCancel={closeModal}>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={contentStyle}>
         <DialogHeader>{t("CUSTOM_EDIT_TITLE", "Edit Option")}</DialogHeader>
         <CustomOptionForm value={option} onChange={setOption} />
-        <Focusable style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+        <Focusable style={actionsStyle}>
           <DialogButton
             disabled={!compiled}
             onClick={() => {
               if (compiled && onUpdate(compiled)) closeModal?.();
             }}
-            style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
+            style={actionButtonStyle}
           >
             {t("SAVE", "Save")}
           </DialogButton>
@@ -33,7 +52,7 @@ export const EditCustomOption: FC<{
             onClick={() => {
               if (onDelete(initialOption.id)) closeModal?.();
             }}
-            style={{ alignSelf: "center", marginTop: "20px", fontSize: "14px", textAlign: "center", width: "200px" }}
+            style={actionButtonStyle}
           >
             {t("DELETE", "Delete")}
           </DialogButton>

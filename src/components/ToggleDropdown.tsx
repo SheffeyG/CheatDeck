@@ -1,5 +1,5 @@
 import { Dropdown, Field, Focusable, TextField, ToggleField } from "@decky/ui";
-import type { FC, ReactNode } from "react";
+import type { CSSProperties, FC, ReactNode } from "react";
 
 import { t } from "../utils/translate";
 
@@ -20,6 +20,20 @@ interface ToggleDropdownProps {
   onInput: (value: string) => void;
   preset: DropdownPreset[];
 }
+
+const rowStyle = {
+  boxShadow: "none",
+  display: "flex",
+  justifyContent: "right",
+  padding: "10px 0",
+} satisfies CSSProperties;
+
+const inputStyle = {
+  fontSize: "14px",
+  marginRight: ".5em",
+  padding: "10px",
+  width: "200px",
+} satisfies CSSProperties;
 
 export const ToggleDropdown: FC<ToggleDropdownProps> = ({
   label,
@@ -45,21 +59,9 @@ export const ToggleDropdown: FC<ToggleDropdownProps> = ({
     />
     {checked && (
       <Field label={fieldLabel} padding="none" bottomSeparator="standard">
-        <Focusable
-          style={{
-            boxShadow: "none",
-            display: "flex",
-            justifyContent: "right",
-            padding: "10px 0",
-          }}
-        >
+        <Focusable style={rowStyle}>
           <TextField
-            style={{
-              padding: "10px",
-              fontSize: "14px",
-              width: "200px",
-              marginRight: ".5em",
-            }}
+            style={inputStyle}
             value={value}
             disabled={disabled}
             onChange={(e) => {

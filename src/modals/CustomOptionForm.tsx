@@ -1,5 +1,5 @@
 import { Field, Focusable, TextField } from "@decky/ui";
-import type { FC } from "react";
+import type { CSSProperties, FC } from "react";
 
 import { parseLaunchOptionDefinition, renderLaunchOptionDefinition } from "../domain/options";
 import type { CustomOption } from "../domain/settings";
@@ -31,8 +31,18 @@ export const compileCustomOption = (draft: CustomOptionDraft): CustomOption | un
   return { id: draft.id, label, definition };
 };
 
-const rowStyle = { boxShadow: "none", display: "flex", justifyContent: "right", padding: "5px 0" } as const;
-const inputStyle = { padding: "10px", fontSize: "14px", width: "435px" } as const;
+const rowStyle = {
+  boxShadow: "none",
+  display: "flex",
+  justifyContent: "right",
+  padding: "5px 0",
+} satisfies CSSProperties;
+
+const inputStyle = {
+  fontSize: "14px",
+  padding: "10px",
+  width: "435px",
+} satisfies CSSProperties;
 
 export const CustomOptionForm: FC<{
   value: CustomOptionDraft;

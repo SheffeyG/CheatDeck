@@ -1,5 +1,5 @@
 import { DialogButton, Field, Focusable, TextField, ToggleField } from "@decky/ui";
-import type { FC, ReactNode } from "react";
+import type { CSSProperties, FC, ReactNode } from "react";
 import { FaFolderOpen } from "react-icons/fa";
 
 interface ToggleFilePickerProps {
@@ -13,6 +13,29 @@ interface ToggleFilePickerProps {
   onBrowse: () => void;
   fieldLabel?: string;
 }
+
+const rowStyle = {
+  boxShadow: "none",
+  display: "flex",
+  justifyContent: "right",
+  padding: "10px 0",
+} satisfies CSSProperties;
+
+const inputStyle = {
+  fontSize: "14px",
+  padding: "10px",
+  width: "400px",
+} satisfies CSSProperties;
+
+const browseButtonStyle = {
+  alignItems: "center",
+  display: "flex",
+  justifyContent: "center",
+  marginLeft: ".5em",
+  maxWidth: "40px",
+  minWidth: "auto",
+  padding: "10px",
+} satisfies CSSProperties;
 
 export const ToggleFilePicker: FC<ToggleFilePickerProps> = ({
   label,
@@ -37,36 +60,9 @@ export const ToggleFilePicker: FC<ToggleFilePickerProps> = ({
     />
     {checked && (
       <Field label={fieldLabel} padding="none" bottomSeparator="standard">
-        <Focusable
-          style={{
-            boxShadow: "none",
-            display: "flex",
-            justifyContent: "right",
-            padding: "10px 0",
-          }}
-        >
-          <TextField
-            style={{
-              padding: "10px",
-              fontSize: "14px",
-              width: "400px",
-            }}
-            disabled={true}
-            value={value}
-          />
-          <DialogButton
-            disabled={disabled}
-            onClick={onBrowse}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: "10px",
-              maxWidth: "40px",
-              minWidth: "auto",
-              marginLeft: ".5em",
-            }}
-          >
+        <Focusable style={rowStyle}>
+          <TextField style={inputStyle} disabled={true} value={value} />
+          <DialogButton disabled={disabled} onClick={onBrowse} style={browseButtonStyle}>
             <FaFolderOpen />
           </DialogButton>
         </Focusable>

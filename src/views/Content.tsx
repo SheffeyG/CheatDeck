@@ -9,7 +9,7 @@ import {
   showModal,
   ToggleField,
 } from "@decky/ui";
-import type { FC } from "react";
+import type { CSSProperties, FC } from "react";
 import { HiQrCode } from "react-icons/hi2";
 
 import { useSettings } from "../hooks";
@@ -17,6 +17,36 @@ import { QrCode } from "../modals";
 import { t } from "../utils/translate";
 
 const GITHUB = "https://github.com/SheffeyG/CheatDeck";
+
+const contentStyle = {
+  display: "flex",
+  flexDirection: "column",
+} satisfies CSSProperties;
+
+const informationStyle = {
+  margin: 0,
+  padding: 0,
+  width: "100%",
+} satisfies CSSProperties;
+
+const linksStyle = {
+  display: "flex",
+} satisfies CSSProperties;
+
+const githubButtonStyle = {
+  fontSize: "14px",
+  padding: "10px",
+} satisfies CSSProperties;
+
+const qrButtonStyle = {
+  alignItems: "center",
+  display: "flex",
+  justifyContent: "center",
+  marginLeft: ".5em",
+  maxWidth: "40px",
+  minWidth: "auto",
+  padding: "10px",
+} satisfies CSSProperties;
 
 const Content: FC = () => {
   const translator = t("CREDIT", "");
@@ -28,7 +58,7 @@ const Content: FC = () => {
   };
 
   return (
-    <Focusable style={{ display: "flex", flexDirection: "column" }}>
+    <Focusable style={contentStyle}>
       <PanelSection title={t("CONTENT_SETTINGS", "settings")}>
         <PanelSectionRow>
           <ToggleField
@@ -51,15 +81,7 @@ const Content: FC = () => {
       </PanelSection>
 
       <PanelSection title={t("CONTENT_INFORMATION", "information")}>
-        <Focusable
-          focusWithinClassName="gpfocuswithin"
-          onActivate={() => {}}
-          style={{
-            width: "100%",
-            margin: 0,
-            padding: 0,
-          }}
-        >
+        <Focusable focusWithinClassName="gpfocuswithin" onActivate={() => {}} style={informationStyle}>
           <DialogBodyText>
             <li>{t("CONTENT_NOTE0", "CheatDeck only support the official steam launcher for now.")}</li>
             <li>{t("CONTENT_NOTE1", "CheatDeck game settings are accessible through the game details menu.")}</li>
@@ -79,30 +101,19 @@ const Content: FC = () => {
             childrenContainerWidth="max"
             description={t("CONTENT_GH_DESC", "Star this project on GitHub")}
           >
-            <Focusable style={{ display: "flex" }}>
+            <Focusable style={linksStyle}>
               <DialogButton
                 onClick={() => navLink(GITHUB)}
                 onSecondaryButton={() => showModal(<QrCode url={GITHUB} />, window)}
                 onSecondaryActionDescription={t("CONTENT_QR_DESC", "Show Link QR")}
-                style={{
-                  padding: "10px",
-                  fontSize: "14px",
-                }}
+                style={githubButtonStyle}
               >
                 GitHub
               </DialogButton>
               <DialogButton
                 onOKActionDescription={t("CONTENT_QR_DESC", "Show Link QR")}
                 onClick={() => showModal(<QrCode url={GITHUB} />, window)}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: "10px",
-                  maxWidth: "40px",
-                  minWidth: "auto",
-                  marginLeft: ".5em",
-                }}
+                style={qrButtonStyle}
               >
                 <HiQrCode />
               </DialogButton>
