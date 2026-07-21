@@ -24,8 +24,8 @@ const Normal: FC = () => {
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
       <ToggleFilePicker
-        label={t("NORMAL_CHEAT_TOGGLE_LABEL", "Enable Cheat")}
-        description={t("NORMAL_CHEAT_TOGGLE_DESC", "Select the cheat or trainer exe file from storage")}
+        label={t("NORMAL_CHEAT_TOGGLE_LABEL")}
+        description={t("NORMAL_CHEAT_TOGGLE_DESC")}
         icon={<FaGamepad />}
         disabled={!editable}
         checked={showCheat || trainer.isEnabled(options)}
@@ -39,12 +39,12 @@ const Normal: FC = () => {
         }}
         value={trainer.path(options)}
         onBrowse={handleBrowse}
-        fieldLabel={t("NORMAL_CHEAT_LABEL", "EXE Path")}
+        fieldLabel={t("NORMAL_CHEAT_LABEL")}
       />
 
       <ToggleDropdown
-        label={t("NORMAL_LANG_TOGGLE_LABEL", "Language")}
-        description={t("NORMAL_LANG_TOGGLE_DESC", "Try to specify the game language")}
+        label={t("NORMAL_LANG_TOGGLE_LABEL")}
+        description={t("NORMAL_LANG_TOGGLE_DESC")}
         icon={<FaLanguage />}
         disabled={!editable}
         checked={showLang || language.isEnabled(options)}
@@ -56,7 +56,7 @@ const Normal: FC = () => {
           const result = language.disable(options);
           if (result.ok && applyEdit(result)) setShowLang(false);
         }}
-        fieldLabel={t("NORMAL_LANG_LABEL", "Language Code")}
+        fieldLabel={t("NORMAL_LANG_LABEL")}
         value={language.value(options)}
         onInput={(value: string) => {
           const result = language.set(options, value);

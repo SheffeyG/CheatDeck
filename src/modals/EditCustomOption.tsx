@@ -36,7 +36,7 @@ export const EditCustomOption: FC<{
   return (
     <ModalRoot onCancel={closeModal}>
       <div style={contentStyle}>
-        <DialogHeader>{t("CUSTOM_EDIT_TITLE", "Edit Option")}</DialogHeader>
+        <DialogHeader>{t("CUSTOM_EDIT_TITLE")}</DialogHeader>
         <CustomOptionForm value={option} onChange={setOption} />
         <Focusable style={actionsStyle}>
           <DialogButton
@@ -46,7 +46,7 @@ export const EditCustomOption: FC<{
             }}
             style={actionButtonStyle}
           >
-            {t("SAVE", "Save")}
+            {t("SAVE")}
           </DialogButton>
           <DialogButton
             onClick={() => {
@@ -54,7 +54,7 @@ export const EditCustomOption: FC<{
             }}
             style={actionButtonStyle}
           >
-            {t("DELETE", "Delete")}
+            {t("DELETE")}
           </DialogButton>
         </Focusable>
       </div>

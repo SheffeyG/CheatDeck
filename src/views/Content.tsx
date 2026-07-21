@@ -49,7 +49,7 @@ const qrButtonStyle = {
 } satisfies CSSProperties;
 
 const Content: FC = () => {
-  const translator = t("CREDIT", "");
+  const translator = t("CREDIT");
   const { showPreview, skipWineCheck, saveShowPreview, saveSkipWineCheck } = useSettings();
 
   const navLink = (url: string) => {
@@ -59,11 +59,11 @@ const Content: FC = () => {
 
   return (
     <Focusable style={contentStyle}>
-      <PanelSection title={t("CONTENT_SETTINGS", "settings")}>
+      <PanelSection title={t("CONTENT_SETTINGS")}>
         <PanelSectionRow>
           <ToggleField
-            label={t("CONTENT_PREVIEW_LABEL", "Enable Preview")}
-            description={t("CONTENT_PREVIEW_DESC", "Enable launch options preview")}
+            label={t("CONTENT_PREVIEW_LABEL")}
+            description={t("CONTENT_PREVIEW_DESC")}
             bottomSeparator="standard"
             checked={showPreview}
             onChange={(enable: boolean) => saveShowPreview(enable)}
@@ -71,8 +71,8 @@ const Content: FC = () => {
         </PanelSectionRow>
         <PanelSectionRow>
           <ToggleField
-            label={t("CONTENT_CHECK_WINE_LABEL", "Skip launcher check")}
-            description={t("CONTENT_CHECK_WINE_DESC", "Try to apply for all launchers")}
+            label={t("CONTENT_CHECK_WINE_LABEL")}
+            description={t("CONTENT_CHECK_WINE_DESC")}
             bottomSeparator="standard"
             checked={skipWineCheck}
             onChange={(enable: boolean) => saveSkipWineCheck(enable)}
@@ -80,12 +80,12 @@ const Content: FC = () => {
         </PanelSectionRow>
       </PanelSection>
 
-      <PanelSection title={t("CONTENT_INFORMATION", "information")}>
+      <PanelSection title={t("CONTENT_INFORMATION")}>
         <Focusable focusWithinClassName="gpfocuswithin" onActivate={() => {}} style={informationStyle}>
           <DialogBodyText>
-            <li>{t("CONTENT_NOTE0", "CheatDeck only support the official steam launcher for now.")}</li>
-            <li>{t("CONTENT_NOTE1", "CheatDeck game settings are accessible through the game details menu.")}</li>
-            <li>{t("CONTENT_NOTE2", "Check the GitHub page for more informations and bug reports.")}</li>
+            <li>{t("CONTENT_NOTE0")}</li>
+            <li>{t("CONTENT_NOTE1")}</li>
+            <li>{t("CONTENT_NOTE2")}</li>
           </DialogBodyText>
         </Focusable>
 
@@ -99,19 +99,19 @@ const Content: FC = () => {
             padding="none"
             spacingBetweenLabelAndChild="none"
             childrenContainerWidth="max"
-            description={t("CONTENT_GH_DESC", "Star this project on GitHub")}
+            description={t("CONTENT_GH_DESC")}
           >
             <Focusable style={linksStyle}>
               <DialogButton
                 onClick={() => navLink(GITHUB)}
                 onSecondaryButton={() => showModal(<QrCode url={GITHUB} />, window)}
-                onSecondaryActionDescription={t("CONTENT_QR_DESC", "Show Link QR")}
+                onSecondaryActionDescription={t("CONTENT_QR_DESC")}
                 style={githubButtonStyle}
               >
                 GitHub
               </DialogButton>
               <DialogButton
-                onOKActionDescription={t("CONTENT_QR_DESC", "Show Link QR")}
+                onOKActionDescription={t("CONTENT_QR_DESC")}
                 onClick={() => showModal(<QrCode url={GITHUB} />, window)}
                 style={qrButtonStyle}
               >
@@ -124,7 +124,7 @@ const Content: FC = () => {
         {translator.length > 0 && (
           <DialogBodyText>
             <p>
-              <b>{`${t("TRANSLATION", "Translator")}: `}</b>
+              <b>{`${t("TRANSLATION")}: `}</b>
               {translator}
             </p>
           </DialogBodyText>

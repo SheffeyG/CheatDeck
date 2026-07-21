@@ -49,7 +49,7 @@ export const CustomOptionForm: FC<{
   onChange: (value: CustomOptionDraft) => void;
 }> = ({ value, onChange }) => (
   <>
-    <Field label={t("CUSTOM_OPTION_LABEL", "Label")} padding="none" bottomSeparator="none">
+    <Field label={t("CUSTOM_OPTION_LABEL")} padding="none" bottomSeparator="none">
       <Focusable style={rowStyle}>
         <TextField
           style={inputStyle}
@@ -58,7 +58,7 @@ export const CustomOptionForm: FC<{
         />
       </Focusable>
     </Field>
-    <Field label={t("CUSTOM_OPTION_DEFINITION", "Definition")} padding="none" bottomSeparator="none">
+    <Field label={t("CUSTOM_OPTION_DEFINITION")} padding="none" bottomSeparator="none">
       <Focusable style={rowStyle}>
         <TextField
           style={inputStyle}

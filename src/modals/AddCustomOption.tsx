@@ -35,7 +35,7 @@ export const AddCustomOption: FC<{
   return (
     <ModalRoot onCancel={closeModal}>
       <div style={contentStyle}>
-        <DialogHeader>{t("CUSTOM_NEW_TITLE", "Add a New Option")}</DialogHeader>
+        <DialogHeader>{t("CUSTOM_NEW_TITLE")}</DialogHeader>
         <CustomOptionForm value={option} onChange={setOption} />
         <Focusable style={actionsStyle}>
           <DialogButton
@@ -46,10 +46,10 @@ export const AddCustomOption: FC<{
             }}
             style={actionButtonStyle}
           >
-            {t("SAVE", "Save")}
+            {t("SAVE")}
           </DialogButton>
           <DialogButton onClick={closeModal} style={actionButtonStyle}>
-            {t("CANCEL", "Cancel")}
+            {t("CANCEL")}
           </DialogButton>
         </Focusable>
       </div>

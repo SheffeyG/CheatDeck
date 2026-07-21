@@ -27,19 +27,19 @@ const PageRouter: FC = () => {
           showTitle={true}
           pages={[
             {
-              title: t("NORMAL_TITLE", "Normal"),
+              title: t("NORMAL_TITLE"),
               content: <Normal />,
               icon: <IconNormal />,
               hideTitle: false,
             },
             {
-              title: t("ADVANCED_TITLE", "Advanced"),
+              title: t("ADVANCED_TITLE"),
               content: <Advanced />,
               icon: <IconAdvanced />,
               hideTitle: false,
             },
             {
-              title: t("CUSTOM_TITLE", "Custom"),
+              title: t("CUSTOM_TITLE"),
               content: <Custom />,
               icon: <IconCustom />,
               hideTitle: false,

@@ -76,7 +76,7 @@ export const ToggleDropdown: FC<ToggleDropdownProps> = ({
             onChange={(v) => {
               onInput(v.data);
             }}
-            strDefaultLabel={t("NORMAL_LANG_DEFAULT", "Default")}
+            strDefaultLabel={t("NORMAL_LANG_DEFAULT")}
           />
         </Focusable>
       </Field>

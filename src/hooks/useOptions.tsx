@@ -89,7 +89,7 @@ export const OptionsProvider: FC<{
     if (current?.appid !== appid || current.options !== sourceOptions) return false;
 
     if (!result.ok) {
-      const message = t("MESSAGE_INVALID_LAUNCH_OPTIONS", "Launch options could not be edited safely.");
+      const message = t("MESSAGE_INVALID_LAUNCH_OPTIONS");
       sendNotice(message);
       return false;
     }
@@ -97,7 +97,7 @@ export const OptionsProvider: FC<{
 
     const command = current.command.toLowerCase();
     if (!skipWineCheck && (command.includes("flatpak") || command.includes("appimage"))) {
-      sendNotice(t("MESSAGE_NON_STEAM", "This launcher is not supported; settings were not saved."));
+      sendNotice(t("MESSAGE_NON_STEAM"));
       return false;
     }
 
@@ -121,7 +121,7 @@ export const OptionsProvider: FC<{
     >
       {!loaded.options.editable && (
         <div style={{ padding: "12px 16px", color: "#ffb3b3", fontSize: "12px" }}>
-          {t("MESSAGE_INVALID_LAUNCH_OPTIONS", "Launch options could not be edited safely.")}
+          {t("MESSAGE_INVALID_LAUNCH_OPTIONS")}
         </div>
       )}
       {children}

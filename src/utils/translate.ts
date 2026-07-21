@@ -1,17 +1,17 @@
-import * as de from "../data/locales/de.json";
-import * as en from "../data/locales/en.json";
-import * as fr from "../data/locales/fr.json";
-import * as ja from "../data/locales/ja.json";
-import * as ko from "../data/locales/ko.json";
-import * as ru from "../data/locales/ru.json";
-import * as zhCn from "../data/locales/zh-cn.json";
-import * as zhTw from "../data/locales/zh-tw.json";
+import de from "../data/locales/de.json";
+import en from "../data/locales/en.json";
+import fr from "../data/locales/fr.json";
+import ja from "../data/locales/ja.json";
+import ko from "../data/locales/ko.json";
+import ru from "../data/locales/ru.json";
+import zhCn from "../data/locales/zh-cn.json";
+import zhTw from "../data/locales/zh-tw.json";
 import { logger } from "./logger";
 
-type Lang = { [key: string]: string };
-type Languages = { [key: string]: Lang };
+type TranslationKey = keyof typeof en;
+type Language = Record<TranslationKey, string>;
 
-const languages: Languages = {
+const languages = {
   de,
   en,
   fr,
@@ -20,7 +20,9 @@ const languages: Languages = {
   ru,
   zhCn,
   zhTw,
-};
+} satisfies Record<string, Language>;
+
+type LanguageCode = keyof typeof languages;
 
 function getCurrentLangCode(): string {
   const steamLang = window.LocalizationManager?.m_rgLocalesToUse?.[0] ?? "en";
@@ -29,10 +31,7 @@ function getCurrentLangCode(): string {
   return langCode;
 }
 
-function translate() {
-  const langCode: string = getCurrentLangCode();
-  const lang: Lang = languages[langCode] ?? languages.en;
-  return (label: string, defaultString: string): string => lang[label] ?? defaultString;
-}
+const langCode = getCurrentLangCode();
+const language: Language = languages[langCode as LanguageCode] ?? languages.en;
 
-export const t = translate();
+export const t = (key: TranslationKey): string => language[key];
