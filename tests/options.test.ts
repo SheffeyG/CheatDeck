@@ -32,6 +32,8 @@ describe("LaunchOptions", () => {
     expect(isValidLaunchOption({ kind: "environment", name: "BAD-NAME", value: "1" })).toBe(false);
     expect(isValidLaunchOption({ kind: "argument", flag: "--", argv: [] })).toBe(false);
     expect(isValidLaunchOption({ kind: "argument", flag: "-width", argv: ["value with spaces"] })).toBe(false);
+    expect(isValidLaunchOption({ kind: "argument", flag: "-offset", argv: ["-1"] })).toBe(false);
+    expect(isValidLaunchOption({ kind: "argument", flag: "-offset", argv: ["'-1'"] })).toBe(true);
     expect(isValidLaunchOption({ kind: "prefix", command: "ENV=1", argv: [] })).toBe(false);
     expect(isValidLaunchOption({ kind: "prefix", command: "-wrapper", argv: [] })).toBe(false);
     expect(isValidLaunchOption({ kind: "prefix", command: "cmd", argv: ["arg"] })).toBe(true);
@@ -47,6 +49,7 @@ describe("LaunchOptions", () => {
     ["gamescope -W 1280", { kind: "prefix", command: "gamescope", argv: ["-W", "1280"] }],
     ["~/lsfg", { kind: "prefix", command: "~/lsfg", argv: [] }],
     ["-novid", { kind: "argument", flag: "-novid", argv: [] }],
+    ["-offset '-1'", { kind: "argument", flag: "-offset", argv: ["'-1'"] }],
     ["-resolution 1920 1080", { kind: "argument", flag: "-resolution", argv: ["1920", "1080"] }],
   ])("infers a definition from raw input: %s", (source, expected) => {
     expect(parseLaunchOptionDefinition(source)).toEqual(expected);
@@ -80,6 +83,7 @@ describe("LaunchOptions", () => {
     "%command%",
     "--",
     "-",
+    "-offset -1",
     "cmd && bad",
     "cmd 'broken",
   ])("rejects an ambiguous or unsupported raw definition: %s", (source) => {
@@ -135,6 +139,17 @@ describe("LaunchOptions", () => {
 
     expect(replaced.toString()).toContain("-other keep");
     expect(replaced.toString()).toContain("-x new");
+  });
+
+  it("replaces a quoted option-like argument without consuming the next flag", () => {
+    const replaced = success(
+      LaunchOptions.parse(`%command% -offset '-2' -other keep`).setEnabled(
+        { kind: "argument", flag: "-offset", argv: ["'-1'"] },
+        true,
+      ),
+    );
+
+    expect(replaced.toString()).toBe(`%command% -other keep -offset '-1'`);
   });
 
   it("matches and replaces multiple argv words owned by one flag", () => {

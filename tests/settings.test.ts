@@ -46,12 +46,13 @@ describe("settings", () => {
     expect(decodeStoredCustomOptions(value)).toEqual([value[0], value[1], value[2], value[3]]);
   });
 
-  it("rejects structured definitions containing reserved words", () => {
+  it("rejects invalid structured definitions", () => {
     expect(
       decodeStoredCustomOptions([
         { id: "separator", label: "Separator", definition: { kind: "prefix", command: "--", argv: [] } },
         { id: "assignment", label: "Assignment", definition: { kind: "prefix", command: "ENV=1", argv: [] } },
         { id: "flag", label: "Flag", definition: { kind: "prefix", command: "-wrapper", argv: [] } },
+        { id: "negative", label: "Negative", definition: { kind: "argument", flag: "-offset", argv: ["-1"] } },
         {
           id: "marker",
           label: "Marker",

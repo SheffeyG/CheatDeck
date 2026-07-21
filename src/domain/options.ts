@@ -57,7 +57,9 @@ export const isValidLaunchOption = (definition: LaunchOptionDefinition): boolean
     }
     case "argument":
       return (
-        isValidFlag(definition.flag) && areValidRawWords(definition.argv) && !definition.argv.includes("%command%")
+        isValidFlag(definition.flag) &&
+        areValidRawWords(definition.argv) &&
+        definition.argv.every((word) => !word.startsWith("-") && word !== "%command%")
       );
   }
 };
