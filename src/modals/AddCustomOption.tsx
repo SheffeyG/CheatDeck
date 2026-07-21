@@ -1,6 +1,5 @@
 import { DialogButton, DialogHeader, Focusable, ModalRoot } from "@decky/ui";
 import { type CSSProperties, type FC, useState } from "react";
-import { v4 as uuid } from "uuid";
 
 import type { CustomOption } from "../domain/settings";
 import { t } from "../utils/translate";
@@ -29,7 +28,7 @@ export const AddCustomOption: FC<{
   closeModal?: () => void;
   onAdd: (option: CustomOption) => void;
 }> = ({ closeModal, onAdd }) => {
-  const [option, setOption] = useState(() => createCustomOptionDraft(uuid()));
+  const [option, setOption] = useState(() => createCustomOptionDraft(crypto.randomUUID()));
   const compiled = compileCustomOption(option);
 
   return (
