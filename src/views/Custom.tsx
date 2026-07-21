@@ -1,28 +1,10 @@
-import { DialogButton, Focusable, showModal } from "@decky/ui";
-import type { CSSProperties, FC } from "react";
-import { BsPlusSquareFill } from "react-icons/bs";
+import { Focusable, showModal } from "@decky/ui";
+import type { FC } from "react";
 
-import { CustomOptionItem, LaunchOptionsPreview } from "../components";
+import { AddOptionButton, CustomOptionItem, LaunchOptionsPreview } from "../components";
 import type { CustomOption } from "../domain/settings";
 import { useOptions, useSettings } from "../hooks";
 import { AddCustomOption, EditCustomOption } from "../modals";
-
-const addButtonStyle = {
-  display: "flex",
-  justifyContent: "center",
-  marginTop: "4px",
-} satisfies CSSProperties;
-
-const addButtonControlStyle = {
-  alignItems: "center",
-  display: "flex",
-  height: "40px",
-  justifyContent: "center",
-  maxWidth: "40px",
-  minWidth: "40px",
-  padding: 0,
-  width: "40px",
-} satisfies CSSProperties;
 
 const Custom: FC = () => {
   // Launch options from current game details
@@ -66,26 +48,25 @@ const Custom: FC = () => {
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
       {customOptions.length > 0 && <LaunchOptionsPreview />}
 
-      {customOptions.map((option) => (
-        <CustomOptionItem
-          key={option.id}
-          option={option}
-          disabled={!editable}
-          checked={options.isEnabled(option.definition)}
-          onToggle={(enabled) => applyEdit(options.setEnabled(option.definition, enabled))}
-          onEdit={() => openEditModal(option)}
-        />
-      ))}
+      <div style={{ marginTop: "4px" }}>
+        {customOptions.map((option) => (
+          <CustomOptionItem
+            key={option.id}
+            option={option}
+            disabled={!editable}
+            checked={options.isEnabled(option.definition)}
+            onToggle={(enabled) => applyEdit(options.setEnabled(option.definition, enabled))}
+            onEdit={() => openEditModal(option)}
+          />
+        ))}
+      </div>
 
-      <div style={addButtonStyle}>
-        <DialogButton
-          style={addButtonControlStyle}
+      <div style={{ margin: "4px 0" }}>
+        <AddOptionButton
           onClick={() => {
             showModal(<AddCustomOption onAdd={(option) => saveCustomOptions([...customOptions, option])} />, window);
           }}
-        >
-          <BsPlusSquareFill />
-        </DialogButton>
+        />
       </div>
     </Focusable>
   );

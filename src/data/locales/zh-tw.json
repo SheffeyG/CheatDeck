@@ -45,5 +45,7 @@
     "CUSTOM_OPTION_LABEL": "標籤",
     "CUSTOM_OPTION_DEFINITION": "定義",
     "CUSTOM_EDIT_TITLE": "編輯啟動項",
-    "CUSTOM_NEW_TITLE": "新增啟動項"
+    "CUSTOM_NEW_TITLE": "新增啟動項",
+    "CUSTOM_ADD_LABEL": "新增選項",
+    "CUSTOM_ADD_DESC": "新增自訂啟動選項"
 }

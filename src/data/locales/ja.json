@@ -45,5 +45,7 @@
     "CUSTOM_OPTION_LABEL": "ラベル",
     "CUSTOM_OPTION_DEFINITION": "定義",
     "CUSTOM_EDIT_TITLE": "オプションを編集",
-    "CUSTOM_NEW_TITLE": "新しいオプションを追加"
+    "CUSTOM_NEW_TITLE": "新しいオプションを追加",
+    "CUSTOM_ADD_LABEL": "新しいオプションを追加",
+    "CUSTOM_ADD_DESC": "カスタム起動オプションを追加"
 }

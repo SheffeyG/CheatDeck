@@ -45,5 +45,7 @@
     "CUSTOM_OPTION_LABEL": "Étiquette",
     "CUSTOM_OPTION_DEFINITION": "Définition",
     "CUSTOM_EDIT_TITLE": "Modifier l'option",
-    "CUSTOM_NEW_TITLE": "Ajouter une nouvelle option"
+    "CUSTOM_NEW_TITLE": "Ajouter une nouvelle option",
+    "CUSTOM_ADD_LABEL": "Ajouter une nouvelle option",
+    "CUSTOM_ADD_DESC": "Ajouter une option de lancement personnalisée"
 }
