@@ -9,13 +9,13 @@ import { AddCustomOption, EditCustomOption } from "../modals";
 const layoutStyle = {
   display: "flex",
   flexDirection: "column",
-  gap: "4px",
+  gap: "6px",
 } satisfies CSSProperties;
 
 const listStyle = {
   display: "flex",
   flexDirection: "column",
-  gap: "4px",
+  gap: "6px",
 } satisfies CSSProperties;
 
 const Custom: FC = () => {

@@ -1,7 +1,6 @@
-import { ButtonItem, Field, Navigation, PanelSection, PanelSectionRow, showModal, ToggleField } from "@decky/ui";
+import { DialogButton, Field, Navigation, PanelSection, PanelSectionRow, showModal, ToggleField } from "@decky/ui";
 import type { FC } from "react";
 import { FaGithub } from "react-icons/fa";
-import { HiQrCode } from "react-icons/hi2";
 
 import { useSettings } from "../hooks";
 import { QrCode } from "../modals";
@@ -34,7 +33,7 @@ const Content: FC = () => {
           <ToggleField
             label={t("CONTENT_CHECK_WINE_LABEL")}
             description={t("CONTENT_CHECK_WINE_DESC")}
-            bottomSeparator="none"
+            bottomSeparator="standard"
             checked={skipWineCheck}
             onChange={(enable: boolean) => saveSkipWineCheck(enable)}
           />
@@ -43,32 +42,15 @@ const Content: FC = () => {
 
       <PanelSection title={t("CONTENT_INFORMATION")}>
         <PanelSectionRow>
-          <Field description={t("CONTENT_NOTE0")} padding="standard" bottomSeparator="standard" />
-        </PanelSectionRow>
-        <PanelSectionRow>
-          <Field description={t("CONTENT_NOTE1")} padding="standard" bottomSeparator="standard" />
-        </PanelSectionRow>
-        <PanelSectionRow>
-          <Field description={t("CONTENT_NOTE2")} padding="standard" bottomSeparator="standard" />
-        </PanelSectionRow>
-        <PanelSectionRow>
-          <ButtonItem
-            label="GitHub"
-            description={t("CONTENT_GH_DESC")}
-            bottomSeparator="standard"
-            onClick={() => navLink(GITHUB)}
-          >
-            <FaGithub />
-          </ButtonItem>
-        </PanelSectionRow>
-        <PanelSectionRow>
-          <ButtonItem
-            label={t("CONTENT_QR_DESC")}
-            bottomSeparator={translator.length > 0 ? "standard" : "none"}
-            onClick={() => showModal(<QrCode url={GITHUB} />, window)}
-          >
-            <HiQrCode />
-          </ButtonItem>
+          <Field description={t("CONTENT_GH_DESC")} padding="standard" bottomSeparator="none" childrenLayout="below">
+            <DialogButton
+              onClick={() => navLink(GITHUB)}
+              onSecondaryButton={() => showModal(<QrCode url={GITHUB} />, window)}
+              onSecondaryActionDescription={t("CONTENT_QR_DESC")}
+            >
+              <FaGithub /> GitHub
+            </DialogButton>
+          </Field>
         </PanelSectionRow>
 
         {translator.length > 0 && (

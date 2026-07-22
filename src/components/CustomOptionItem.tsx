@@ -37,8 +37,9 @@ const titleStyle = {
 } satisfies CSSProperties;
 
 const typeIconStyle = {
+  color: "#666",
   flex: "0 0 auto",
-  marginRight: "8px",
+  marginRight: "12px",
 } satisfies CSSProperties;
 
 const labelStyle = {

@@ -1,6 +1,6 @@
 import { Focusable } from "@decky/ui";
 import { type FC, useState } from "react";
-import { FaLanguage, FaWindowRestore } from "react-icons/fa";
+import { FaGlobe, FaWindowRestore } from "react-icons/fa";
 
 import { type DropdownPreset, LaunchOptionsPreview, ToggleDropdown, ToggleFilePicker } from "../components";
 import { LangCodes } from "../data/languageCodes.json";
@@ -46,7 +46,7 @@ const Normal: FC = () => {
       <ToggleDropdown
         label={t("NORMAL_LANG_TOGGLE_LABEL")}
         description={t("NORMAL_LANG_TOGGLE_DESC")}
-        icon={<FaLanguage />}
+        icon={<FaGlobe />}
         disabled={!editable}
         checked={showLang || language.isEnabled(options)}
         onToggle={(enable: boolean) => {

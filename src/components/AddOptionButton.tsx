@@ -12,7 +12,9 @@ export interface AddOptionButtonProps {
 }
 
 export const AddOptionButton: FC<AddOptionButtonProps> = ({ onClick }) => (
-  <ButtonItem label={t("CUSTOM_ADD_LABEL")} description={t("CUSTOM_ADD_DESC")} onClick={onClick}>
-    <BsPlusSquareFill />
-  </ButtonItem>
+  <div style={{ marginTop: "0" }}>
+    <ButtonItem label={t("CUSTOM_ADD_LABEL")} description={t("CUSTOM_ADD_DESC")} onClick={onClick}>
+      <BsPlusSquareFill />
+    </ButtonItem>
+  </div>
 );
