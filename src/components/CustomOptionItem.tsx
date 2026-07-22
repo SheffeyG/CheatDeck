@@ -2,15 +2,15 @@ import { DialogButton, Focusable, ToggleField } from "@decky/ui";
 import { type CSSProperties, type FC, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { IconType } from "react-icons";
 import { BsPencilFill } from "react-icons/bs";
-import { FaBarsProgress as TypeCmdIcon, FaKey as TypeEnvIcon, FaFlag as TypeFlagIcon } from "react-icons/fa6";
+import { FaBarsProgress, FaFlag, FaKey } from "react-icons/fa6";
 
 import type { LaunchOptionDefinition } from "../domain/options";
 import type { CustomOption } from "../domain/settings";
 
 const typeMap: Record<LaunchOptionDefinition["kind"], IconType> = {
-  environment: TypeEnvIcon,
-  prefix: TypeCmdIcon,
-  argument: TypeFlagIcon,
+  environment: FaKey,
+  prefix: FaBarsProgress,
+  argument: FaFlag,
 };
 
 const toggleWrapperStyle = {
@@ -38,7 +38,7 @@ const titleStyle = {
 
 const typeIconStyle = {
   flex: "0 0 auto",
-  marginRight: "6px",
+  marginRight: "8px",
 } satisfies CSSProperties;
 
 const labelStyle = {
