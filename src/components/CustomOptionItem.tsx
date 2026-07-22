@@ -24,11 +24,36 @@ const toggleWrapperStyle = {
 // it on the far right. The button's size is matched to the toggle's measured
 // rendered height so both share the same footprint.
 const rowStyle = {
-  display: "flex",
-  width: "100%",
   alignItems: "center",
+  display: "flex",
   gap: "4px",
-  margin: "4px 0",
+  width: "100%",
+} satisfies CSSProperties;
+
+const titleStyle = {
+  alignItems: "center",
+  display: "flex",
+  minWidth: 0,
+} satisfies CSSProperties;
+
+const typeIconStyle = {
+  flex: "0 0 auto",
+  marginRight: "6px",
+} satisfies CSSProperties;
+
+const labelStyle = {
+  maxWidth: "300px",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+} satisfies CSSProperties;
+
+const editButtonBaseStyle = {
+  alignItems: "center",
+  display: "flex",
+  flex: "0 0 auto",
+  justifyContent: "center",
+  padding: 0,
 } satisfies CSSProperties;
 
 export interface CustomOptionItemProps {
@@ -42,7 +67,7 @@ export interface CustomOptionItemProps {
 export const CustomOptionItem: FC<CustomOptionItemProps> = ({ option, checked, disabled, onToggle, onEdit }) => {
   const TypeIcon = typeMap[option.definition.kind];
   const toggleRef = useRef<HTMLDivElement>(null);
-  const [buttonSize, setButtonSize] = useState<number>(40);
+  const [buttonSize, setButtonSize] = useState<number>(42);
 
   // Measure the ToggleField's rendered height and set the edit button to match
   // (square), so both controls share the same footprint.
@@ -62,16 +87,13 @@ export const CustomOptionItem: FC<CustomOptionItemProps> = ({ option, checked, d
     return () => observer.disconnect();
   }, []);
 
+  const buttonSizeValue = `${buttonSize}px`;
   const editButtonStyle = {
-    alignItems: "center",
-    display: "flex",
-    flex: "0 0 auto",
-    height: `${buttonSize}px`,
-    justifyContent: "center",
-    maxWidth: `${buttonSize}px`,
-    minWidth: `${buttonSize}px`,
-    padding: 0,
-    width: `${buttonSize}px`,
+    ...editButtonBaseStyle,
+    height: buttonSizeValue,
+    maxWidth: buttonSizeValue,
+    minWidth: buttonSizeValue,
+    width: buttonSizeValue,
   } satisfies CSSProperties;
 
   return (
@@ -79,18 +101,9 @@ export const CustomOptionItem: FC<CustomOptionItemProps> = ({ option, checked, d
       <div ref={toggleRef} style={toggleWrapperStyle}>
         <ToggleField
           label={
-            <span style={{ display: "flex", alignItems: "center", minWidth: 0 }}>
-              <TypeIcon style={{ flex: "0 0 auto", marginRight: "6px" }} />
-              <span
-                style={{
-                  maxWidth: "300px",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {option.label}
-              </span>
+            <span style={titleStyle}>
+              <TypeIcon style={typeIconStyle} />
+              <span style={labelStyle}>{option.label}</span>
             </span>
           }
           checked={checked}

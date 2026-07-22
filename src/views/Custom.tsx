@@ -1,10 +1,22 @@
 import { Focusable, showModal } from "@decky/ui";
-import type { FC } from "react";
+import type { CSSProperties, FC } from "react";
 
 import { AddOptionButton, CustomOptionItem, LaunchOptionsPreview } from "../components";
 import type { CustomOption } from "../domain/settings";
 import { useOptions, useSettings } from "../hooks";
 import { AddCustomOption, EditCustomOption } from "../modals";
+
+const layoutStyle = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "4px",
+} satisfies CSSProperties;
+
+const listStyle = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "4px",
+} satisfies CSSProperties;
 
 const Custom: FC = () => {
   // Launch options from current game details
@@ -45,29 +57,29 @@ const Custom: FC = () => {
   };
 
   return (
-    <Focusable style={{ display: "flex", flexDirection: "column" }}>
+    <Focusable style={layoutStyle}>
       {customOptions.length > 0 && <LaunchOptionsPreview />}
 
-      <div style={{ marginTop: "4px" }}>
-        {customOptions.map((option) => (
-          <CustomOptionItem
-            key={option.id}
-            option={option}
-            disabled={!editable}
-            checked={options.isEnabled(option.definition)}
-            onToggle={(enabled) => applyEdit(options.setEnabled(option.definition, enabled))}
-            onEdit={() => openEditModal(option)}
-          />
-        ))}
-      </div>
+      {customOptions.length > 0 && (
+        <div style={listStyle}>
+          {customOptions.map((option) => (
+            <CustomOptionItem
+              key={option.id}
+              option={option}
+              disabled={!editable}
+              checked={options.isEnabled(option.definition)}
+              onToggle={(enabled) => applyEdit(options.setEnabled(option.definition, enabled))}
+              onEdit={() => openEditModal(option)}
+            />
+          ))}
+        </div>
+      )}
 
-      <div style={{ margin: "4px 0" }}>
-        <AddOptionButton
-          onClick={() => {
-            showModal(<AddCustomOption onAdd={(option) => saveCustomOptions([...customOptions, option])} />, window);
-          }}
-        />
-      </div>
+      <AddOptionButton
+        onClick={() => {
+          showModal(<AddCustomOption onAdd={(option) => saveCustomOptions([...customOptions, option])} />, window);
+        }}
+      />
     </Focusable>
   );
 };
