@@ -46,6 +46,8 @@
     "CUSTOM_OPTION_DEFINITION": "定义",
     "CUSTOM_EDIT_TITLE": "编辑启动项",
     "CUSTOM_NEW_TITLE": "新建启动项",
+    "CUSTOM_DELETE_TITLE": "删除自定义启动项？",
+    "CUSTOM_DELETE_DESC": "此操作无法撤销。",
     "CUSTOM_ADD_LABEL": "添加新选项",
     "CUSTOM_ADD_DESC": "添加自定义启动项"
 }

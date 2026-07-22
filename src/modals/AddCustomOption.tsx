@@ -1,28 +1,9 @@
-import { DialogButton, DialogHeader, Focusable, ModalRoot } from "@decky/ui";
-import { type CSSProperties, type FC, useState } from "react";
+import { ConfirmModal } from "@decky/ui";
+import { type FC, useState } from "react";
 
 import type { CustomOption } from "../domain/settings";
 import { t } from "../utils/translate";
 import { CustomOptionForm, compileCustomOption, createCustomOptionDraft } from "./CustomOptionForm";
-
-const contentStyle = {
-  display: "flex",
-  flexDirection: "column",
-} satisfies CSSProperties;
-
-const actionsStyle = {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-between",
-} satisfies CSSProperties;
-
-const actionButtonStyle = {
-  alignSelf: "center",
-  fontSize: "14px",
-  marginTop: "20px",
-  textAlign: "center",
-  width: "200px",
-} satisfies CSSProperties;
 
 export const AddCustomOption: FC<{
   closeModal?: () => void;
@@ -32,26 +13,20 @@ export const AddCustomOption: FC<{
   const compiled = compileCustomOption(option);
 
   return (
-    <ModalRoot onCancel={closeModal}>
-      <div style={contentStyle}>
-        <DialogHeader>{t("CUSTOM_NEW_TITLE")}</DialogHeader>
-        <CustomOptionForm value={option} onChange={setOption} />
-        <Focusable style={actionsStyle}>
-          <DialogButton
-            disabled={!compiled}
-            onClick={() => {
-              if (compiled) onAdd(compiled);
-              closeModal?.();
-            }}
-            style={actionButtonStyle}
-          >
-            {t("SAVE")}
-          </DialogButton>
-          <DialogButton onClick={closeModal} style={actionButtonStyle}>
-            {t("CANCEL")}
-          </DialogButton>
-        </Focusable>
-      </div>
-    </ModalRoot>
+    <ConfirmModal
+      strTitle={t("CUSTOM_NEW_TITLE")}
+      strOKButtonText={t("SAVE")}
+      strCancelButtonText={t("CANCEL")}
+      bOKDisabled={!compiled}
+      closeModal={closeModal}
+      onCancel={closeModal}
+      onOK={() => {
+        if (!compiled) return;
+        onAdd(compiled);
+        closeModal?.();
+      }}
+    >
+      <CustomOptionForm value={option} onChange={setOption} />
+    </ConfirmModal>
   );
 };

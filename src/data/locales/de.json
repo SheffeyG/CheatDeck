@@ -46,6 +46,8 @@
     "CUSTOM_OPTION_DEFINITION": "Definition",
     "CUSTOM_EDIT_TITLE": "Option bearbeiten",
     "CUSTOM_NEW_TITLE": "Neue Option hinzufügen",
+    "CUSTOM_DELETE_TITLE": "Benutzerdefinierte Option löschen?",
+    "CUSTOM_DELETE_DESC": "Diese Aktion kann nicht rückgängig gemacht werden.",
     "CUSTOM_ADD_LABEL": "Neue Option hinzufügen",
     "CUSTOM_ADD_DESC": "Eine benutzerdefinierte Startoption hinzufügen"
 }

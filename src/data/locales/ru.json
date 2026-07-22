@@ -46,6 +46,8 @@
     "CUSTOM_OPTION_DEFINITION": "Определение",
     "CUSTOM_EDIT_TITLE": "Редактировать параметр",
     "CUSTOM_NEW_TITLE": "Добавить новый параметр",
+    "CUSTOM_DELETE_TITLE": "Удалить пользовательский параметр?",
+    "CUSTOM_DELETE_DESC": "Это действие нельзя отменить.",
     "CUSTOM_ADD_LABEL": "Добавить новый параметр",
     "CUSTOM_ADD_DESC": "Добавить пользовательский параметр запуска"
 }

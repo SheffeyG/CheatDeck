@@ -46,6 +46,8 @@
     "CUSTOM_OPTION_DEFINITION": "정의",
     "CUSTOM_EDIT_TITLE": "옵션 편집",
     "CUSTOM_NEW_TITLE": "새 옵션 추가",
+    "CUSTOM_DELETE_TITLE": "사용자 지정 옵션을 삭제하시겠습니까?",
+    "CUSTOM_DELETE_DESC": "이 작업은 취소할 수 없습니다.",
     "CUSTOM_ADD_LABEL": "새 옵션 추가",
     "CUSTOM_ADD_DESC": "사용자 지정 실행 옵션 추가"
 }

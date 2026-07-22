@@ -46,6 +46,8 @@
     "CUSTOM_OPTION_DEFINITION": "Definition",
     "CUSTOM_EDIT_TITLE": "Edit Option",
     "CUSTOM_NEW_TITLE": "Add a New Option",
+    "CUSTOM_DELETE_TITLE": "Delete custom option?",
+    "CUSTOM_DELETE_DESC": "This action cannot be undone.",
     "CUSTOM_ADD_LABEL": "Add a New Option",
     "CUSTOM_ADD_DESC": "Add a custom launch option"
 }

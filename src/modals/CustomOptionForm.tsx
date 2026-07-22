@@ -1,4 +1,4 @@
-import { Field, Focusable, TextField } from "@decky/ui";
+import { Field, TextField } from "@decky/ui";
 import type { CSSProperties, FC } from "react";
 
 import { parseLaunchOptionDefinition, renderLaunchOptionDefinition } from "../domain/options";
@@ -31,17 +31,10 @@ export const compileCustomOption = (draft: CustomOptionDraft): CustomOption | un
   return { id: draft.id, label, definition };
 };
 
-const rowStyle = {
-  boxShadow: "none",
-  display: "flex",
-  justifyContent: "right",
-  padding: "5px 0",
-} satisfies CSSProperties;
-
 const inputStyle = {
+  boxSizing: "border-box",
   fontSize: "14px",
-  padding: "10px",
-  width: "435px",
+  width: "100%",
 } satisfies CSSProperties;
 
 export const CustomOptionForm: FC<{
@@ -49,23 +42,19 @@ export const CustomOptionForm: FC<{
   onChange: (value: CustomOptionDraft) => void;
 }> = ({ value, onChange }) => (
   <>
-    <Field label={t("CUSTOM_OPTION_LABEL")} padding="none" bottomSeparator="none">
-      <Focusable style={rowStyle}>
-        <TextField
-          style={inputStyle}
-          value={value.label}
-          onChange={(event) => onChange({ ...value, label: event.target.value })}
-        />
-      </Focusable>
+    <Field label={t("CUSTOM_OPTION_LABEL")} padding="standard" bottomSeparator="standard" childrenLayout="below">
+      <TextField
+        style={inputStyle}
+        value={value.label}
+        onChange={(event) => onChange({ ...value, label: event.target.value })}
+      />
     </Field>
-    <Field label={t("CUSTOM_OPTION_DEFINITION")} padding="none" bottomSeparator="none">
-      <Focusable style={rowStyle}>
-        <TextField
-          style={inputStyle}
-          value={value.source}
-          onChange={(event) => onChange({ ...value, source: event.target.value })}
-        />
-      </Focusable>
+    <Field label={t("CUSTOM_OPTION_DEFINITION")} padding="standard" bottomSeparator="none" childrenLayout="below">
+      <TextField
+        style={inputStyle}
+        value={value.source}
+        onChange={(event) => onChange({ ...value, source: event.target.value })}
+      />
     </Field>
   </>
 );

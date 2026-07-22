@@ -1,28 +1,37 @@
-import { DialogButton, DialogHeader, Focusable, ModalRoot } from "@decky/ui";
-import { type CSSProperties, type FC, useState } from "react";
+import { ConfirmModal, showModal } from "@decky/ui";
+import { type FC, useState } from "react";
 
 import type { CustomOption } from "../domain/settings";
 import { t } from "../utils/translate";
 import { CustomOptionForm, compileCustomOption, draftFromCustomOption } from "./CustomOptionForm";
 
-const contentStyle = {
-  display: "flex",
-  flexDirection: "column",
-} satisfies CSSProperties;
-
-const actionsStyle = {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-between",
-} satisfies CSSProperties;
-
-const actionButtonStyle = {
-  alignSelf: "center",
-  fontSize: "14px",
-  marginTop: "20px",
-  textAlign: "center",
-  width: "200px",
-} satisfies CSSProperties;
+const DeleteCustomOptionConfirmation: FC<{
+  closeModal?: () => void;
+  label: string;
+  onConfirm: () => boolean;
+  onDeleted: () => void;
+}> = ({ closeModal, label, onConfirm, onDeleted }) => (
+  <ConfirmModal
+    strTitle={t("CUSTOM_DELETE_TITLE")}
+    strDescription={
+      <span>
+        {label}
+        <br />
+        {t("CUSTOM_DELETE_DESC")}
+      </span>
+    }
+    strOKButtonText={t("DELETE")}
+    strCancelButtonText={t("CANCEL")}
+    bDestructiveWarning={true}
+    closeModal={closeModal}
+    onCancel={closeModal}
+    onOK={() => {
+      if (!onConfirm()) return;
+      closeModal?.();
+      onDeleted();
+    }}
+  />
+);
 
 export const EditCustomOption: FC<{
   closeModal?: () => void;
@@ -34,30 +43,29 @@ export const EditCustomOption: FC<{
   const compiled = compileCustomOption(option);
 
   return (
-    <ModalRoot onCancel={closeModal}>
-      <div style={contentStyle}>
-        <DialogHeader>{t("CUSTOM_EDIT_TITLE")}</DialogHeader>
-        <CustomOptionForm value={option} onChange={setOption} />
-        <Focusable style={actionsStyle}>
-          <DialogButton
-            disabled={!compiled}
-            onClick={() => {
-              if (compiled && onUpdate(compiled)) closeModal?.();
-            }}
-            style={actionButtonStyle}
-          >
-            {t("SAVE")}
-          </DialogButton>
-          <DialogButton
-            onClick={() => {
-              if (onDelete(initialOption.id)) closeModal?.();
-            }}
-            style={actionButtonStyle}
-          >
-            {t("DELETE")}
-          </DialogButton>
-        </Focusable>
-      </div>
-    </ModalRoot>
+    <ConfirmModal
+      strTitle={t("CUSTOM_EDIT_TITLE")}
+      strOKButtonText={t("SAVE")}
+      strCancelButtonText={t("CANCEL")}
+      strMiddleButtonText={t("DELETE")}
+      bOKDisabled={!compiled}
+      closeModal={closeModal}
+      onCancel={closeModal}
+      onOK={() => {
+        if (compiled && onUpdate(compiled)) closeModal?.();
+      }}
+      onMiddleButton={() => {
+        showModal(
+          <DeleteCustomOptionConfirmation
+            label={initialOption.label}
+            onConfirm={() => onDelete(initialOption.id)}
+            onDeleted={() => closeModal?.()}
+          />,
+          window,
+        );
+      }}
+    >
+      <CustomOptionForm value={option} onChange={setOption} />
+    </ConfirmModal>
   );
 };

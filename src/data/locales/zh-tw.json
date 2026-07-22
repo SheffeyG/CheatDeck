@@ -46,6 +46,8 @@
     "CUSTOM_OPTION_DEFINITION": "定義",
     "CUSTOM_EDIT_TITLE": "編輯啟動項",
     "CUSTOM_NEW_TITLE": "新增啟動項",
+    "CUSTOM_DELETE_TITLE": "刪除自訂啟動項？",
+    "CUSTOM_DELETE_DESC": "此操作無法復原。",
     "CUSTOM_ADD_LABEL": "新增選項",
     "CUSTOM_ADD_DESC": "新增自訂啟動選項"
 }

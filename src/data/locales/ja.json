@@ -46,6 +46,8 @@
     "CUSTOM_OPTION_DEFINITION": "定義",
     "CUSTOM_EDIT_TITLE": "オプションを編集",
     "CUSTOM_NEW_TITLE": "新しいオプションを追加",
+    "CUSTOM_DELETE_TITLE": "カスタムオプションを削除しますか？",
+    "CUSTOM_DELETE_DESC": "この操作は元に戻せません。",
     "CUSTOM_ADD_LABEL": "新しいオプションを追加",
     "CUSTOM_ADD_DESC": "カスタム起動オプションを追加"
 }
