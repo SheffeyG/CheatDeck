@@ -1,15 +1,6 @@
-import {
-  DialogBodyText,
-  DialogButton,
-  Field,
-  Focusable,
-  Navigation,
-  PanelSection,
-  PanelSectionRow,
-  showModal,
-  ToggleField,
-} from "@decky/ui";
-import type { CSSProperties, FC } from "react";
+import { ButtonItem, Field, Navigation, PanelSection, PanelSectionRow, showModal, ToggleField } from "@decky/ui";
+import type { FC } from "react";
+import { FaGithub } from "react-icons/fa";
 import { HiQrCode } from "react-icons/hi2";
 
 import { useSettings } from "../hooks";
@@ -17,36 +8,6 @@ import { QrCode } from "../modals";
 import { t } from "../utils/translate";
 
 const GITHUB = "https://github.com/SheffeyG/CheatDeck";
-
-const contentStyle = {
-  display: "flex",
-  flexDirection: "column",
-} satisfies CSSProperties;
-
-const informationStyle = {
-  margin: 0,
-  padding: 0,
-  width: "100%",
-} satisfies CSSProperties;
-
-const linksStyle = {
-  display: "flex",
-} satisfies CSSProperties;
-
-const githubButtonStyle = {
-  fontSize: "14px",
-  padding: "10px",
-} satisfies CSSProperties;
-
-const qrButtonStyle = {
-  alignItems: "center",
-  display: "flex",
-  justifyContent: "center",
-  marginLeft: ".5em",
-  maxWidth: "40px",
-  minWidth: "auto",
-  padding: "10px",
-} satisfies CSSProperties;
 
 const Content: FC = () => {
   const translator = t("CREDIT");
@@ -58,7 +19,7 @@ const Content: FC = () => {
   };
 
   return (
-    <Focusable style={contentStyle}>
+    <>
       <PanelSection title={t("CONTENT_SETTINGS")}>
         <PanelSectionRow>
           <ToggleField
@@ -73,7 +34,7 @@ const Content: FC = () => {
           <ToggleField
             label={t("CONTENT_CHECK_WINE_LABEL")}
             description={t("CONTENT_CHECK_WINE_DESC")}
-            bottomSeparator="standard"
+            bottomSeparator="none"
             checked={skipWineCheck}
             onChange={(enable: boolean) => saveSkipWineCheck(enable)}
           />
@@ -81,56 +42,42 @@ const Content: FC = () => {
       </PanelSection>
 
       <PanelSection title={t("CONTENT_INFORMATION")}>
-        <Focusable focusWithinClassName="gpfocuswithin" onActivate={() => {}} style={informationStyle}>
-          <DialogBodyText>
-            <li>{t("CONTENT_NOTE0")}</li>
-            <li>{t("CONTENT_NOTE1")}</li>
-            <li>{t("CONTENT_NOTE2")}</li>
-          </DialogBodyText>
-        </Focusable>
-
         <PanelSectionRow>
-          <Field
-            bottomSeparator="none"
-            icon={null}
-            label={null}
-            childrenLayout={undefined}
-            inlineWrap="keep-inline"
-            padding="none"
-            spacingBetweenLabelAndChild="none"
-            childrenContainerWidth="max"
+          <Field description={t("CONTENT_NOTE0")} padding="standard" bottomSeparator="standard" />
+        </PanelSectionRow>
+        <PanelSectionRow>
+          <Field description={t("CONTENT_NOTE1")} padding="standard" bottomSeparator="standard" />
+        </PanelSectionRow>
+        <PanelSectionRow>
+          <Field description={t("CONTENT_NOTE2")} padding="standard" bottomSeparator="standard" />
+        </PanelSectionRow>
+        <PanelSectionRow>
+          <ButtonItem
+            label="GitHub"
             description={t("CONTENT_GH_DESC")}
+            bottomSeparator="standard"
+            onClick={() => navLink(GITHUB)}
           >
-            <Focusable style={linksStyle}>
-              <DialogButton
-                onClick={() => navLink(GITHUB)}
-                onSecondaryButton={() => showModal(<QrCode url={GITHUB} />, window)}
-                onSecondaryActionDescription={t("CONTENT_QR_DESC")}
-                style={githubButtonStyle}
-              >
-                GitHub
-              </DialogButton>
-              <DialogButton
-                onOKActionDescription={t("CONTENT_QR_DESC")}
-                onClick={() => showModal(<QrCode url={GITHUB} />, window)}
-                style={qrButtonStyle}
-              >
-                <HiQrCode />
-              </DialogButton>
-            </Focusable>
-          </Field>
+            <FaGithub />
+          </ButtonItem>
+        </PanelSectionRow>
+        <PanelSectionRow>
+          <ButtonItem
+            label={t("CONTENT_QR_DESC")}
+            bottomSeparator={translator.length > 0 ? "standard" : "none"}
+            onClick={() => showModal(<QrCode url={GITHUB} />, window)}
+          >
+            <HiQrCode />
+          </ButtonItem>
         </PanelSectionRow>
 
         {translator.length > 0 && (
-          <DialogBodyText>
-            <p>
-              <b>{`${t("TRANSLATION")}: `}</b>
-              {translator}
-            </p>
-          </DialogBodyText>
+          <PanelSectionRow>
+            <Field label={t("TRANSLATION")} description={translator} padding="standard" bottomSeparator="none" />
+          </PanelSectionRow>
         )}
       </PanelSection>
-    </Focusable>
+    </>
   );
 };
 
