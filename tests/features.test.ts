@@ -8,7 +8,7 @@ import {
   language,
   losslessScaling,
   radvPerftest,
-  trainer,
+  sidecarProgram,
 } from "../src/domain/features";
 import { LaunchOptions, type LaunchOptionsEditResult } from "../src/domain/options";
 
@@ -19,30 +19,30 @@ const success = (result: LaunchOptionsEditResult): LaunchOptions => {
 };
 
 describe("features", () => {
-  it("round-trips trainer paths and removes both assignments", () => {
-    const path = `/home/deck/C:\\Games/it's "$trainer".exe`;
-    const enabled = success(trainer.set(LaunchOptions.parse(""), path));
+  it("round-trips sidecar program paths and removes both assignments", () => {
+    const path = `/home/deck/C:\\Games/it's "$sidecar".exe`;
+    const enabled = success(sidecarProgram.set(LaunchOptions.parse(""), path));
 
-    expect(trainer.path(enabled)).toBe(path);
-    expect(enabled.getEnvironment("PROTON_REMOTE_DEBUG_CMD")).toBe(`'/home/deck/C:\\Games/it'"'"'s "$trainer".exe'`);
-    expect(trainer.directory(enabled)).toBe("/home/deck/C:\\Games");
-    expect(trainer.isEnabled(enabled)).toBe(true);
-    expect(success(trainer.disable(enabled)).toString()).toBe("");
+    expect(sidecarProgram.path(enabled)).toBe(path);
+    expect(enabled.getEnvironment("PROTON_REMOTE_DEBUG_CMD")).toBe(`'/home/deck/C:\\Games/it'"'"'s "$sidecar".exe'`);
+    expect(sidecarProgram.directory(enabled)).toBe("/home/deck/C:\\Games");
+    expect(sidecarProgram.isEnabled(enabled)).toBe(true);
+    expect(success(sidecarProgram.disable(enabled)).toString()).toBe("");
   });
 
   it.each([
-    [`PROTON_REMOTE_DEBUG_CMD="'/home/deck/My Trainer.exe'" %command%`, "/home/deck/My Trainer.exe"],
-    [`PROTON_REMOTE_DEBUG_CMD='"/home/deck/My Trainer.exe"' %command%`, "/home/deck/My Trainer.exe"],
-    [`PROTON_REMOTE_DEBUG_CMD='/home/deck/My\\ Trainer.exe' %command%`, "/home/deck/My Trainer.exe"],
-  ])("decodes a single trainer command word from %s", (source, expected) => {
-    expect(trainer.path(LaunchOptions.parse(source))).toBe(expected);
+    [`PROTON_REMOTE_DEBUG_CMD="'/home/deck/My Sidecar.exe'" %command%`, "/home/deck/My Sidecar.exe"],
+    [`PROTON_REMOTE_DEBUG_CMD='"/home/deck/My Sidecar.exe"' %command%`, "/home/deck/My Sidecar.exe"],
+    [`PROTON_REMOTE_DEBUG_CMD='/home/deck/My\\ Sidecar.exe' %command%`, "/home/deck/My Sidecar.exe"],
+  ])("decodes a single sidecar command word from %s", (source, expected) => {
+    expect(sidecarProgram.path(LaunchOptions.parse(source))).toBe(expected);
   });
 
   it.each([
-    `PROTON_REMOTE_DEBUG_CMD='trainer.exe --flag' %command%`,
+    `PROTON_REMOTE_DEBUG_CMD='sidecar.exe --flag' %command%`,
     `PROTON_REMOTE_DEBUG_CMD="'unterminated" %command%`,
-  ])("rejects an invalid trainer command from %s", (source) => {
-    expect(trainer.path(LaunchOptions.parse(source))).toBeUndefined();
+  ])("rejects an invalid sidecar command from %s", (source) => {
+    expect(sidecarProgram.path(LaunchOptions.parse(source))).toBeUndefined();
   });
 
   it("sets and removes language assignments atomically", () => {
@@ -91,7 +91,7 @@ describe("features", () => {
   it("fails closed without modifying malformed source", () => {
     const options = LaunchOptions.parse("%command% && bad");
 
-    expect(trainer.set(options, "/tmp/trainer.exe")).toEqual({
+    expect(sidecarProgram.set(options, "/tmp/sidecar.exe")).toEqual({
       ok: false,
       value: options,
       error: "document-not-editable",

@@ -10,8 +10,8 @@ const definitions = {
 } as const satisfies Record<string, LaunchOptionDefinition>;
 
 const keys = {
-  trainer: "PROTON_REMOTE_DEBUG_CMD",
-  trainerDirectory: "PRESSURE_VESSEL_FILESYSTEMS_RW",
+  sidecarProgram: "PROTON_REMOTE_DEBUG_CMD",
+  sidecarDirectory: "PRESSURE_VESSEL_FILESYSTEMS_RW",
   language: "LANG",
   hostLanguage: "HOST_LC_ALL",
   compatibilityPath: "STEAM_COMPAT_DATA_PATH",
@@ -46,17 +46,17 @@ const exclusiveToggleFeature = (definition: LaunchOptionDefinition, incompatible
     options.edit(enabled ? [disable(incompatible), enable(definition)] : [disable(definition)]),
 });
 
-export const trainer = {
-  path: (options: LaunchOptions): string | undefined => decodeShlexWord(options.getEnvironment(keys.trainer)),
-  directory: (options: LaunchOptions): string | undefined => options.getEnvironment(keys.trainerDirectory),
-  isEnabled: (options: LaunchOptions): boolean => options.hasEnvironment(keys.trainer),
+export const sidecarProgram = {
+  path: (options: LaunchOptions): string | undefined => decodeShlexWord(options.getEnvironment(keys.sidecarProgram)),
+  directory: (options: LaunchOptions): string | undefined => options.getEnvironment(keys.sidecarDirectory),
+  isEnabled: (options: LaunchOptions): boolean => options.hasEnvironment(keys.sidecarProgram),
   set: (options: LaunchOptions, path: string) =>
     options.edit([
-      enable(environment(keys.trainer, encodeShlexWord(path))),
-      enable(environment(keys.trainerDirectory, parentPath(path))),
+      enable(environment(keys.sidecarProgram, encodeShlexWord(path))),
+      enable(environment(keys.sidecarDirectory, parentPath(path))),
     ]),
   disable: (options: LaunchOptions) =>
-    options.edit([unsetEnvironment(keys.trainer), unsetEnvironment(keys.trainerDirectory)]),
+    options.edit([unsetEnvironment(keys.sidecarProgram), unsetEnvironment(keys.sidecarDirectory)]),
 };
 
 export const language = {

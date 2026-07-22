@@ -1,24 +1,24 @@
 import { Focusable } from "@decky/ui";
 import { type FC, useState } from "react";
-import { FaGamepad, FaLanguage } from "react-icons/fa";
+import { FaLanguage, FaWindowRestore } from "react-icons/fa";
 
 import { type DropdownPreset, LaunchOptionsPreview, ToggleDropdown, ToggleFilePicker } from "../components";
 import { LangCodes } from "../data/languageCodes.json";
-import { language, trainer } from "../domain/features";
+import { language, sidecarProgram } from "../domain/features";
 import { useOptions } from "../hooks";
 import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
 
 const Normal: FC = () => {
   const { options, editable, applyEdit } = useOptions();
-  const [showCheat, setShowCheat] = useState(trainer.isEnabled(options));
+  const [showSidecar, setShowSidecar] = useState(sidecarProgram.isEnabled(options));
   const [showLang, setShowLang] = useState(language.isEnabled(options));
 
-  const handleBrowse = async () => {
-    const defaultPath = trainer.directory(options) ?? (await getHomePath());
+  const handleSidecarBrowse = async () => {
+    const defaultPath = sidecarProgram.directory(options) ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, true, ["exe", "bat"]);
-    const result = trainer.set(options, filePickerRes.path);
-    if (!result.ok || !applyEdit(result)) setShowCheat(false);
+    const result = sidecarProgram.set(options, filePickerRes.path);
+    if (!result.ok || !applyEdit(result)) setShowSidecar(false);
   };
 
   return (
@@ -26,21 +26,21 @@ const Normal: FC = () => {
       <LaunchOptionsPreview />
 
       <ToggleFilePicker
-        label={t("NORMAL_CHEAT_TOGGLE_LABEL")}
-        description={t("NORMAL_CHEAT_TOGGLE_DESC")}
-        icon={<FaGamepad />}
+        label={t("NORMAL_SIDECAR_TOGGLE_LABEL")}
+        description={t("NORMAL_SIDECAR_TOGGLE_DESC")}
+        icon={<FaWindowRestore />}
         disabled={!editable}
-        checked={showCheat || trainer.isEnabled(options)}
+        checked={showSidecar || sidecarProgram.isEnabled(options)}
         onToggle={(enable: boolean) => {
           if (enable) {
-            setShowCheat(true);
+            setShowSidecar(true);
             return;
           }
-          const result = trainer.disable(options);
-          if (result.ok && applyEdit(result)) setShowCheat(false);
+          const result = sidecarProgram.disable(options);
+          if (result.ok && applyEdit(result)) setShowSidecar(false);
         }}
-        value={trainer.path(options)}
-        onBrowse={handleBrowse}
+        value={sidecarProgram.path(options)}
+        onBrowse={handleSidecarBrowse}
       />
 
       <ToggleDropdown
