@@ -1,10 +1,6 @@
 import { SidebarNavigation, useParams } from "@decky/ui";
 import type { FC } from "react";
-import {
-  BsExclamationSquareFill as IconAdvanced,
-  BsPlusSquareFill as IconCustom,
-  BsCheckSquareFill as IconNormal,
-} from "react-icons/bs";
+import { FaGear as IconAdvanced, FaPuzzlePiece as IconCustom, FaHouse as IconNormal } from "react-icons/fa6";
 
 import { OptionsProvider, SettingsProvider } from "../hooks";
 import { t } from "../utils/translate";
