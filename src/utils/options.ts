@@ -1,5 +1,3 @@
-import { logger } from "./logger";
-
 export class Options {
   #parsedOptions: LaunchOption[] = [];
 
@@ -93,7 +91,7 @@ export class Options {
             options.push({ type: "flag_args", key: current });
           }
         } else {
-          logger.error("Unexcepted token after '%command%':", current);
+          options.push({ type: "raw_arg", key: current });
         }
       }
     }
@@ -143,12 +141,17 @@ export class Options {
       .map(opt => opt.key)
       .join(" -- ");
 
+    const rawArgString = this.#parsedOptions
+      .filter(opt => opt.type === "raw_arg")
+      .map(opt => opt.key)
+      .join(" ");
+
     const flagArgsString = this.#parsedOptions
       .filter(opt => opt.type === "flag_args")
       .map(opt => opt.value ? `${opt.key} ${opt.value}` : opt.key)
       .join(" ");
 
-    const optionsString = [envString, preCmdString, "%command%", flagArgsString]
+    const optionsString = [envString, preCmdString, "%command%", rawArgString, flagArgsString]
       .filter(part => part) // filter empty parts
       .join(" ")
       .trim();

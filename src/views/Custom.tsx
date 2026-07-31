@@ -6,6 +6,7 @@ import {
   FaBarsProgress as TypeCmdIcon,
   FaFlag as TypeFlagIcon,
   FaKey as TypeEnvIcon,
+  FaTerminal as TypeRawArgIcon,
 } from "react-icons/fa6";
 
 import { SaveWithPreview } from "../components";
@@ -26,6 +27,7 @@ const Custom: FC = () => {
       env: TypeEnvIcon,
       pre_cmd: TypeCmdIcon,
       flag_args: TypeFlagIcon,
+      raw_arg: TypeRawArgIcon,
     };
     const TypeIcon = typeMap[type];
     return (

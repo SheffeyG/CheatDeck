@@ -1,6 +1,6 @@
 type OptionPosition = "before" | "after";
 
-type OptionType = "env" | "pre_cmd" | "flag_args";
+type OptionType = "env" | "pre_cmd" | "flag_args" | "raw_arg";
 
 interface LaunchOption {
   type: OptionType;
