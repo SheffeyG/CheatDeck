@@ -1,15 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  compatibilityPath,
-  dxvkAsync,
-  framegenPatch,
-  framegenUnpatch,
-  language,
-  losslessScaling,
-  radvPerftest,
-  sidecarProgram,
-} from "../src/domain/features";
+import { compatibilityPath, dxvkAsync, language, radvPerftest, sidecarProgram } from "../src/domain/features";
 import { LaunchOptions, type LaunchOptionsEditResult } from "../src/domain/options";
 
 const success = (result: LaunchOptionsEditResult): LaunchOptions => {
@@ -70,22 +61,6 @@ describe("features", () => {
     expect(radvPerftest.isEnabled(radv)).toBe(true);
     expect(radv.toString()).toContain("DXVK_ASYNC=1");
     expect(radv.toString()).toContain("RADV_PERFTEST=gpl");
-  });
-
-  it("inserts Lossless Scaling as the outermost wrapper", () => {
-    const enabled = success(losslessScaling.setEnabled(LaunchOptions.parse("gamescope %command%"), true));
-
-    expect(enabled.toString()).toBe("~/lsfg -- gamescope %command%");
-  });
-
-  it("keeps framegen patch and unpatch mutually exclusive", () => {
-    const patched = success(framegenPatch.setEnabled(LaunchOptions.parse(""), true));
-    const unpatched = success(framegenUnpatch.setEnabled(patched, true));
-    const unchanged = framegenPatch.setEnabled(unpatched, false);
-
-    expect(framegenPatch.isEnabled(unpatched)).toBe(false);
-    expect(framegenUnpatch.isEnabled(unpatched)).toBe(true);
-    expect(unchanged).toEqual({ ok: true, value: unpatched, changed: false });
   });
 
   it("fails closed without modifying malformed source", () => {

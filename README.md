@@ -33,7 +33,7 @@ If you've successfully used CheatDeck with a game or trainer, please share your 
 
 ## Advanced Options
 
-CheatDeck provides several launch-option presets for quick access in the *Advanced* tab.
+CheatDeck provides several launch-option controls for quick access in the *Advanced* tab.
 
 - **Language**
 
@@ -52,16 +52,25 @@ CheatDeck provides several launch-option presets for quick access in the *Advanc
   Specify a folder to share compatibility data between games. This could avoids repeatedly upgrading dependencies and can save disk space.
   **Note:** Game saves are stored in the compat layer; you may need to migrate them when changing the compat data path.
 
+## Custom Options
+
+### Initial Presets
+
+When no Custom Options configuration exists, CheatDeck initializes the following presets as ordinary custom options. They can be toggled, edited, or deleted and are not restored after deletion.
+
 - **Lossless Scaling**
 
-  Enables [LSFG-VK](https://github.com/PancakeTAS/lsfg-vk) frame generation. Requires the Lossless Scaling tool and the [decky-lsfg-vk](https://github.com/xXJSONDeruloXx/decky-lsfg-vk) plugin.
+  Runs `~/lsfg` to enable [LSFG-VK](https://github.com/PancakeTAS/lsfg-vk) frame generation. It requires the Lossless Scaling tool and the [decky-lsfg-vk](https://github.com/xXJSONDeruloXx/decky-lsfg-vk) plugin.
 
-- **OptiScaler**
+- **OptiScaler Patch**
 
-  [OptiScaler](https://github.com/optiscaler/OptiScaler) allows disguising DLSS input to use FSR upscaling and frame generation. Requires the [Decky-Framegen](https://github.com/xXJSONDeruloXx/Decky-Framegen) plugin.
-  To revert changes, run the unpatch script once.
+  Runs `~/fgmod/fgmod` to apply the [OptiScaler](https://github.com/optiscaler/OptiScaler) patch. It requires the [Decky-Framegen](https://github.com/xXJSONDeruloXx/Decky-Framegen) plugin.
 
-## Custom Options
+- **OptiScaler Unpatch**
+
+  Runs `~/fgmod/fgmod-uninstaller.sh` to remove the OptiScaler patch. Patch and unpatch are independent custom options; CheatDeck does not enforce mutual exclusion between them.
+
+### Definitions
 
 CheatDeck edits a restricted, source-preserving launch-options grammar:
 ```

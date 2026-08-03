@@ -2,14 +2,7 @@ import { Focusable } from "@decky/ui";
 import { type FC, useState } from "react";
 
 import { LaunchOptionsPreview, Toggle, ToggleFilePicker } from "../components";
-import {
-  compatibilityPath,
-  dxvkAsync,
-  framegenPatch,
-  framegenUnpatch,
-  losslessScaling,
-  radvPerftest,
-} from "../domain/features";
+import { compatibilityPath, dxvkAsync, radvPerftest } from "../domain/features";
 import { useOptions } from "../hooks";
 import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
@@ -60,30 +53,6 @@ const Advanced: FC = () => {
         }}
         value={compatibilityPath.value(options)}
         onBrowse={handleBrowse}
-      />
-
-      <Toggle
-        label={t("ADVANCED_LOSSLESS_SCALING_LABEL")}
-        description={t("ADVANCED_LOSSLESS_SCALING_DESC")}
-        disabled={!editable}
-        checked={losslessScaling.isEnabled(options)}
-        onChange={(enable: boolean) => applyEdit(losslessScaling.setEnabled(options, enable))}
-      />
-
-      <Toggle
-        label={t("ADVANCED_DECKY_FRAMEGEN_PATCH_LABEL")}
-        description={t("ADVANCED_DECKY_FRAMEGEN_PATCH_DESC")}
-        disabled={!editable}
-        checked={framegenPatch.isEnabled(options)}
-        onChange={(enable: boolean) => applyEdit(framegenPatch.setEnabled(options, enable))}
-      />
-
-      <Toggle
-        label={t("ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL")}
-        description={t("ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC")}
-        disabled={!editable}
-        checked={framegenUnpatch.isEnabled(options)}
-        onChange={(enable: boolean) => applyEdit(framegenUnpatch.setEnabled(options, enable))}
       />
     </Focusable>
   );

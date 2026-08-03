@@ -4,9 +4,6 @@ import { parseLiteralWord } from "./parser";
 const definitions = {
   dxvkAsync: { kind: "environment", name: "DXVK_ASYNC", value: "1" },
   radvPerftest: { kind: "environment", name: "RADV_PERFTEST", value: "gpl" },
-  losslessScaling: { kind: "prefix", command: "~/lsfg", argv: [] },
-  framegenPatch: { kind: "prefix", command: "~/fgmod/fgmod", argv: [] },
-  framegenUnpatch: { kind: "prefix", command: "~/fgmod/fgmod-uninstaller.sh", argv: [] },
 } as const satisfies Record<string, LaunchOptionDefinition>;
 
 const keys = {
@@ -40,12 +37,6 @@ const toggleFeature = (definition: LaunchOptionDefinition) => ({
   setEnabled: (options: LaunchOptions, enabled: boolean) => options.setEnabled(definition, enabled),
 });
 
-const exclusiveToggleFeature = (definition: LaunchOptionDefinition, incompatible: LaunchOptionDefinition) => ({
-  isEnabled: (options: LaunchOptions): boolean => options.isEnabled(definition),
-  setEnabled: (options: LaunchOptions, enabled: boolean) =>
-    options.edit(enabled ? [disable(incompatible), enable(definition)] : [disable(definition)]),
-});
-
 export const sidecarProgram = {
   path: (options: LaunchOptions): string | undefined => decodeShlexWord(options.getEnvironment(keys.sidecarProgram)),
   directory: (options: LaunchOptions): string | undefined => options.getEnvironment(keys.sidecarDirectory),
@@ -77,7 +68,3 @@ export const compatibilityPath = {
 
 export const dxvkAsync = toggleFeature(definitions.dxvkAsync);
 export const radvPerftest = toggleFeature(definitions.radvPerftest);
-export const losslessScaling = toggleFeature(definitions.losslessScaling);
-
-export const framegenPatch = exclusiveToggleFeature(definitions.framegenPatch, definitions.framegenUnpatch);
-export const framegenUnpatch = exclusiveToggleFeature(definitions.framegenUnpatch, definitions.framegenPatch);

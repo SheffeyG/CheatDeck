@@ -64,5 +64,41 @@ class Plugin:
         return settings.setSetting(data["key"], data["value"])
 
     @classmethod
+    async def _migration(cls):
+        if settings.getSetting("CustomOptionsV6", None) is not None:
+            return
+
+        logger.info("[backend] Initializing custom option presets")
+        settings.setSetting("CustomOptionsV6", [
+            {
+                "id": "preset-lossless-scaling",
+                "label": "LSFG-VK Frame Generation",
+                "definition": {
+                    "kind": "prefix",
+                    "command": "~/lsfg",
+                    "argv": [],
+                },
+            },
+            {
+                "id": "preset-framegen-patch",
+                "label": "Enable OptiScaler",
+                "definition": {
+                    "kind": "prefix",
+                    "command": "~/fgmod/fgmod",
+                    "argv": [],
+                },
+            },
+            {
+                "id": "preset-framegen-unpatch",
+                "label": "Disable OptiScaler",
+                "definition": {
+                    "kind": "prefix",
+                    "command": "~/fgmod/fgmod-uninstaller.sh",
+                    "argv": [],
+                },
+            },
+        ])
+
+    @classmethod
     async def get_env(cls, env: str):
         return getattr(decky, env)
