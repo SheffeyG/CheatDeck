@@ -1,152 +1,90 @@
-import { Focusable, ToggleField } from "@decky/ui";
-import { FC, useState } from "react";
+import { Focusable } from "@decky/ui";
+import { type FC, useState } from "react";
 
-import { SaveWithPreview, ToggleFilePicker } from "../components";
+import { LaunchOptionsPreview, Toggle, ToggleFilePicker } from "../components";
+import {
+  compatibilityPath,
+  dxvkAsync,
+  framegenPatch,
+  framegenUnpatch,
+  losslessScaling,
+  radvPerftest,
+} from "../domain/features";
 import { useOptions } from "../hooks";
-import { browseFiles, getHomePath, Options, t } from "../utils";
+import { browseFiles, getHomePath } from "../infra/decky";
+import { t } from "../utils/translate";
 
 const Advanced: FC = () => {
-  const { options, setOptions } = useOptions();
-  const [showPrefix, setShowPrefix] = useState(options.hasKey("STEAM_COMPAT_DATA_PATH"));
-
-  const optionsString = options.getOptionsString();
+  const { options, editable, applyEdit } = useOptions();
+  const [showPrefix, setShowPrefix] = useState(compatibilityPath.value(options) !== undefined);
 
   const handleBrowse = async () => {
-    const savedPath = options.getKeyValue("STEAM_COMPAT_DATA_PATH")?.replace(/^"|"$/g, "");
-    const defaultPath = savedPath ?? await getHomePath();
+    const defaultPath = compatibilityPath.value(options) ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, false);
-
-    const newOptions = new Options(optionsString);
-    newOptions.setOption({
-      type: "env",
-      key: "STEAM_COMPAT_DATA_PATH",
-      value: `"${filePickerRes.path}"`,
-    });
-    setOptions(newOptions);
+    const result = compatibilityPath.set(options, filePickerRes.path);
+    if (!result.ok || !applyEdit(result)) setShowPrefix(false);
   };
 
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
+      <LaunchOptionsPreview />
 
-      <ToggleField
-        label={t("ADVANCED_DXVK_ASYNC_LABEL", "DXVK_ASYNC")}
-        description={t(
-          "ADVANCED_DXVK_ASYNC_DESC",
-          "Optimize the ProtonGE compatibility layer to reduce frame time and input lag",
-        )}
-        bottomSeparator="standard"
-        checked={options.hasKeyValue("DXVK_ASYNC", "1")}
-        onChange={(enable: boolean) => {
-          const updatedOptions = new Options(optionsString);
-          if (enable) {
-            updatedOptions.setOption({ type: "env", key: "DXVK_ASYNC", value: "1" });
-          } else {
-            updatedOptions.removeOptionByKey("DXVK_ASYNC");
-          }
-          setOptions(updatedOptions);
-        }}
+      <Toggle
+        label={t("ADVANCED_DXVK_ASYNC_LABEL")}
+        description={t("ADVANCED_DXVK_ASYNC_DESC")}
+        disabled={!editable}
+        checked={dxvkAsync.isEnabled(options)}
+        onChange={(enable: boolean) => applyEdit(dxvkAsync.setEnabled(options, enable))}
       />
 
-      <ToggleField
-        label={t("ADVANCED_RADV_PERFTEST_LABEL", "RADV_PERFTEST")}
-        description={t(
-          "ADVANCED_RADV_PERFTEST_DESC",
-          "Optimize the shader cache behavior of the ProtonGE compatibility layer",
-        )}
-        bottomSeparator="standard"
-        checked={options.hasKeyValue("RADV_PERFTEST", "gpl")}
-        onChange={(enable: boolean) => {
-          const updatedOptions = new Options(optionsString);
-          if (enable) {
-            updatedOptions.setOption({ type: "env", key: "RADV_PERFTEST", value: "gpl" });
-          } else {
-            updatedOptions.removeOptionByKey("RADV_PERFTEST");
-          }
-          setOptions(updatedOptions);
-        }}
+      <Toggle
+        label={t("ADVANCED_RADV_PERFTEST_LABEL")}
+        description={t("ADVANCED_RADV_PERFTEST_DESC")}
+        disabled={!editable}
+        checked={radvPerftest.isEnabled(options)}
+        onChange={(enable: boolean) => applyEdit(radvPerftest.setEnabled(options, enable))}
       />
 
       <ToggleFilePicker
-        label={t("ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL", "STEAM_COMPAT_DATA_PATH")}
-        description={t(
-          "ADVANCED_STEAM_COMPAT_DATA_PATH_DESC",
-          "Specify a folder as the shared prefix for the game",
-        )}
-        checked={showPrefix}
+        label={t("ADVANCED_STEAM_COMPAT_DATA_PATH_LABEL")}
+        description={t("ADVANCED_STEAM_COMPAT_DATA_PATH_DESC")}
+        disabled={!editable}
+        checked={showPrefix || compatibilityPath.value(options) !== undefined}
         onToggle={(enable: boolean) => {
-          setShowPrefix(enable);
-          if (!enable) {
-            const updatedOptions = new Options(options.getOptionsString());
-            updatedOptions.removeOptionByKey("STEAM_COMPAT_DATA_PATH");
-            setOptions(updatedOptions);
+          if (enable) {
+            setShowPrefix(true);
+            return;
           }
+          const result = compatibilityPath.disable(options);
+          if (result.ok && applyEdit(result)) setShowPrefix(false);
         }}
-        value={options.getKeyValue("STEAM_COMPAT_DATA_PATH")?.replace(/^"|\\|"$/g, "")}
+        value={compatibilityPath.value(options)}
         onBrowse={handleBrowse}
-        fieldLabel={t("ADVANCED_STEAM_COMPAT_DATA_PATH_NOTE", "Data Path")}
       />
 
-      <ToggleField
-        label={t("ADVANCED_LOSSLESS_SCALING_LABEL", "Lossless Scaling")}
-        description={t(
-          "ADVANCED_LOSSLESS_SCALING_DESC",
-          "Patch the game to use Framegen (requires the Lossless-Scaling plugin)",
-        )}
-        bottomSeparator="standard"
-        checked={options.hasKey("~/lsfg")}
-        onChange={(enable: boolean) => {
-          const updatedOptions = new Options(optionsString);
-          if (enable) {
-            updatedOptions.setOption({ type: "pre_cmd", key: "~/lsfg" });
-          } else {
-            updatedOptions.removeOptionByKey("~/lsfg");
-          }
-          setOptions(updatedOptions);
-        }}
+      <Toggle
+        label={t("ADVANCED_LOSSLESS_SCALING_LABEL")}
+        description={t("ADVANCED_LOSSLESS_SCALING_DESC")}
+        disabled={!editable}
+        checked={losslessScaling.isEnabled(options)}
+        onChange={(enable: boolean) => applyEdit(losslessScaling.setEnabled(options, enable))}
       />
 
-      <ToggleField
-        label={t("ADVANCED_DECKY_FRAMEGEN_PATCH_LABEL", "Decky Framegen Patch")}
-        description={t(
-          "ADVANCED_DECKY_FRAMEGEN_PATCH_DESC",
-          "Patch the game to use Framegen (requires the Decky-Framegen plugin)",
-        )}
-        bottomSeparator="standard"
-        checked={options.hasKey("~/fgmod/fgmod")}
-        onChange={(enable: boolean) => {
-          const updatedOptions = new Options(optionsString);
-          if (enable) {
-            updatedOptions.removeOptionByKey("~/fgmod/fgmod-uninstaller.sh");
-            updatedOptions.setOption({ type: "pre_cmd", key: "~/fgmod/fgmod" });
-          } else {
-            updatedOptions.removeOptionByKey("~/fgmod/fgmod");
-          }
-          setOptions(updatedOptions);
-        }}
+      <Toggle
+        label={t("ADVANCED_DECKY_FRAMEGEN_PATCH_LABEL")}
+        description={t("ADVANCED_DECKY_FRAMEGEN_PATCH_DESC")}
+        disabled={!editable}
+        checked={framegenPatch.isEnabled(options)}
+        onChange={(enable: boolean) => applyEdit(framegenPatch.setEnabled(options, enable))}
       />
 
-      <ToggleField
-        label={t("ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL", "Decky Framegen Unpatch")}
-        description={t(
-          "ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC",
-          "Unpatch the game for Decky Framegen (requires the Decky-Framegen plugin)",
-        )}
-        bottomSeparator="standard"
-        checked={options.hasKey("~/fgmod/fgmod-uninstaller.sh")}
-        onChange={(enable: boolean) => {
-          const updatedOptions = new Options(optionsString);
-          if (enable) {
-            updatedOptions.removeOptionByKey("~/fgmod/fgmod");
-            updatedOptions.setOption({ type: "pre_cmd", key: "~/fgmod/fgmod-uninstaller.sh" });
-          } else {
-            updatedOptions.removeOptionByKey("~/fgmod/fgmod-uninstaller.sh");
-          }
-          setOptions(updatedOptions);
-        }}
+      <Toggle
+        label={t("ADVANCED_DECKY_FRAMEGEN_UNPATCH_LABEL")}
+        description={t("ADVANCED_DECKY_FRAMEGEN_UNPATCH_DESC")}
+        disabled={!editable}
+        checked={framegenUnpatch.isEnabled(options)}
+        onChange={(enable: boolean) => applyEdit(framegenUnpatch.setEnabled(options, enable))}
       />
-
-      <SaveWithPreview />
-
     </Focusable>
   );
 };

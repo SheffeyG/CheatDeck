@@ -43,51 +43,6 @@ class Plugin:
         logger.info("[backend] Uninstalling CheatDeck!")
 
     @classmethod
-    async def _migration(cls):
-        logger.info("[backend] Starting data migration")
-
-        try:
-            # Use getSetting instead of read() to safely get CustomOptions
-            custom_options = settings.getSetting("CustomOptions", [])
-
-            # Check if custom_options is a valid list with content
-            if not custom_options or not isinstance(custom_options, list):
-                logger.info("[backend] No CustomOptions found, stop migration.")
-                return False
-
-            # Check if first_option is a valid dict and missing "type" field
-            first_option = custom_options[0]
-            if isinstance(first_option, dict) and "type" in first_option:
-                logger.info("[backend] CustomOptions already in new format.")
-                return False
-
-            logger.info("[backend] Migrating CustomOptions from legacy format")
-
-            migrated_options = []
-            for option in custom_options:
-                # Skip None or invalid options
-                if option is None or not isinstance(option, dict):
-                    logger.warning(f"[backend] Skipping invalid option: {option}")
-                    continue
-
-                migrated_option = {
-                    "label": option.get("label", ""),
-                    "type": "env",
-                    "key": option.get("field", ""),
-                    "value": option.get("value", ""),
-                }
-                migrated_options.append(migrated_option)
-
-            settings.setSetting("CustomOptions", migrated_options)
-            logger.info("[backend] Data migration completed")
-
-            return True
-
-        except Exception as e:
-            logger.error(f"[backend] Migration failed: {e}", exc_info=True)
-            return False
-
-    @classmethod
     async def read_settings(cls):
         logger.info("[backend] Reading settings")
         return settings.read()

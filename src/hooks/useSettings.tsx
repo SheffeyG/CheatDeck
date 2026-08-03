@@ -1,100 +1,94 @@
-import {
-  createContext,
-  FC,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { PanelSection } from "@decky/ui";
+import { createContext, type FC, type ReactNode, useCallback, useContext, useEffect, useState } from "react";
 
-import {
-  getCustomOptions as backendGetCustomOptions,
-  getShowPreview as backendGetShowPreview,
-  getSkipWineCheck as backendGetSkipWineCheck,
-  setCustomOptions as backendSetCustomOptions,
-  setShowPreview as backendSetShowPreview,
-  setSkipWineCheck as backendSetSkipWineCheck,
-} from "../utils";
+import type { CustomOption, SettingsSnapshot } from "../domain/settings";
+import { settingsStorage } from "../infra/settingsStorage";
 import { logger } from "../utils/logger";
 
 interface SettingsContextType {
   showPreview: boolean;
   skipWineCheck: boolean;
   customOptions: CustomOption[];
-  saveShowPreview: (value: boolean) => void;
-  saveSkipWineCheck: (value: boolean) => void;
-  saveCustomOptions: (options: CustomOption[]) => void;
+  saveShowPreview: (value: boolean) => Promise<void>;
+  saveSkipWineCheck: (value: boolean) => Promise<void>;
+  saveCustomOptions: (options: CustomOption[]) => Promise<void>;
 }
 
-const SettingsContext = createContext<SettingsContextType>({
+const defaultSettings: SettingsSnapshot = {
   showPreview: false,
   skipWineCheck: false,
   customOptions: [],
-  saveShowPreview: () => {},
-  saveSkipWineCheck: () => {},
-  saveCustomOptions: () => {},
-});
-
-export const SettingsProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [showPreview, setShowPreview] = useState<boolean>(false);
-  const [customOptions, setCustomOptions] = useState<CustomOption[]>([]);
-  const [skipWineCheck, setSkipWineCheck] = useState<boolean>(false);
-
-  useEffect(() => {
-    backendGetShowPreview()
-      .then(setShowPreview)
-      .catch((error) => {
-        logger.error("Failed to load ShowPreview setting", error);
-      });
-
-    backendGetSkipWineCheck()
-      .then(setSkipWineCheck)
-      .catch((error) => {
-        logger.error("Failed to load SkipWineCheck setting", error);
-      });
-
-    backendGetCustomOptions()
-      .then(setCustomOptions)
-      .catch((error) => {
-        logger.error("Failed to load CustomOptions setting", error);
-      });
-  }, []);
-
-  const saveShowPreview = (value: boolean) => {
-    setShowPreview(value);
-    backendSetShowPreview(value).catch((error) => {
-      logger.error("Failed to save ShowPreview setting", error);
-    });
-  };
-
-  const saveSkipWineCheck = (value: boolean) => {
-    setSkipWineCheck(value);
-    backendSetSkipWineCheck(value).catch((error) => {
-      logger.error("Failed to save SkipWineCheck setting", error);
-    });
-  };
-
-  const saveCustomOptions = (value: CustomOption[]) => {
-    setCustomOptions(value);
-    backendSetCustomOptions(value).catch((error) => {
-      logger.error("Failed to save CustomOptions setting", error);
-    });
-  };
-
-  const value: SettingsContextType = {
-    showPreview,
-    skipWineCheck,
-    customOptions,
-    saveShowPreview,
-    saveSkipWineCheck,
-    saveCustomOptions,
-  };
-
-  return (
-    <SettingsContext.Provider value={value}>
-      {children}
-    </SettingsContext.Provider>
-  );
 };
 
-export const useSettings = () => useContext(SettingsContext);
+type SettingsState =
+  | { status: "loading" }
+  | { status: "ready"; value: SettingsSnapshot }
+  | { status: "error"; value: SettingsSnapshot };
+
+const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
+
+export const SettingsProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const [state, setState] = useState<SettingsState>({ status: "loading" });
+
+  useEffect(() => {
+    let active = true;
+
+    settingsStorage
+      .load()
+      .then((loadedSettings) => {
+        if (active) setState({ status: "ready", value: loadedSettings });
+      })
+      .catch((error) => {
+        logger.error("Failed to load plugin settings", error);
+        if (active) setState({ status: "error", value: defaultSettings });
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const saveShowPreview = useCallback(async (showPreview: boolean) => {
+    setState((current) =>
+      current.status === "loading" ? current : { ...current, value: { ...current.value, showPreview } },
+    );
+    try {
+      await settingsStorage.saveShowPreview(showPreview);
+    } catch (error) {
+      logger.error("Failed to save ShowPreview setting", error);
+    }
+  }, []);
+
+  const saveSkipWineCheck = useCallback(async (skipWineCheck: boolean) => {
+    setState((current) =>
+      current.status === "loading" ? current : { ...current, value: { ...current.value, skipWineCheck } },
+    );
+    try {
+      await settingsStorage.saveSkipWineCheck(skipWineCheck);
+    } catch (error) {
+      logger.error("Failed to save SkipWineCheck setting", error);
+    }
+  }, []);
+
+  const saveCustomOptions = useCallback(async (customOptions: CustomOption[]) => {
+    setState((current) =>
+      current.status === "loading" ? current : { ...current, value: { ...current.value, customOptions } },
+    );
+    try {
+      await settingsStorage.saveCustomOptions(customOptions);
+    } catch (error) {
+      logger.error("Failed to save CustomOptions setting", error);
+    }
+  }, []);
+
+  if (state.status === "loading") return <PanelSection spinner={true} />;
+
+  const value: SettingsContextType = { ...state.value, saveShowPreview, saveSkipWineCheck, saveCustomOptions };
+  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
+};
+
+export const useSettings = (): SettingsContextType => {
+  const context = useContext(SettingsContext);
+  if (!context) throw new Error("useSettings must be used within a SettingsProvider");
+  return context;
+};

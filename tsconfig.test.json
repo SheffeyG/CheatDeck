@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "skipLibCheck": true
+  },
+  "include": ["tests", "vitest.config.ts"]
+}

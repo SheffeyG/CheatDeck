@@ -1,13 +1,9 @@
 import { SidebarNavigation, useParams } from "@decky/ui";
-import { FC } from "react";
-import {
-  BsCheckSquareFill as IconNormal,
-  BsExclamationSquareFill as IconAdvanced,
-  BsPlusSquareFill as IconCustom,
-} from "react-icons/bs";
+import type { FC } from "react";
+import { FaGear as IconAdvanced, FaPuzzlePiece as IconCustom, FaHouse as IconNormal } from "react-icons/fa6";
 
 import { OptionsProvider, SettingsProvider } from "../hooks";
-import { t } from "../utils";
+import { t } from "../utils/translate";
 import Advanced from "./Advanced";
 import Custom from "./Custom";
 import Normal from "./Normal";
@@ -27,19 +23,19 @@ const PageRouter: FC = () => {
           showTitle={true}
           pages={[
             {
-              title: t("NORMAL_TITLE", "Normal"),
+              title: t("NORMAL_TITLE"),
               content: <Normal />,
               icon: <IconNormal />,
               hideTitle: false,
             },
             {
-              title: t("ADVANCED_TITLE", "Advanced"),
+              title: t("ADVANCED_TITLE"),
               content: <Advanced />,
               icon: <IconAdvanced />,
               hideTitle: false,
             },
             {
-              title: t("CUSTOM_TITLE", "Custom"),
+              title: t("CUSTOM_TITLE"),
               content: <Custom />,
               icon: <IconCustom />,
               hideTitle: false,

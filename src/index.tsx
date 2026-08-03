@@ -10,15 +10,15 @@ import PageRouter from "./views/PageRouter";
 export default definePlugin(() => {
   const menuPatches = contextMenuPatch(LibraryContextMenu);
 
-  routerHook.addRoute(
-    "/cheatdeck/:appid",
-    PageRouter,
-    { exact: true },
-  );
+  routerHook.addRoute("/cheatdeck/:appid", PageRouter, { exact: true });
 
   return {
     title: <div className={staticClasses.Title}>CheatDeck</div>,
-    content: <SettingsProvider><Content /></SettingsProvider>,
+    content: (
+      <SettingsProvider>
+        <Content />
+      </SettingsProvider>
+    ),
     icon: <PluginIcon />,
     onDismount() {
       routerHook.removeRoute("/cheatdeck/:appid");

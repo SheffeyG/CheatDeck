@@ -1,93 +1,70 @@
-import { DropdownOption, Focusable } from "@decky/ui";
-import { FC, useState } from "react";
-import { FaGamepad, FaLanguage } from "react-icons/fa";
+import { Focusable } from "@decky/ui";
+import { type FC, useState } from "react";
+import { FaGlobe, FaWindowRestore } from "react-icons/fa";
 
-import { SaveWithPreview, ToggleDropdown, ToggleFilePicker } from "../components";
-import { LangCodes } from "../data/langcode.json";
+import { type DropdownPreset, LaunchOptionsPreview, ToggleDropdown, ToggleFilePicker } from "../components";
+import { LangCodes } from "../data/languageCodes.json";
+import { language, sidecarProgram } from "../domain/features";
 import { useOptions } from "../hooks";
-import { browseFiles, getHomePath, Options, t } from "../utils";
+import { browseFiles, getHomePath } from "../infra/decky";
+import { t } from "../utils/translate";
 
 const Normal: FC = () => {
-  const { options, setOptions } = useOptions();
-  const [showCheat, setShowChat] = useState(options.hasKey("PROTON_REMOTE_DEBUG_CMD"));
-  const [showLang, setShowLang] = useState(options.hasKey("LANG") || options.hasKey("HOST_LC_ALL"));
+  const { options, editable, applyEdit } = useOptions();
+  const [showSidecar, setShowSidecar] = useState(sidecarProgram.isEnabled(options));
+  const [showLang, setShowLang] = useState(language.isEnabled(options));
 
-  const optionsString = options.getOptionsString();
-
-  const handleBrowse = async () => {
-    const savedPath = options.getKeyValue("PRESSURE_VESSEL_FILESYSTEMS_RW")?.replace(/^"|"$/g, "");
-    const defaultPath = savedPath ?? await getHomePath();
+  const handleSidecarBrowse = async () => {
+    const defaultPath = sidecarProgram.directory(options) ?? (await getHomePath());
     const filePickerRes = await browseFiles(defaultPath, true, ["exe", "bat"]);
-    const selectedCheatPath = filePickerRes.path.replace(/(['"])/g, "\\$1"); // Escape quotes
-    const selectedCheatDir = selectedCheatPath.replace(/\/[^/]+$/, ""); // Get parent directory
-
-    const newOptions = new Options(optionsString);
-    newOptions.setOption({
-      type: "env",
-      key: "PROTON_REMOTE_DEBUG_CMD",
-      value: `"'${selectedCheatPath}'"`, // Quote twice to adjust Proton's shlex.split parser
-    });
-    // Make sure proton has read/write access to the parent directory
-    newOptions.setOption({
-      type: "env",
-      key: "PRESSURE_VESSEL_FILESYSTEMS_RW",
-      value: `"${selectedCheatDir}"`,
-    });
-    setOptions(newOptions);
+    const result = sidecarProgram.set(options, filePickerRes.path);
+    if (!result.ok || !applyEdit(result)) setShowSidecar(false);
   };
 
   return (
     <Focusable style={{ display: "flex", flexDirection: "column" }}>
+      <LaunchOptionsPreview />
 
       <ToggleFilePicker
-        label={t("NORMAL_CHEAT_TOGGLE_LABEL", "Enable Cheat")}
-        description={t(
-          "NORMAL_CHEAT_TOGGLE_DESC",
-          "Select the cheat or trainer exe file from storage",
-        )}
-        icon={<FaGamepad />}
-        checked={showCheat}
+        label={t("NORMAL_SIDECAR_TOGGLE_LABEL")}
+        description={t("NORMAL_SIDECAR_TOGGLE_DESC")}
+        icon={<FaWindowRestore />}
+        disabled={!editable}
+        checked={showSidecar || sidecarProgram.isEnabled(options)}
         onToggle={(enable: boolean) => {
-          setShowChat(enable);
-          if (!enable) {
-            const updatedOptions = new Options(optionsString);
-            updatedOptions.removeOptionByKey("PROTON_REMOTE_DEBUG_CMD");
-            updatedOptions.removeOptionByKey("PRESSURE_VESSEL_FILESYSTEMS_RW");
-            setOptions(updatedOptions);
+          if (enable) {
+            setShowSidecar(true);
+            return;
           }
+          const result = sidecarProgram.disable(options);
+          if (result.ok && applyEdit(result)) setShowSidecar(false);
         }}
-        value={options.getKeyValue("PROTON_REMOTE_DEBUG_CMD")?.replace(/^"'|\\|'"$/g, "")}
-        onBrowse={handleBrowse}
-        fieldLabel={t("NORMAL_CHEAT_LABEL", "EXE Path")}
+        value={sidecarProgram.path(options)}
+        onBrowse={handleSidecarBrowse}
       />
 
       <ToggleDropdown
-        label={t("NORMAL_LANG_TOGGLE_LABEL", "Language")}
-        description={t("NORMAL_LANG_TOGGLE_DESC", "Try to specify the game language")}
-        icon={<FaLanguage />}
-        checked={showLang}
+        label={t("NORMAL_LANG_TOGGLE_LABEL")}
+        description={t("NORMAL_LANG_TOGGLE_DESC")}
+        icon={<FaGlobe />}
+        disabled={!editable}
+        checked={showLang || language.isEnabled(options)}
         onToggle={(enable: boolean) => {
-          setShowLang(enable);
-          if (!enable) {
-            const updatedOptions = new Options(optionsString);
-            updatedOptions.removeOptionByKey("LANG");
-            updatedOptions.removeOptionByKey("HOST_LC_ALL");
-            setOptions(updatedOptions);
+          if (enable) {
+            setShowLang(true);
+            return;
           }
+          const result = language.disable(options);
+          if (result.ok && applyEdit(result)) setShowLang(false);
         }}
-        fieldLabel={t("NORMAL_LANG_LABEL", "Language Code")}
-        value={options.getKeyValue("LANG")}
+        fieldLabel={t("NORMAL_LANG_LABEL")}
+        value={language.value(options)}
         onInput={(value: string) => {
-          const updatedOptions = new Options(optionsString);
-          updatedOptions.setOption({ type: "env", key: "LANG", value: value });
-          updatedOptions.setOption({ type: "env", key: "HOST_LC_ALL", value: value });
-          setOptions(updatedOptions);
+          const result = language.set(options, value);
+          if (!result.ok || !applyEdit(result)) setShowLang(false);
         }}
-        preset={LangCodes as DropdownOption[]}
+        preset={LangCodes as DropdownPreset[]}
       />
-
-      <SaveWithPreview />
-
     </Focusable>
   );
 };
