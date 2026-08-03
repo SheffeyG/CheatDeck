@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { compatibilityPath, dxvkAsync, language, radvPerftest, sidecarProgram } from "../src/domain/features";
+import {
+  compatibilityPath,
+  language,
+  noFsync,
+  pulseLatency,
+  sidecarProgram,
+  steamDeckDesktopMode,
+  wineD3d,
+} from "../src/domain/features";
 import { LaunchOptions, type LaunchOptionsEditResult } from "../src/domain/options";
 
 const success = (result: LaunchOptionsEditResult): LaunchOptions => {
@@ -53,14 +61,42 @@ describe("features", () => {
     expect(success(compatibilityPath.disable(enabled)).toString()).toBe("");
   });
 
-  it("manages built-in environment toggles", () => {
-    const dxvk = success(dxvkAsync.setEnabled(LaunchOptions.parse(""), true));
-    const radv = success(radvPerftest.setEnabled(dxvk, true));
+  it("switches the WineD3D compatibility renderer", () => {
+    const enabled = success(wineD3d.setEnabled(LaunchOptions.parse(""), true));
 
-    expect(dxvkAsync.isEnabled(radv)).toBe(true);
-    expect(radvPerftest.isEnabled(radv)).toBe(true);
-    expect(radv.toString()).toContain("DXVK_ASYNC=1");
-    expect(radv.toString()).toContain("RADV_PERFTEST=gpl");
+    expect(wineD3d.isEnabled(enabled)).toBe(true);
+    expect(enabled.toString()).toBe("PROTON_USE_WINED3D=1 %command%");
+    expect(success(wineD3d.setEnabled(enabled, false)).toString()).toBe("");
+  });
+
+  it("switches games from Steam Deck to desktop behavior", () => {
+    const enabled = success(steamDeckDesktopMode.setEnabled(LaunchOptions.parse(""), true));
+
+    expect(steamDeckDesktopMode.isEnabled(enabled)).toBe(true);
+    expect(enabled.toString()).toBe("SteamDeck=0 %command%");
+    expect(success(steamDeckDesktopMode.setEnabled(enabled, false)).toString()).toBe("");
+  });
+
+  it("disables Proton FSYNC as a compatibility fallback", () => {
+    const enabled = success(noFsync.setEnabled(LaunchOptions.parse(""), true));
+
+    expect(noFsync.isEnabled(enabled)).toBe(true);
+    expect(enabled.toString()).toBe("PROTON_NO_FSYNC=1 %command%");
+    expect(success(noFsync.setEnabled(enabled, false)).toString()).toBe("");
+  });
+
+  it("sets, replaces, and restores the default PulseAudio latency", () => {
+    const initial = LaunchOptions.parse("");
+    const sixty = success(pulseLatency.set(initial, "60"));
+    const thirty = success(pulseLatency.set(sixty, "30"));
+    const restored = success(pulseLatency.set(thirty, undefined));
+
+    expect(pulseLatency.value(initial)).toBeUndefined();
+    expect(pulseLatency.value(sixty)).toBe("60");
+    expect(sixty.toString()).toBe("PULSE_LATENCY_MSEC=60 %command%");
+    expect(pulseLatency.value(thirty)).toBe("30");
+    expect(thirty.toString()).toBe("PULSE_LATENCY_MSEC=30 %command%");
+    expect(restored.toString()).toBe("");
   });
 
   it("fails closed without modifying malformed source", () => {

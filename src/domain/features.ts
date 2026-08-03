@@ -2,8 +2,9 @@ import type { LaunchOptionDefinition, LaunchOptions } from "./options";
 import { parseLiteralWord } from "./parser";
 
 const definitions = {
-  dxvkAsync: { kind: "environment", name: "DXVK_ASYNC", value: "1" },
-  radvPerftest: { kind: "environment", name: "RADV_PERFTEST", value: "gpl" },
+  noFsync: { kind: "environment", name: "PROTON_NO_FSYNC", value: "1" },
+  steamDeckDesktopMode: { kind: "environment", name: "SteamDeck", value: "0" },
+  wineD3d: { kind: "environment", name: "PROTON_USE_WINED3D", value: "1" },
 } as const satisfies Record<string, LaunchOptionDefinition>;
 
 const keys = {
@@ -12,6 +13,7 @@ const keys = {
   language: "LANG",
   hostLanguage: "HOST_LC_ALL",
   compatibilityPath: "STEAM_COMPAT_DATA_PATH",
+  pulseLatency: "PULSE_LATENCY_MSEC",
 } as const;
 
 const environment = (name: string, value: string): LaunchOptionDefinition => ({ kind: "environment", name, value });
@@ -66,5 +68,14 @@ export const compatibilityPath = {
   disable: (options: LaunchOptions) => options.edit([unsetEnvironment(keys.compatibilityPath)]),
 };
 
-export const dxvkAsync = toggleFeature(definitions.dxvkAsync);
-export const radvPerftest = toggleFeature(definitions.radvPerftest);
+export const pulseLatency = {
+  value: (options: LaunchOptions): string | undefined => options.getEnvironment(keys.pulseLatency),
+  set: (options: LaunchOptions, value: string | undefined) =>
+    value === undefined
+      ? options.edit([unsetEnvironment(keys.pulseLatency)])
+      : options.edit([unsetEnvironment(keys.pulseLatency), enable(environment(keys.pulseLatency, value))]),
+};
+
+export const noFsync = toggleFeature(definitions.noFsync);
+export const steamDeckDesktopMode = toggleFeature(definitions.steamDeckDesktopMode);
+export const wineD3d = toggleFeature(definitions.wineD3d);

@@ -39,13 +39,21 @@ CheatDeck provides several launch-option controls for quick access in the *Advan
 
   Some games read the `LANG` environment variable. CheatDeck offers a preset of common locale identifiers to make switching locales easier.
 
-- **DXVK_ASYNC**
+- **WineD3D Compatibility Renderer**
 
-  Enables asynchronous shader compilation in DXVK. If you are using an older Proton-GE release (earlier than 7-45), enabling this may help with shader compilation behavior.
+  Uses Wine's OpenGL renderer as a compatibility fallback instead of Proton's Vulkan translation layers. This may help games with DXVK or Vulkan rendering problems, but usually reduces performance.
 
-- **RADV_PERFTEST**
+- **Desktop Behavior**
 
-  Enables shader pre-caching to reduce stutter and frame flicker. This is often a better option for later Proton-GE builds.
+  Sets `SteamDeck=0` so games use their desktop behavior instead of Steam Deck-specific presets, launchers, or restricted settings.
+
+- **Disable FSYNC**
+
+  Sets `PROTON_NO_FSYNC=1` to disable futex-based synchronization as a compatibility fallback for freezes or synchronization problems. This may reduce performance.
+
+- **Audio Latency**
+
+  Sets `PULSE_LATENCY_MSEC` to 30, 60, or 90 milliseconds to work around audio crackling or dropouts. Higher values may improve stability but increase audio delay; selecting Default removes the override.
 
 - **STEAM_COMPAT_DATA_PATH**
 
