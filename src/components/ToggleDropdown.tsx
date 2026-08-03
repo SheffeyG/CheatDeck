@@ -17,6 +17,7 @@ interface ToggleDropdownProps {
   onToggle: (checked: boolean) => void;
   fieldLabel?: string;
   value: string | undefined;
+  defaultLabel?: string;
   onInput: (value: string) => void;
   preset: DropdownPreset[];
 }
@@ -43,6 +44,7 @@ export const ToggleDropdown: FC<ToggleDropdownProps> = ({
   onToggle,
   fieldLabel,
   value,
+  defaultLabel,
   onInput,
   preset,
 }) => {
@@ -65,7 +67,7 @@ export const ToggleDropdown: FC<ToggleDropdownProps> = ({
                 disabled={disabled}
                 rgOptions={preset}
                 selectedOption={value}
-                strDefaultLabel={t("DEFAULT")}
+                strDefaultLabel={defaultLabel ?? t("DEFAULT")}
                 onChange={(option) => onInput(option.data)}
               />
             </Focusable>

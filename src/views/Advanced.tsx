@@ -1,23 +1,22 @@
-import { DropdownItem, Focusable } from "@decky/ui";
+import { Focusable } from "@decky/ui";
 import { type FC, useState } from "react";
 
-import { LaunchOptionsPreview, Toggle, ToggleFilePicker } from "../components";
+import { type DropdownPreset, LaunchOptionsPreview, Toggle, ToggleDropdown, ToggleFilePicker } from "../components";
 import { compatibilityPath, noFsync, pulseLatency, steamDeckDesktopMode, wineD3d } from "../domain/features";
 import { useOptions } from "../hooks";
 import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
 
-const defaultPulseLatency = "default";
 const pulseLatencyPresets = [
-  { data: defaultPulseLatency, label: t("DEFAULT") },
   { data: "30", label: "30 ms" },
   { data: "60", label: "60 ms" },
   { data: "90", label: "90 ms" },
-];
+] satisfies DropdownPreset[];
 
 const Advanced: FC = () => {
   const { options, editable, applyEdit } = useOptions();
   const [showPrefix, setShowPrefix] = useState(compatibilityPath.value(options) !== undefined);
+  const [showPulseLatency, setShowPulseLatency] = useState(pulseLatency.value(options) !== undefined);
   const pulseLatencyValue = pulseLatency.value(options);
 
   const handleBrowse = async () => {
@@ -72,18 +71,26 @@ const Advanced: FC = () => {
         onBrowse={handleBrowse}
       />
 
-      <DropdownItem
+      <ToggleDropdown
         label={t("ADVANCED_PULSE_LATENCY_LABEL")}
         description={t("ADVANCED_PULSE_LATENCY_DESC")}
         disabled={!editable}
-        rgOptions={pulseLatencyPresets}
-        selectedOption={pulseLatencyValue ?? defaultPulseLatency}
-        strDefaultLabel={pulseLatencyValue ? `${pulseLatencyValue} ms` : t("DEFAULT")}
-        onChange={(preset) =>
-          applyEdit(pulseLatency.set(options, preset.data === defaultPulseLatency ? undefined : preset.data))
-        }
-        bottomSeparator="standard"
-        highlightOnFocus
+        checked={showPulseLatency || pulseLatencyValue !== undefined}
+        onToggle={(enable: boolean) => {
+          if (enable) {
+            setShowPulseLatency(true);
+            return;
+          }
+          const result = pulseLatency.set(options, undefined);
+          if (result.ok && applyEdit(result)) setShowPulseLatency(false);
+        }}
+        value={pulseLatencyValue}
+        defaultLabel={pulseLatencyValue ? `${pulseLatencyValue} ms` : undefined}
+        onInput={(value: string) => {
+          const result = pulseLatency.set(options, value);
+          if (!result.ok || !applyEdit(result)) setShowPulseLatency(false);
+        }}
+        preset={pulseLatencyPresets}
       />
     </Focusable>
   );
