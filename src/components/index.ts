@@ -4,6 +4,7 @@ import { LaunchOptionsPreview } from "./LaunchOptionsPreview";
 import { Toggle } from "./Toggle";
 import { type DropdownPreset, ToggleDropdown } from "./ToggleDropdown";
 import { ToggleFilePicker } from "./ToggleFilePicker";
+import { ToggleSlider } from "./ToggleSlider";
 
 export {
   AddOptionButton,
@@ -13,4 +14,5 @@ export {
   Toggle,
   ToggleDropdown,
   ToggleFilePicker,
+  ToggleSlider,
 };

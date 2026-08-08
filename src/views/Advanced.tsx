@@ -1,23 +1,19 @@
 import { Focusable } from "@decky/ui";
 import { type FC, useState } from "react";
 
-import { type DropdownPreset, LaunchOptionsPreview, Toggle, ToggleDropdown, ToggleFilePicker } from "../components";
+import { LaunchOptionsPreview, Toggle, ToggleFilePicker, ToggleSlider } from "../components";
 import { compatibilityPath, noFsync, pulseLatency, steamDeckDesktopMode, wineD3d } from "../domain/features";
 import { useOptions } from "../hooks";
 import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
-
-const pulseLatencyPresets = [
-  { data: "30", label: "30 ms" },
-  { data: "60", label: "60 ms" },
-  { data: "90", label: "90 ms" },
-] satisfies DropdownPreset[];
 
 const Advanced: FC = () => {
   const { options, editable, applyEdit } = useOptions();
   const [showPrefix, setShowPrefix] = useState(compatibilityPath.value(options) !== undefined);
   const [showPulseLatency, setShowPulseLatency] = useState(pulseLatency.value(options) !== undefined);
   const pulseLatencyValue = pulseLatency.value(options);
+  const parsedPulseLatency = Number(pulseLatencyValue);
+  const pulseLatencySliderValue = Number.isFinite(parsedPulseLatency) ? parsedPulseLatency : 30;
 
   const handleBrowse = async () => {
     const defaultPath = compatibilityPath.value(options) ?? (await getHomePath());
@@ -71,7 +67,7 @@ const Advanced: FC = () => {
         onBrowse={handleBrowse}
       />
 
-      <ToggleDropdown
+      <ToggleSlider
         label={t("ADVANCED_PULSE_LATENCY_LABEL")}
         description={t("ADVANCED_PULSE_LATENCY_DESC")}
         disabled={!editable}
@@ -84,13 +80,16 @@ const Advanced: FC = () => {
           const result = pulseLatency.set(options, undefined);
           if (result.ok && applyEdit(result)) setShowPulseLatency(false);
         }}
-        value={pulseLatencyValue}
-        defaultLabel={pulseLatencyValue ? `${pulseLatencyValue} ms` : undefined}
-        onInput={(value: string) => {
-          const result = pulseLatency.set(options, value);
+        value={pulseLatencySliderValue}
+        min={0}
+        max={100}
+        step={10}
+        resetValue={30}
+        valueSuffix=" ms"
+        onInput={(value: number) => {
+          const result = pulseLatency.set(options, String(value));
           if (!result.ok || !applyEdit(result)) setShowPulseLatency(false);
         }}
-        preset={pulseLatencyPresets}
       />
     </Focusable>
   );
