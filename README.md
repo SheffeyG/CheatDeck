@@ -48,13 +48,13 @@ Some games use environment locale variables to choose their language or regional
 
 CheatDeck provides several launch-option controls for quick access in the *Advanced* tab.
 
-| Setting | Launch Option | Purpose |
-|---|---|---|
-| Desktop Behavior | `SteamDeck=0` | Makes games use desktop behavior instead of Steam Deck-specific presets, launchers, or restricted settings. |
-| Disable FSYNC | `PROTON_NO_FSYNC=1` | Disables futex-based synchronization as a compatibility fallback for freezes or synchronization problems. This may reduce performance. |
-| WineD3D Compatibility Renderer | `PROTON_USE_WINED3D=1` | Uses Wine's OpenGL renderer instead of Proton's Vulkan translation layers. This may fix DXVK or Vulkan rendering problems, but usually reduces performance. |
-| Compatibility Data Redirection | `STEAM_COMPAT_DATA_PATH=<path>` | Stores compatibility data at a selected path to share dependencies or save disk space. |
-| Audio Latency | `PULSE_LATENCY_MSEC=30`, `60`, or `90` | Works around audio crackling or dropouts. Higher values may improve stability but increase audio delay; disabling the option removes the override. |
+| Setting                        | Launch Option                          | Purpose                                                                                                                                                     |
+| ------------------------------ | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Desktop Behavior               | `SteamDeck=0`                          | Makes games use desktop behavior instead of Steam Deck-specific presets, launchers, or restricted settings.                                                 |
+| Disable FSYNC                  | `PROTON_NO_FSYNC=1`                    | Disables futex-based synchronization as a compatibility fallback for freezes or synchronization problems. This may reduce performance.                      |
+| WineD3D Compatibility Renderer | `PROTON_USE_WINED3D=1`                 | Uses Wine's OpenGL renderer instead of Proton's Vulkan translation layers. This may fix DXVK or Vulkan rendering problems, but usually reduces performance. |
+| Compatibility Data Redirection | `STEAM_COMPAT_DATA_PATH=<path>`        | Stores compatibility data at a selected path to share dependencies or save disk space.                                                                      |
+| Audio Latency                  | `PULSE_LATENCY_MSEC=30`, `60`, or `90` | Works around audio crackling or dropouts. Higher values may improve stability but increase audio delay; disabling the option removes the override.          |
 
 > [!WARNING]
 > Compatibility data can contain game saves. You may need to migrate saves when changing `STEAM_COMPAT_DATA_PATH`.
@@ -122,11 +122,12 @@ CheatDeck preserves untouched source and patches only the spans owned by an edit
 
 When no Custom Options configuration exists, CheatDeck initializes the following presets as ordinary custom options. They can be toggled, edited, or deleted and are not restored after deletion.
 
-| Preset | Definition | Purpose |
-|---|---|---|
-| Lossless Scaling | `~/lsfg` | Enables [LSFG-VK](https://github.com/PancakeTAS/lsfg-vk) frame generation. Requires Lossless Scaling and the [decky-lsfg-vk](https://github.com/xXJSONDeruloXx/decky-lsfg-vk) plugin. |
-| OptiScaler Patch | `~/fgmod/fgmod` | Applies the [OptiScaler](https://github.com/optiscaler/OptiScaler) patch. Requires the [Decky-Framegen](https://github.com/xXJSONDeruloXx/Decky-Framegen) plugin. |
-| OptiScaler Unpatch | `~/fgmod/fgmod-uninstaller.sh` | Removes the OptiScaler patch. Patch and unpatch are independent; CheatDeck does not enforce mutual exclusion. |
+| Preset                | Definition                     | Purpose                                                                                                                                                                               |
+| --------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lossless Scaling      | `~/lsfg`                       | Enables [LSFG-VK](https://github.com/PancakeTAS/lsfg-vk) frame generation. Requires Lossless Scaling and the [decky-lsfg-vk](https://github.com/xXJSONDeruloXx/decky-lsfg-vk) plugin. |
+| OptiScaler Patch      | `~/fgmod/fgmod`                | Applies the [OptiScaler](https://github.com/optiscaler/OptiScaler) patch. Requires the [Decky-Framegen](https://github.com/xXJSONDeruloXx/Decky-Framegen) plugin.                     |
+| OptiScaler Unpatch    | `~/fgmod/fgmod-uninstaller.sh` | Removes the OptiScaler patch. Patch and unpatch are independent; CheatDeck does not enforce mutual exclusion.                                                                         |
+| MAKO Frame Generation | `~/.local/bin/mako-run`        | Enables [MAKO](https://github.com/eugeniosegala/MAKO) frame generation. Requires Lossless Scaling. Cannot be enabled at the same time as the decky-lsfg-vk plugin.                    |
 
 ## Acknowledgments
 

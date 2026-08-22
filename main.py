@@ -65,11 +65,11 @@ class Plugin:
 
     @classmethod
     async def _migration(cls):
-        if settings.getSetting("CustomOptionsV6", None) is not None:
+        if settings.getSetting("CustomOptionsV7", None) is not None:
             return
 
         logger.info("[backend] Initializing custom option presets")
-        settings.setSetting("CustomOptionsV6", [
+        settings.setSetting("CustomOptionsV7", [
             {
                 "id": "preset-lossless-scaling",
                 "label": "LSFG-VK Frame Generation",
@@ -94,6 +94,15 @@ class Plugin:
                 "definition": {
                     "kind": "prefix",
                     "command": "~/fgmod/fgmod-uninstaller.sh",
+                    "argv": [],
+                },
+            },
+            {
+                "id": "preset-mako-lossless-scaling",
+                "label": "MAKO Frame Generation",
+                "definition": {
+                    "kind": "prefix",
+                    "command": "~/.local/bin/mako-run",
                     "argv": [],
                 },
             },
