@@ -32,6 +32,19 @@ The *Normal* tab provides the primary Sidecar Program and Language controls.
 
 The selected program starts alongside the primary program in the same Proton/Wine environment and stops when the primary program exits.
 
+> [!NOTE]
+> This assumes Steam's launch target is the Windows program that should share
+> the sidecar's Proton/Wine environment. A Windows launcher started directly
+> under Proton can share that environment with the sidecar. A Linux-native
+> game manager or launcher that starts its own Proton/umu process (for example,
+> a launcher shortcut managed by another Decky plugin) may instead leave the
+> sidecar attached to Steam's outer process while the game runs in a separate
+> inner Proton environment. CheatDeck does not control that nested boundary,
+> so sidecar support is not guaranteed for these launchers. If the launcher
+> provides its own Proton selection, leave Steam's **Force the use of a
+> specific Steam Play compatibility tool** disabled unless the launcher
+> documents an explicit sidecar integration.
+
 ### Language
 
 Some games use environment locale variables to choose their language or regional behavior. Enable **Language** and select a locale code to set both `LANG` and `HOST_LC_ALL`. Disable the option to restore the default environment.
