@@ -2,7 +2,16 @@ import { Focusable } from "@decky/ui";
 import { type FC, useState } from "react";
 
 import { type DropdownPreset, LaunchOptionsPreview, Toggle, ToggleDropdown, ToggleFilePicker } from "../components";
-import { compatibilityPath, noFsync, pulseLatency, steamDeckDesktopMode, wineD3d } from "../domain/features";
+import {
+  compatibilityPath,
+  disableWow64,
+  forceWindowed,
+  noEsync,
+  noFsync,
+  pulseLatency,
+  steamDeckDesktopMode,
+  wineD3d,
+} from "../domain/features";
 import { useOptions } from "../hooks";
 import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
@@ -39,11 +48,35 @@ const Advanced: FC = () => {
       />
 
       <Toggle
+        label={t("ADVANCED_WINDOWED_LABEL")}
+        description={t("ADVANCED_WINDOWED_DESC")}
+        disabled={!editable}
+        checked={forceWindowed.isEnabled(options)}
+        onChange={(enable: boolean) => applyEdit(forceWindowed.setEnabled(options, enable))}
+      />
+
+      <Toggle
+        label={t("ADVANCED_DISABLE_WOW64_LABEL")}
+        description={t("ADVANCED_DISABLE_WOW64_DESC")}
+        disabled={!editable}
+        checked={disableWow64.isEnabled(options)}
+        onChange={(enable: boolean) => applyEdit(disableWow64.setEnabled(options, enable))}
+      />
+
+      <Toggle
         label={t("ADVANCED_NO_FSYNC_LABEL")}
         description={t("ADVANCED_NO_FSYNC_DESC")}
         disabled={!editable}
         checked={noFsync.isEnabled(options)}
         onChange={(enable: boolean) => applyEdit(noFsync.setEnabled(options, enable))}
+      />
+
+      <Toggle
+        label={t("ADVANCED_NO_ESYNC_LABEL")}
+        description={t("ADVANCED_NO_ESYNC_DESC")}
+        disabled={!editable}
+        checked={noEsync.isEnabled(options)}
+        onChange={(enable: boolean) => applyEdit(noEsync.setEnabled(options, enable))}
       />
 
       <Toggle

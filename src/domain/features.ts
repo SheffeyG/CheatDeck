@@ -3,8 +3,11 @@ import { parseLiteralWord } from "./parser";
 
 const definitions = {
   noFsync: { kind: "environment", name: "PROTON_NO_FSYNC", value: "1" },
+  noEsync: { kind: "environment", name: "PROTON_NO_ESYNC", value: "1" },
+  disableWow64: { kind: "environment", name: "PROTON_USE_WOW64", value: "0" },
   steamDeckDesktopMode: { kind: "environment", name: "SteamDeck", value: "0" },
   wineD3d: { kind: "environment", name: "PROTON_USE_WINED3D", value: "1" },
+  forceWindowed: { kind: "argument", flag: "-windowed", argv: [] },
 } as const satisfies Record<string, LaunchOptionDefinition>;
 
 const keys = {
@@ -77,5 +80,8 @@ export const pulseLatency = {
 };
 
 export const noFsync = toggleFeature(definitions.noFsync);
+export const noEsync = toggleFeature(definitions.noEsync);
+export const disableWow64 = toggleFeature(definitions.disableWow64);
 export const steamDeckDesktopMode = toggleFeature(definitions.steamDeckDesktopMode);
 export const wineD3d = toggleFeature(definitions.wineD3d);
+export const forceWindowed = toggleFeature(definitions.forceWindowed);

@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   compatibilityPath,
+  disableWow64,
+  forceWindowed,
   language,
+  noEsync,
   noFsync,
   pulseLatency,
   sidecarProgram,
@@ -83,6 +86,30 @@ describe("features", () => {
     expect(noFsync.isEnabled(enabled)).toBe(true);
     expect(enabled.toString()).toBe("PROTON_NO_FSYNC=1 %command%");
     expect(success(noFsync.setEnabled(enabled, false)).toString()).toBe("");
+  });
+
+  it("disables Proton ESYNC as a compatibility fallback", () => {
+    const enabled = success(noEsync.setEnabled(LaunchOptions.parse(""), true));
+
+    expect(noEsync.isEnabled(enabled)).toBe(true);
+    expect(enabled.toString()).toBe("PROTON_NO_ESYNC=1 %command%");
+    expect(success(noEsync.setEnabled(enabled, false)).toString()).toBe("");
+  });
+
+  it("disables Proton Wow64 mode for legacy trainer hooking", () => {
+    const enabled = success(disableWow64.setEnabled(LaunchOptions.parse(""), true));
+
+    expect(disableWow64.isEnabled(enabled)).toBe(true);
+    expect(enabled.toString()).toBe("PROTON_USE_WOW64=0 %command%");
+    expect(success(disableWow64.setEnabled(enabled, false)).toString()).toBe("");
+  });
+
+  it("forces windowed mode with -windowed flag", () => {
+    const enabled = success(forceWindowed.setEnabled(LaunchOptions.parse(""), true));
+
+    expect(forceWindowed.isEnabled(enabled)).toBe(true);
+    expect(enabled.toString()).toBe("%command% -windowed");
+    expect(success(forceWindowed.setEnabled(enabled, false)).toString()).toBe("");
   });
 
   it("sets, replaces, and restores the default PulseAudio latency", () => {
