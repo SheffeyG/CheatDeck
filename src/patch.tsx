@@ -81,10 +81,14 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
     inner?: Patch;
     unpatch: () => void;
   } = {
-    unpatch: () => {
-      return null;
-    },
+    unpatch: () => {},
   };
+
+  if (!LibraryContextMenu?.prototype) {
+    console.warn("[CheatDeck] LibraryContextMenu is not available for patching");
+    return patches;
+  }
+
   patches.outer = afterPatch(LibraryContextMenu.prototype, "render", (_: Record<string, unknown>[], component: any) => {
     let appid: number = 1018880;
     if (component._owner) {
@@ -142,12 +146,31 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
 };
 
 /**
- * Game context menu component.
+ * Safely resolves the LibraryContextMenu component without throwing.
  */
-export const LibraryContextMenu = fakeRenderComponent(
-  Object.values(findModuleByExport((e: Export) => e?.toString?.().includes("().LibraryContextMenu"))).find((sibling) =>
-    sibling?.toString().includes("navigator:"),
-  ) as FC,
-).type;
+export const getLibraryContextMenu = (): any => {
+  try {
+    const exportedMod = findModuleByExport((e: Export) => e?.toString?.().includes("().LibraryContextMenu"));
+    if (!exportedMod) {
+      console.warn("[CheatDeck] LibraryContextMenu module not found");
+      return null;
+    }
+    const sibling = Object.values(exportedMod).find((sib) => sib?.toString?.().includes("navigator:"));
+    if (!sibling) {
+      console.warn("[CheatDeck] LibraryContextMenu navigator sibling not found");
+      return null;
+    }
+    const rendered = fakeRenderComponent(sibling as FC);
+    return rendered?.type ?? null;
+  } catch (error) {
+    console.error("[CheatDeck] Failed to resolve LibraryContextMenu:", error);
+    return null;
+  }
+};
+
+/**
+ * Game context menu component (safely resolved).
+ */
+export const LibraryContextMenu = getLibraryContextMenu();
 
 export default contextMenuPatch;
