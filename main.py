@@ -74,7 +74,7 @@ def _read_process_state(pid: int, proc_root: str = "/proc") -> typing.Optional[s
     # The second field is the command name in parentheses and may contain spaces,
     # so split after the last closing parenthesis.
     try:
-        rest = raw[raw.rindex(b")") + 2 :]
+        rest = raw[raw.rindex(b")") + 2:]
         return rest.split(b" ", 1)[0].decode("ascii", "replace")
     except (ValueError, IndexError):
         return None
