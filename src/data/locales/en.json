@@ -47,5 +47,13 @@
     "CUSTOM_DELETE_TITLE": "Delete custom option?",
     "CUSTOM_DELETE_DESC": "This action cannot be undone.",
     "CUSTOM_ADD_LABEL": "Add a New Option",
-    "CUSTOM_ADD_DESC": "Add a custom launch option"
+    "CUSTOM_ADD_DESC": "Add a custom launch option",
+    "SIDECAR_STATUS_LABEL": "Trainer process",
+    "SIDECAR_STATUS_DESC": "Stop a trainer left over from a previous session; a stale instance blocks the next launch.",
+    "SIDECAR_STATUS_RUNNING": "Running (PID)",
+    "SIDECAR_STATUS_STOPPED": "Not running",
+    "SIDECAR_STATUS_MISSING": "File not found",
+    "SIDECAR_STATUS_UNKNOWN": "Status unknown",
+    "SIDECAR_TERMINATE": "End process",
+    "SIDECAR_REFRESH": "Refresh"
 }

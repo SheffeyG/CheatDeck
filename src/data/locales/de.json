@@ -47,5 +47,13 @@
     "CUSTOM_DELETE_TITLE": "Benutzerdefinierte Option löschen?",
     "CUSTOM_DELETE_DESC": "Diese Aktion kann nicht rückgängig gemacht werden.",
     "CUSTOM_ADD_LABEL": "Neue Option hinzufügen",
-    "CUSTOM_ADD_DESC": "Eine benutzerdefinierte Startoption hinzufügen"
+    "CUSTOM_ADD_DESC": "Eine benutzerdefinierte Startoption hinzufügen",
+    "SIDECAR_STATUS_LABEL": "Trainer-Prozess",
+    "SIDECAR_STATUS_DESC": "Beendet einen Trainer, der aus einer früheren Sitzung noch läuft; eine hängende Instanz blockiert den nächsten Start.",
+    "SIDECAR_STATUS_RUNNING": "Läuft (PID)",
+    "SIDECAR_STATUS_STOPPED": "Läuft nicht",
+    "SIDECAR_STATUS_MISSING": "Datei nicht gefunden",
+    "SIDECAR_STATUS_UNKNOWN": "Status unbekannt",
+    "SIDECAR_TERMINATE": "Prozess beenden",
+    "SIDECAR_REFRESH": "Aktualisieren"
 }

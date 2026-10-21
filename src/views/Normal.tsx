@@ -2,7 +2,13 @@ import { Focusable } from "@decky/ui";
 import { type FC, useState } from "react";
 import { FaGlobe, FaWindowRestore } from "react-icons/fa";
 
-import { type DropdownPreset, LaunchOptionsPreview, ToggleDropdown, ToggleFilePicker } from "../components";
+import {
+  type DropdownPreset,
+  LaunchOptionsPreview,
+  SidecarStatus,
+  ToggleDropdown,
+  ToggleFilePicker,
+} from "../components";
 import { LangCodes } from "../data/languageCodes.json";
 import { language, sidecarProgram } from "../domain/features";
 import { useOptions } from "../hooks";
@@ -42,6 +48,8 @@ const Normal: FC = () => {
         value={sidecarProgram.path(options)}
         onBrowse={handleSidecarBrowse}
       />
+
+      <SidecarStatus path={sidecarProgram.path(options)} />
 
       <ToggleDropdown
         label={t("NORMAL_LANG_TOGGLE_LABEL")}

@@ -47,5 +47,13 @@
     "CUSTOM_DELETE_TITLE": "カスタムオプションを削除しますか？",
     "CUSTOM_DELETE_DESC": "この操作は元に戻せません。",
     "CUSTOM_ADD_LABEL": "新しいオプションを追加",
-    "CUSTOM_ADD_DESC": "カスタム起動オプションを追加"
+    "CUSTOM_ADD_DESC": "カスタム起動オプションを追加",
+    "SIDECAR_STATUS_LABEL": "トレーナーのプロセス",
+    "SIDECAR_STATUS_DESC": "前回のセッションから残っているトレーナーを終了します。残ったインスタンスは次回の起動を妨げます。",
+    "SIDECAR_STATUS_RUNNING": "実行中 (PID)",
+    "SIDECAR_STATUS_STOPPED": "停止中",
+    "SIDECAR_STATUS_MISSING": "ファイルが見つかりません",
+    "SIDECAR_STATUS_UNKNOWN": "状態不明",
+    "SIDECAR_TERMINATE": "プロセスを終了",
+    "SIDECAR_REFRESH": "更新"
 }

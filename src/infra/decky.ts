@@ -1,8 +1,28 @@
 import { callable, type FilePickerRes, FileSelectionType, openFilePicker, type ToastData, toaster } from "@decky/api";
 
 const getEnvironmentValue = callable<[string], string>("get_env");
+const probeSidecarProcess = callable<[string], SidecarStatus>("probe_sidecar");
+const terminateSidecarProcess = callable<[string], SidecarTerminateResult>("terminate_sidecar");
 const getSettingValue = callable<[{ key: string; defaults: unknown }], unknown>("get_setting");
 const setSettingValue = callable<[{ key: string; value: unknown }], unknown>("set_setting");
+
+export interface SidecarStatus {
+  path: string;
+  exists: boolean;
+  pids: number[];
+}
+
+export interface SidecarTerminateResult {
+  path: string;
+  found: number[];
+  terminated: number[];
+  failed: number[];
+}
+
+export const sidecarProcess = {
+  probe: (path: string): Promise<SidecarStatus> => probeSidecarProcess(path),
+  terminate: (path: string): Promise<SidecarTerminateResult> => terminateSidecarProcess(path),
+};
 
 export const deckyBackend = {
   getEnvironmentValue,

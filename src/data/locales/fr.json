@@ -47,5 +47,13 @@
     "CUSTOM_DELETE_TITLE": "Supprimer l'option personnalisée ?",
     "CUSTOM_DELETE_DESC": "Cette action est irréversible.",
     "CUSTOM_ADD_LABEL": "Ajouter une nouvelle option",
-    "CUSTOM_ADD_DESC": "Ajouter une option de lancement personnalisée"
+    "CUSTOM_ADD_DESC": "Ajouter une option de lancement personnalisée",
+    "SIDECAR_STATUS_LABEL": "Processus du trainer",
+    "SIDECAR_STATUS_DESC": "Arrête un trainer resté actif depuis une session précédente ; une instance bloquée empêche le prochain lancement.",
+    "SIDECAR_STATUS_RUNNING": "En cours (PID)",
+    "SIDECAR_STATUS_STOPPED": "Inactif",
+    "SIDECAR_STATUS_MISSING": "Fichier introuvable",
+    "SIDECAR_STATUS_UNKNOWN": "Statut inconnu",
+    "SIDECAR_TERMINATE": "Arrêter le processus",
+    "SIDECAR_REFRESH": "Actualiser"
 }
