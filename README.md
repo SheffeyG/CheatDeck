@@ -44,6 +44,8 @@ Some games use environment locale variables to choose their language or regional
 
 > If you've successfully used CheatDeck with a game and sidecar trainer program, please share your compatibility findings or solutions in our [Game Compatibility Discussion](https://github.com/SheffeyG/CheatDeck/discussions/23). Your feedback helps the community!
 
+See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for solutions to the most common reports: the plugin not loading, trainers that never appear, the Proton 11 window regression, missing .NET frameworks and stale trainer processes.
+
 ## Advanced Options
 
 CheatDeck provides several launch-option controls for quick access in the *Advanced* tab.
