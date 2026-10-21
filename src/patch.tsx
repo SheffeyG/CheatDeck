@@ -16,6 +16,8 @@ import {
 } from "@decky/ui";
 import type { FC } from "react";
 
+import { logger } from "./utils/logger";
+
 // Always add before "Properties..."
 const spliceArtworkItem = (children: any[], appid: number) => {
   children.find((x: any) => x?.key === "properties");
@@ -85,6 +87,15 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
       return null;
     },
   };
+
+  // Steam ships renamed/refactored internals regularly. When the lookup fails we
+  // skip the context menu entry instead of crashing the whole plugin at import
+  // time (TypeError: fun is not a function, see issue #75).
+  if (typeof LibraryContextMenu !== "function" || typeof LibraryContextMenu.prototype?.render !== "function") {
+    logger.warning("CheatDeck context menu entry disabled: LibraryContextMenu is unavailable");
+    return patches;
+  }
+
   patches.outer = afterPatch(LibraryContextMenu.prototype, "render", (_: Record<string, unknown>[], component: any) => {
     let appid: number = 1018880;
     if (component._owner) {
@@ -141,13 +152,39 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
   return patches;
 };
 
+const isComponent = (value: unknown): value is FC => typeof value === "function";
+
 /**
- * Game context menu component.
+ * Resolves the game context menu component from Steam's webpack modules.
+ *
+ * Both `findModuleByExport` and the export lookup itself are best-effort: a
+ * Steam client update can change the module shape at any time. Passing
+ * `undefined` into `fakeRenderComponent` throws `TypeError: fun is not a
+ * function` during module evaluation, which used to prevent the entire plugin
+ * from loading (issue #75). Resolve defensively and let the caller degrade to
+ * "no context menu entry" instead.
  */
-export const LibraryContextMenu = fakeRenderComponent(
-  Object.values(findModuleByExport((e: Export) => e?.toString?.().includes("().LibraryContextMenu"))).find((sibling) =>
-    sibling?.toString().includes("navigator:"),
-  ) as FC,
-).type;
+export const resolveLibraryContextMenu = (): FC | undefined => {
+  try {
+    const module = findModuleByExport((e: Export) => e?.toString?.().includes("().LibraryContextMenu"));
+    const candidate = module
+      ? Object.values(module).find((sibling) => sibling?.toString?.().includes("navigator:"))
+      : undefined;
+    if (!isComponent(candidate)) {
+      logger.warning("LibraryContextMenu could not be resolved; context menu entry is disabled");
+      return undefined;
+    }
+    return fakeRenderComponent(candidate).type;
+  } catch (error) {
+    logger.error("Failed to resolve LibraryContextMenu", error);
+    return undefined;
+  }
+};
+
+/**
+ * Game context menu component, or `undefined` when the Steam client layout is
+ * not supported yet.
+ */
+export const LibraryContextMenu = resolveLibraryContextMenu();
 
 export default contextMenuPatch;
