@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   compatibilityPath,
+  forceWindowed,
   language,
   noFsync,
   pulseLatency,
@@ -107,5 +108,13 @@ describe("features", () => {
       value: options,
       error: "document-not-editable",
     });
+  });
+
+  it("appends the windowed flag for games that support it", () => {
+    const enabled = success(forceWindowed.setEnabled(LaunchOptions.parse(""), true));
+
+    expect(forceWindowed.isEnabled(enabled)).toBe(true);
+    expect(enabled.toString()).toBe("%command% -windowed");
+    expect(success(forceWindowed.setEnabled(enabled, false)).toString()).toBe("");
   });
 });

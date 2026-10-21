@@ -55,5 +55,12 @@
     "SIDECAR_STATUS_MISSING": "Файл не найден",
     "SIDECAR_STATUS_UNKNOWN": "Статус неизвестен",
     "SIDECAR_TERMINATE": "Завершить процесс",
-    "SIDECAR_REFRESH": "Обновить"
+    "SIDECAR_REFRESH": "Обновить",
+    "ADVANCED_WINDOWED_LABEL": "Принудительный оконный режим",
+    "ADVANCED_WINDOWED_DESC": "Добавляет -windowed к команде запуска. Работает только в играх, поддерживающих этот параметр; помогает переключаться между окном игры и окном трейнера.",
+    "NORMAL_TRAINER_TIPS_TITLE": "Совместимость трейнеров",
+    "NORMAL_TRAINER_TIPS_DOTNET": "Трейнерам FLiNG с середины 2023 года нужен .NET 4.x. В режиме рабочего стола выполните: protontricks <appid> dotnet48 (или dotnet40).",
+    "NORMAL_TRAINER_TIPS_WINDOWED": "Окно трейнера недоступно в игровом режиме? Включите «Принудительный оконный режим» на вкладке «Дополнительно».",
+    "NORMAL_TRAINER_TIPS_PROTON": "Трейнер не запускается на Proton 11? Известная регрессия Wine/Gamescope — используйте Proton 10.0-4 или GE-Proton.",
+    "NORMAL_TRAINER_TIPS_STALE": "Трейнер завис после сбоя игры? Завершите его ниже в разделе «Процесс трейнера»."
 }

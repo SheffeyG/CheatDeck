@@ -55,5 +55,12 @@
     "SIDECAR_STATUS_MISSING": "Datei nicht gefunden",
     "SIDECAR_STATUS_UNKNOWN": "Status unbekannt",
     "SIDECAR_TERMINATE": "Prozess beenden",
-    "SIDECAR_REFRESH": "Aktualisieren"
+    "SIDECAR_REFRESH": "Aktualisieren",
+    "ADVANCED_WINDOWED_LABEL": "Fenstermodus erzwingen",
+    "ADVANCED_WINDOWED_DESC": "Hängt -windowed an den Startbefehl an. Nur Spiele, die diesen Parameter unterstützen, reagieren darauf; er hilft beim Wechseln zwischen Spiel- und Trainer-Fenster.",
+    "NORMAL_TRAINER_TIPS_TITLE": "Trainer-Kompatibilität",
+    "NORMAL_TRAINER_TIPS_DOTNET": "FLiNG-Trainer ab Mitte 2023 benötigen .NET 4.x. Im Desktop-Modus ausführen: protontricks <appid> dotnet48 (oder dotnet40).",
+    "NORMAL_TRAINER_TIPS_WINDOWED": "Trainer-Fenster im Gaming-Modus nicht erreichbar? Im Tab Erweitert 'Fenstermodus erzwingen' aktivieren.",
+    "NORMAL_TRAINER_TIPS_PROTON": "Trainer startet unter Proton 11 nicht? Bekannte Wine/Gamescope-Regression - Proton 10.0-4 oder GE-Proton verwenden.",
+    "NORMAL_TRAINER_TIPS_STALE": "Trainer hängt nach einem Spielabsturz? Unten unter 'Trainer-Prozess' beenden."
 }

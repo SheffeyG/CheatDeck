@@ -5,6 +5,7 @@ import { SidecarStatus } from "./SidecarStatus";
 import { Toggle } from "./Toggle";
 import { type DropdownPreset, ToggleDropdown } from "./ToggleDropdown";
 import { ToggleFilePicker } from "./ToggleFilePicker";
+import { TrainerTips } from "./TrainerTips";
 
 export {
   AddOptionButton,
@@ -15,4 +16,5 @@ export {
   Toggle,
   ToggleDropdown,
   ToggleFilePicker,
+  TrainerTips,
 };

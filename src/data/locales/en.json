@@ -55,5 +55,12 @@
     "SIDECAR_STATUS_MISSING": "File not found",
     "SIDECAR_STATUS_UNKNOWN": "Status unknown",
     "SIDECAR_TERMINATE": "End process",
-    "SIDECAR_REFRESH": "Refresh"
+    "SIDECAR_REFRESH": "Refresh",
+    "ADVANCED_WINDOWED_LABEL": "Force windowed mode",
+    "ADVANCED_WINDOWED_DESC": "Appends -windowed to the launch command. Only games that support this flag react to it; it helps switching between the game and the trainer window.",
+    "NORMAL_TRAINER_TIPS_TITLE": "Trainer compatibility",
+    "NORMAL_TRAINER_TIPS_DOTNET": "FLiNG trainers from mid-2023 on need .NET 4.x. In Desktop Mode run: protontricks <appid> dotnet48 (or dotnet40).",
+    "NORMAL_TRAINER_TIPS_WINDOWED": "Trainer window unreachable in Gaming Mode? Enable 'Force windowed mode' in the Advanced tab.",
+    "NORMAL_TRAINER_TIPS_PROTON": "Trainer does not start on Proton 11? Known Wine/Gamescope regression - use Proton 10.0-4 or GE-Proton.",
+    "NORMAL_TRAINER_TIPS_STALE": "Trainer stuck after a game crash? Stop it below under 'Trainer process'."
 }

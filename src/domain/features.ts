@@ -5,6 +5,10 @@ const definitions = {
   noFsync: { kind: "environment", name: "PROTON_NO_FSYNC", value: "1" },
   steamDeckDesktopMode: { kind: "environment", name: "SteamDeck", value: "0" },
   wineD3d: { kind: "environment", name: "PROTON_USE_WINED3D", value: "1" },
+  // Game-side flag only: Proton passes it through, so it helps solely with games
+  // that implement it. Kept selectable because it is the only lever CheatDeck has
+  // for the window-switching problem without touching Proton.
+  forceWindowed: { kind: "argument", flag: "-windowed", argv: [] },
 } as const satisfies Record<string, LaunchOptionDefinition>;
 
 const keys = {
@@ -79,3 +83,4 @@ export const pulseLatency = {
 export const noFsync = toggleFeature(definitions.noFsync);
 export const steamDeckDesktopMode = toggleFeature(definitions.steamDeckDesktopMode);
 export const wineD3d = toggleFeature(definitions.wineD3d);
+export const forceWindowed = toggleFeature(definitions.forceWindowed);

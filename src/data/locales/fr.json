@@ -55,5 +55,12 @@
     "SIDECAR_STATUS_MISSING": "Fichier introuvable",
     "SIDECAR_STATUS_UNKNOWN": "Statut inconnu",
     "SIDECAR_TERMINATE": "Arrêter le processus",
-    "SIDECAR_REFRESH": "Actualiser"
+    "SIDECAR_REFRESH": "Actualiser",
+    "ADVANCED_WINDOWED_LABEL": "Forcer le mode fenêtré",
+    "ADVANCED_WINDOWED_DESC": "Ajoute -windowed à la commande de lancement. Seuls les jeux prenant en charge ce paramètre y réagissent ; cela aide à basculer entre le jeu et la fenêtre du trainer.",
+    "NORMAL_TRAINER_TIPS_TITLE": "Compatibilité des trainers",
+    "NORMAL_TRAINER_TIPS_DOTNET": "Les trainers FLiNG de mi-2023 nécessitent .NET 4.x. En mode Bureau, exécutez : protontricks <appid> dotnet48 (ou dotnet40).",
+    "NORMAL_TRAINER_TIPS_WINDOWED": "Fenêtre du trainer inaccessible en mode Jeu ? Activez « Forcer le mode fenêtré » dans l'onglet Avancé.",
+    "NORMAL_TRAINER_TIPS_PROTON": "Le trainer ne démarre pas sous Proton 11 ? Régression connue de Wine/Gamescope - utilisez Proton 10.0-4 ou GE-Proton.",
+    "NORMAL_TRAINER_TIPS_STALE": "Trainer bloqué après un plantage du jeu ? Arrêtez-le ci-dessous sous « Processus du trainer »."
 }

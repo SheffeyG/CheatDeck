@@ -55,5 +55,12 @@
     "SIDECAR_STATUS_MISSING": "文件不存在",
     "SIDECAR_STATUS_UNKNOWN": "状态未知",
     "SIDECAR_TERMINATE": "结束进程",
-    "SIDECAR_REFRESH": "刷新"
+    "SIDECAR_REFRESH": "刷新",
+    "ADVANCED_WINDOWED_LABEL": "强制窗口模式",
+    "ADVANCED_WINDOWED_DESC": "在启动命令后添加 -windowed。仅支持该参数的游戏才会响应，可帮助在游戏和修改器窗口之间切换。",
+    "NORMAL_TRAINER_TIPS_TITLE": "修改器兼容性",
+    "NORMAL_TRAINER_TIPS_DOTNET": "2023 年中期之后的 FLiNG 修改器需要 .NET 4.x。请在桌面模式下运行：protontricks <appid> dotnet48（或 dotnet40）。",
+    "NORMAL_TRAINER_TIPS_WINDOWED": "在游戏模式下无法切换到修改器窗口？请在“高级”标签页启用“强制窗口模式”。",
+    "NORMAL_TRAINER_TIPS_PROTON": "修改器在 Proton 11 上无法启动？这是已知的 Wine/Gamescope 回归问题，请使用 Proton 10.0-4 或 GE-Proton。",
+    "NORMAL_TRAINER_TIPS_STALE": "游戏崩溃后修改器仍在运行？请在下方“修改器进程”中结束它。"
 }

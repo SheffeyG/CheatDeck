@@ -2,7 +2,14 @@ import { Focusable } from "@decky/ui";
 import { type FC, useState } from "react";
 
 import { type DropdownPreset, LaunchOptionsPreview, Toggle, ToggleDropdown, ToggleFilePicker } from "../components";
-import { compatibilityPath, noFsync, pulseLatency, steamDeckDesktopMode, wineD3d } from "../domain/features";
+import {
+  compatibilityPath,
+  forceWindowed,
+  noFsync,
+  pulseLatency,
+  steamDeckDesktopMode,
+  wineD3d,
+} from "../domain/features";
 import { useOptions } from "../hooks";
 import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
@@ -36,6 +43,14 @@ const Advanced: FC = () => {
         disabled={!editable}
         checked={steamDeckDesktopMode.isEnabled(options)}
         onChange={(enable: boolean) => applyEdit(steamDeckDesktopMode.setEnabled(options, enable))}
+      />
+
+      <Toggle
+        label={t("ADVANCED_WINDOWED_LABEL")}
+        description={t("ADVANCED_WINDOWED_DESC")}
+        disabled={!editable}
+        checked={forceWindowed.isEnabled(options)}
+        onChange={(enable: boolean) => applyEdit(forceWindowed.setEnabled(options, enable))}
       />
 
       <Toggle

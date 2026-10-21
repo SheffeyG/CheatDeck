@@ -55,5 +55,12 @@
     "SIDECAR_STATUS_MISSING": "파일을 찾을 수 없음",
     "SIDECAR_STATUS_UNKNOWN": "상태 알 수 없음",
     "SIDECAR_TERMINATE": "프로세스 종료",
-    "SIDECAR_REFRESH": "새로 고침"
+    "SIDECAR_REFRESH": "새로 고침",
+    "ADVANCED_WINDOWED_LABEL": "창 모드 강제",
+    "ADVANCED_WINDOWED_DESC": "시작 명령에 -windowed를 추가합니다. 이 인수를 지원하는 게임에서만 동작하며, 게임과 트레이너 창 전환에 도움이 됩니다.",
+    "NORMAL_TRAINER_TIPS_TITLE": "트레이너 호환성",
+    "NORMAL_TRAINER_TIPS_DOTNET": "2023년 중반 이후의 FLiNG 트레이너는 .NET 4.x가 필요합니다. 데스크톱 모드에서 실행: protontricks <appid> dotnet48 (또는 dotnet40).",
+    "NORMAL_TRAINER_TIPS_WINDOWED": "게임 모드에서 트레이너 창에 접근할 수 없나요? 고급 탭에서 '창 모드 강제'를 활성화하세요.",
+    "NORMAL_TRAINER_TIPS_PROTON": "Proton 11에서 트레이너가 시작되지 않나요? 알려진 Wine/Gamescope 회귀입니다. Proton 10.0-4 또는 GE-Proton을 사용하세요.",
+    "NORMAL_TRAINER_TIPS_STALE": "게임 충돌 후 트레이너가 남아 있나요? 아래 '트레이너 프로세스'에서 종료하세요."
 }

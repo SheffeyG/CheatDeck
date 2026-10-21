@@ -55,5 +55,12 @@
     "SIDECAR_STATUS_MISSING": "ファイルが見つかりません",
     "SIDECAR_STATUS_UNKNOWN": "状態不明",
     "SIDECAR_TERMINATE": "プロセスを終了",
-    "SIDECAR_REFRESH": "更新"
+    "SIDECAR_REFRESH": "更新",
+    "ADVANCED_WINDOWED_LABEL": "ウィンドウモードを強制",
+    "ADVANCED_WINDOWED_DESC": "起動コマンドに -windowed を追加します。この引数に対応するゲームでのみ有効で、ゲームとトレーナーのウィンドウ切り替えを助けます。",
+    "NORMAL_TRAINER_TIPS_TITLE": "トレーナーの互換性",
+    "NORMAL_TRAINER_TIPS_DOTNET": "2023年半ば以降のFLiNGトレーナーには.NET 4.xが必要です。デスクトップモードで実行: protontricks <appid> dotnet48（または dotnet40）。",
+    "NORMAL_TRAINER_TIPS_WINDOWED": "ゲームモードでトレーナーのウィンドウに切り替えられない場合は、詳細設定で「ウィンドウモードを強制」を有効にしてください。",
+    "NORMAL_TRAINER_TIPS_PROTON": "Proton 11でトレーナーが起動しない場合は、Wine/Gamescopeの既知の不具合です。Proton 10.0-4またはGE-Protonを使用してください。",
+    "NORMAL_TRAINER_TIPS_STALE": "ゲームのクラッシュ後にトレーナーが残っている場合は、下の「トレーナーのプロセス」で終了してください。"
 }

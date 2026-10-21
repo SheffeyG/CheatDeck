@@ -8,6 +8,7 @@ import {
   SidecarStatus,
   ToggleDropdown,
   ToggleFilePicker,
+  TrainerTips,
 } from "../components";
 import { LangCodes } from "../data/languageCodes.json";
 import { language, sidecarProgram } from "../domain/features";
@@ -16,7 +17,7 @@ import { browseFiles, getHomePath } from "../infra/decky";
 import { t } from "../utils/translate";
 
 const Normal: FC = () => {
-  const { options, editable, applyEdit } = useOptions();
+  const { appid, options, editable, applyEdit } = useOptions();
   const [showSidecar, setShowSidecar] = useState(sidecarProgram.isEnabled(options));
   const [showLang, setShowLang] = useState(language.isEnabled(options));
 
@@ -48,6 +49,8 @@ const Normal: FC = () => {
         value={sidecarProgram.path(options)}
         onBrowse={handleSidecarBrowse}
       />
+
+      {(showSidecar || sidecarProgram.isEnabled(options)) && <TrainerTips appid={appid} />}
 
       <SidecarStatus path={sidecarProgram.path(options)} />
 
