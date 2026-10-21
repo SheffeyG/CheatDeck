@@ -34,12 +34,21 @@ const describe = (status: SidecarStatusData | undefined, path: string): { text: 
   return { text: t("SIDECAR_STATUS_STOPPED"), tone: "idle" };
 };
 
+// Only the indicator dot is coloured; the label keeps the theme's text colour so
+// it stays readable in both the dark and the light Steam theme.
 const toneColor: Record<StatusTone, string> = {
   running: "#8bc53f",
-  idle: "#b8bcbf",
+  idle: "#8bc53f",
   missing: "#e5a00d",
-  unknown: "#b8bcbf",
+  unknown: "#e5a00d",
 };
+
+const dotStyle = (tone: StatusTone): CSSProperties => ({
+  color: toneColor[tone],
+  // Inactive and unknown states are dimmed, so the signal does not rely on hue.
+  opacity: tone === "running" || tone === "missing" ? 1 : 0.45,
+  marginRight: "6px",
+});
 
 const statusStyle = {
   fontSize: "12px",
@@ -104,7 +113,12 @@ export const SidecarStatus: FC<SidecarStatusProps> = ({ path }) => {
       bottomSeparator="standard"
       childrenLayout="below"
     >
-      <div style={{ ...statusStyle, color: toneColor[tone] }}>{text}</div>
+      <div style={statusStyle}>
+        <span style={dotStyle(tone)} aria-hidden="true">
+          {"\u25CF"}
+        </span>
+        {text}
+      </div>
       <Focusable style={rowStyle}>
         <DialogButton style={actionStyle} disabled={busy} onClick={refresh}>
           {t("SIDECAR_REFRESH")}
