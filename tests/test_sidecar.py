@@ -9,6 +9,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 import types
 import unittest
 
@@ -159,12 +160,17 @@ class LiveProcessTest(unittest.TestCase):
     def _start(self, argv0: str) -> subprocess.Popen:
         process = _spawn_with_argv0(argv0)
         self.processes.append(process)
-        # Give the kernel a moment to publish the new /proc entry.
-        for _ in range(100):
-            if os.path.exists(f"/proc/{process.pid}/cmdline"):
-                break
-            subprocess.run(["sleep", "0.01"], check=False)
-        return process
+        # `exec -a` replaces the shell image, so the cmdline only shows argv0
+        # after the kernel has completed the exec. Waiting for the /proc entry
+        # alone is not enough: it already exists with the shell's command line,
+        # which made this test fail sporadically on a loaded machine.
+        deadline = time.monotonic() + 5.0
+        while time.monotonic() < deadline:
+            argv = main._read_process_cmdline(process.pid)
+            if argv and argv[0] == argv0:
+                return process
+            time.sleep(0.01)
+        self.fail(f"process {process.pid} never exposed argv0 {argv0!r}")
 
     def test_finds_real_process_with_unix_path(self) -> None:
         process = self._start(self.trainer)
