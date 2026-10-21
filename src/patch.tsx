@@ -174,7 +174,14 @@ export const resolveLibraryContextMenu = (): FC | undefined => {
       logger.warning("LibraryContextMenu could not be resolved; context menu entry is disabled");
       return undefined;
     }
-    return fakeRenderComponent(candidate).type;
+    // fakeRenderComponent() can return null when the stub render fails, so the
+    // rendered type has to be validated before it is used as a component.
+    const rendered = fakeRenderComponent(candidate);
+    if (!isComponent(rendered?.type)) {
+      logger.warning("LibraryContextMenu rendered without a component type; entry is disabled");
+      return undefined;
+    }
+    return rendered.type;
   } catch (error) {
     logger.error("Failed to resolve LibraryContextMenu", error);
     return undefined;

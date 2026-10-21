@@ -23,12 +23,29 @@ const actionStyle = {
   padding: "10px",
 } satisfies CSSProperties;
 
-const describe = (status: SidecarStatusData | undefined, path: string): string => {
-  if (!status || status.path !== path) return t("SIDECAR_STATUS_UNKNOWN");
-  if (status.pids.length > 0) return `${t("SIDECAR_STATUS_RUNNING")}: ${status.pids.join(", ")}`;
-  if (!status.exists) return t("SIDECAR_STATUS_MISSING");
-  return t("SIDECAR_STATUS_STOPPED");
+type StatusTone = "running" | "idle" | "missing" | "unknown";
+
+const describe = (status: SidecarStatusData | undefined, path: string): { text: string; tone: StatusTone } => {
+  if (!status || status.path !== path) return { text: t("SIDECAR_STATUS_UNKNOWN"), tone: "unknown" };
+  if (status.pids.length > 0) {
+    return { text: `${t("SIDECAR_STATUS_RUNNING")}: ${status.pids.join(", ")}`, tone: "running" };
+  }
+  if (!status.exists) return { text: t("SIDECAR_STATUS_MISSING"), tone: "missing" };
+  return { text: t("SIDECAR_STATUS_STOPPED"), tone: "idle" };
 };
+
+const toneColor: Record<StatusTone, string> = {
+  running: "#8bc53f",
+  idle: "#b8bcbf",
+  missing: "#e5a00d",
+  unknown: "#b8bcbf",
+};
+
+const statusStyle = {
+  fontSize: "12px",
+  lineHeight: "1.4",
+  marginBottom: "8px",
+} satisfies CSSProperties;
 
 /**
  * Shows whether the configured trainer is still running and offers to stop it.
@@ -77,6 +94,8 @@ export const SidecarStatus: FC<SidecarStatusProps> = ({ path }) => {
     }
   };
 
+  const { text, tone } = describe(status, path);
+
   return (
     <Field
       label={t("SIDECAR_STATUS_LABEL")}
@@ -85,9 +104,10 @@ export const SidecarStatus: FC<SidecarStatusProps> = ({ path }) => {
       bottomSeparator="standard"
       childrenLayout="below"
     >
+      <div style={{ ...statusStyle, color: toneColor[tone] }}>{text}</div>
       <Focusable style={rowStyle}>
         <DialogButton style={actionStyle} disabled={busy} onClick={refresh}>
-          {`${t("SIDECAR_REFRESH")} · ${describe(status, path)}`}
+          {t("SIDECAR_REFRESH")}
         </DialogButton>
         <DialogButton style={actionStyle} disabled={busy || !running} onClick={terminate}>
           {t("SIDECAR_TERMINATE")}

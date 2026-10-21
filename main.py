@@ -52,6 +52,7 @@ class SidecarTerminateResult(typing.TypedDict):
 # instance is running" (issue #46). The helpers below find and stop exactly the
 # process whose command line references the configured trainer path.
 SIDECAR_TERMINATE_TIMEOUT = 3.0
+SIDECAR_POLL_INTERVAL = 0.1
 
 
 def _read_process_cmdline(pid: int, proc_root: str = "/proc") -> typing.List[str]:
@@ -63,7 +64,29 @@ def _read_process_cmdline(pid: int, proc_root: str = "/proc") -> typing.List[str
     return [part.decode("utf-8", "replace") for part in raw.split(b"\0") if part]
 
 
+def _read_process_state(pid: int, proc_root: str = "/proc") -> typing.Optional[str]:
+    """Return the single letter process state from /proc/<pid>/stat (Z = zombie)."""
+    try:
+        with open(os.path.join(proc_root, str(pid), "stat"), "rb") as handle:
+            raw = handle.read()
+    except OSError:
+        return None
+    # The second field is the command name in parentheses and may contain spaces,
+    # so split after the last closing parenthesis.
+    try:
+        rest = raw[raw.rindex(b")") + 2 :]
+        return rest.split(b" ", 1)[0].decode("ascii", "replace")
+    except (ValueError, IndexError):
+        return None
+
+
+def _is_running(pid: int, proc_root: str = "/proc") -> bool:
+    state = _read_process_state(pid, proc_root)
+    return state is not None and state not in ("Z", "X", "x")
+
+
 def _sidecar_targets(path: str) -> typing.Set[str]:
+    """Unix paths a trainer may be started with, including symlink resolution."""
     targets = {os.path.normpath(path)}
     try:
         targets.add(os.path.realpath(path))
@@ -72,20 +95,51 @@ def _sidecar_targets(path: str) -> typing.Set[str]:
     return targets
 
 
-def _matches_sidecar(argv: typing.List[str], targets: typing.Set[str]) -> bool:
+def _windows_targets(unix_targets: typing.Set[str]) -> typing.Set[str]:
+    """Wine exposes the filesystem root as drive Z:, so the same file can show up
+    as `Z:\\home\\deck\\trainer.exe` in a process command line."""
+    return {"z:" + target.replace("/", "\\").lower() for target in unix_targets}
+
+
+def _normalize_argument(argument: str) -> typing.Optional[typing.Tuple[str, str]]:
+    """Map a command line word to its comparable (kind, value) form."""
+    if argument.startswith("/"):
+        return ("unix", os.path.normpath(argument))
+    # Wine/Windows paths use drive letters and accept both separators.
+    if ":" in argument or "\\" in argument:
+        return ("windows", argument.replace("/", "\\").lower())
+    return None
+
+
+def _matches_sidecar(
+    argv: typing.List[str],
+    unix_targets: typing.Set[str],
+    windows_targets: typing.Set[str],
+) -> bool:
     for argument in argv:
-        if argument in targets:
+        if not argument:
+            continue
+        normalized = _normalize_argument(argument)
+        if normalized is None:
+            continue
+        kind, value = normalized
+        if kind == "unix" and value in unix_targets:
             return True
-        if argument.startswith("/") and os.path.normpath(argument) in targets:
+        if kind == "windows" and value in windows_targets:
             return True
     return False
 
 
 def find_sidecar_pids(path: str, proc_root: str = "/proc") -> typing.List[int]:
-    """Return the PIDs whose command line references `path` exactly."""
+    """Return the PIDs whose command line references `path` exactly.
+
+    Matching is exact (full path, Unix or Wine/Z: form): a trainer must never
+    take out an unrelated process that happens to share a file name.
+    """
     if not path or not os.path.isabs(path):
         return []
-    targets = _sidecar_targets(path)
+    unix_targets = _sidecar_targets(path)
+    windows_targets = _windows_targets(unix_targets)
     skipped = {os.getpid(), os.getppid()}
     try:
         entries = os.listdir(proc_root)
@@ -98,7 +152,7 @@ def find_sidecar_pids(path: str, proc_root: str = "/proc") -> typing.List[int]:
         pid = int(entry)
         if pid in skipped or pid <= 1:
             continue
-        if _matches_sidecar(_read_process_cmdline(pid, proc_root), targets):
+        if _matches_sidecar(_read_process_cmdline(pid, proc_root), unix_targets, windows_targets):
             pids.append(pid)
     return sorted(pids)
 
@@ -183,6 +237,8 @@ class Plugin:
     @classmethod
     async def terminate_sidecar(cls, path: str) -> SidecarTerminateResult:
         pids = find_sidecar_pids(path)
+        unix_targets = _sidecar_targets(path) if path else set()
+        windows_targets = _windows_targets(unix_targets) if unix_targets else set()
         terminated: typing.List[int] = []
         failed: typing.List[int] = []
         for pid in pids:
@@ -194,15 +250,18 @@ class Plugin:
             terminated.append(pid)
 
         deadline = time.monotonic() + SIDECAR_TERMINATE_TIMEOUT
-        while terminated and time.monotonic() < deadline:
-            remaining = [pid for pid in terminated if os.path.exists("/proc/{}".format(pid))]
-            if not remaining:
+        while time.monotonic() < deadline:
+            if not any(_is_running(pid) for pid in terminated):
                 break
-            time.sleep(0.1)
+            time.sleep(SIDECAR_POLL_INTERVAL)
 
-        # Escalate for trainers that ignore SIGTERM.
+        # Escalate for trainers that ignore SIGTERM. Re-check the command line
+        # first so a recycled PID belonging to another program is never killed.
         for pid in list(terminated):
-            if not os.path.exists("/proc/{}".format(pid)):
+            if not _is_running(pid):
+                continue
+            if not _matches_sidecar(_read_process_cmdline(pid), unix_targets, windows_targets):
+                terminated.remove(pid)
                 continue
             try:
                 os.kill(pid, signal.SIGKILL)
@@ -210,7 +269,9 @@ class Plugin:
                 terminated.remove(pid)
                 failed.append(pid)
 
-        logger.info("[backend] Terminate sidecar {}: found={} terminated={} failed={}".format(path, pids, terminated, failed))
+        logger.info(
+            "[backend] Terminate sidecar {}: found={} terminated={} failed={}".format(path, pids, terminated, failed)
+        )
         return {"path": path, "found": pids, "terminated": terminated, "failed": failed}
 
     @classmethod
