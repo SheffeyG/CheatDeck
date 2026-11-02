@@ -16,17 +16,38 @@ import {
 } from "@decky/ui";
 import type { FC } from "react";
 
-// Always add before "Properties..."
-const spliceArtworkItem = (children: any[], appid: number) => {
-  children.find((x: any) => x?.key === "properties");
-  const propertiesMenuItemIdx = children.findIndex((item) =>
-    findInReactTree(item, (x) => x?.onSelected?.toString().includes("AppProperties")),
+const MENU_ITEM_KEY = "cheat-deck";
+const APP_PROPERTIES_ITEM = "AppProperties";
+
+const hasOnSelected = (item: any, marker: string) => {
+  const onSelected = item?.onSelected ?? item?.props?.onSelected;
+  return typeof onSelected === "function" && onSelected.toString().includes(marker);
+};
+
+const containsMenuItem = (item: any, marker: string) => !!findInReactTree(item, (x) => hasOnSelected(x, marker));
+
+const asMenuItems = (items: any): any[] | undefined => {
+  if (Array.isArray(items)) return items;
+  if (!items || typeof items !== "object") return undefined;
+  return findInReactTree(
+    items,
+    (node) => Array.isArray(node) && node.some((item) => containsMenuItem(item, APP_PROPERTIES_ITEM)),
   );
-  children.splice(
-    propertiesMenuItemIdx,
+};
+
+// Always add before "Properties..."
+const spliceArtworkItem = (children: any, appid: number) => {
+  const menuItems = asMenuItems(children);
+  if (!menuItems) return;
+  const propertiesMenuItemIdx = menuItems.findIndex((item) => containsMenuItem(item, APP_PROPERTIES_ITEM));
+  if (propertiesMenuItemIdx < 0) return;
+  const propertiesMenuItem = menuItems[propertiesMenuItemIdx];
+  handleItemDupes(menuItems);
+  menuItems.splice(
+    menuItems.indexOf(propertiesMenuItem),
     0,
     <MenuItem
-      key="cheat-deck"
+      key={MENU_ITEM_KEY}
       onSelected={() => {
         Navigation.Navigate(`/cheatdeck/${appid}`);
       }}
@@ -38,22 +59,28 @@ const spliceArtworkItem = (children: any[], appid: number) => {
 
 // Check if correct menu by looking at the code of the onSelected function
 // Should be enough to ignore the screenshots and other menus.
-const isOpeningAppContextMenu = (items: any[]) => {
-  if (!items?.length) {
+const isOpeningAppContextMenu = (items: any) => {
+  const menuItems = asMenuItems(items);
+  if (!menuItems?.length) {
     return false;
   }
-  return !!findInReactTree(items, (x) => x?.props?.onSelected?.toString().includes("launchSource"));
+  return !!findInReactTree(menuItems, (x) => hasOnSelected(x, "launchSource"));
 };
 
-const handleItemDupes = (items: any[]) => {
-  const sgdbIdx = items.findIndex((x: any) => x?.key === "cheat-deck");
-  if (sgdbIdx !== -1) items.splice(sgdbIdx, 1);
+const handleItemDupes = (items: any) => {
+  const menuItems = asMenuItems(items);
+  if (!menuItems) return;
+  for (let i = menuItems.length - 1; i >= 0; i--) {
+    if (menuItems[i]?.key === MENU_ITEM_KEY) menuItems.splice(i, 1);
+  }
 };
 
-const patchMenuItems = (menuItems: any[], appid: number) => {
+const patchMenuItems = (menuItems: any, appid: number) => {
+  const items = asMenuItems(menuItems);
+  if (!items) return;
   let updatedAppid: number = appid;
   // find the first menu component that has the correct appid, sometimes the one passed is cached from another context menu
-  const parentOverview = menuItems.find(
+  const parentOverview = items.find(
     (x: any) => x?._owner?.pendingProps?.overview?.appid && x._owner.pendingProps.overview.appid !== appid,
   );
   // if found then use that appid
@@ -62,12 +89,12 @@ const patchMenuItems = (menuItems: any[], appid: number) => {
   }
   // Oct 2025 client
   if (updatedAppid === appid) {
-    const foundApp = findInTree(menuItems, (x) => x?.app?.appid, { walkable: ["props", "children"] });
+    const foundApp = findInTree(items, (x) => x?.app?.appid, { walkable: ["props", "children"] });
     if (foundApp) {
       updatedAppid = foundApp.app.appid;
     }
   }
-  spliceArtworkItem(menuItems, updatedAppid);
+  spliceArtworkItem(items, updatedAppid);
 };
 
 /**
@@ -76,6 +103,8 @@ const patchMenuItems = (menuItems: any[], appid: number) => {
  * @returns A patch to remove when the plugin dismounts.
  */
 const contextMenuPatch = (LibraryContextMenu: any) => {
+  const nested: Patch[] = [];
+  const patchedTypes = new Set<any>();
   const patches: {
     outer?: Patch;
     inner?: Patch;
@@ -99,34 +128,41 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
 
     if (!patches.inner) {
       patches.inner = afterPatch(component, "type", (_: any, ret: any) => {
+        const prototype = ret.type.prototype;
+        if (patchedTypes.has(prototype)) return ret;
+        patchedTypes.add(prototype);
         // initial render
-        afterPatch(ret.type.prototype, "render", (_: any, ret2: any) => {
-          const menuItems = ret2.props.children[0]; // always the first child
-          if (!isOpeningAppContextMenu(menuItems)) return ret2;
-          try {
-            handleItemDupes(menuItems);
-          } catch (error) {
+        nested.push(
+          afterPatch(prototype, "render", (_: any, ret2: any) => {
+            const menuItems = ret2.props.children[0]; // always the first child
+            if (!isOpeningAppContextMenu(menuItems)) return ret2;
+            try {
+              handleItemDupes(menuItems);
+            } catch (error) {
+              return ret2;
+            }
+            patchMenuItems(menuItems, appid);
             return ret2;
-          }
-          patchMenuItems(menuItems, appid);
-          return ret2;
-        });
+          }),
+        );
 
         // when steam decides to regresh app overview
-        afterPatch(ret.type.prototype, "shouldComponentUpdate", ([nextProps]: any, shouldUpdate: any) => {
-          try {
-            handleItemDupes(nextProps.children);
-          } catch (error) {
-            // wrong context menu (probably)
+        nested.push(
+          afterPatch(prototype, "shouldComponentUpdate", ([nextProps]: any, shouldUpdate: any) => {
+            try {
+              handleItemDupes(nextProps.children);
+            } catch (error) {
+              // wrong context menu (probably)
+              return shouldUpdate;
+            }
+
+            if (shouldUpdate === true) {
+              patchMenuItems(nextProps.children, appid);
+            }
+
             return shouldUpdate;
-          }
-
-          if (shouldUpdate === true) {
-            patchMenuItems(nextProps.children, appid);
-          }
-
-          return shouldUpdate;
-        });
+          }),
+        );
         return ret;
       });
     } else {
@@ -135,6 +171,8 @@ const contextMenuPatch = (LibraryContextMenu: any) => {
     return component;
   });
   patches.unpatch = () => {
+    for (const patch of nested.splice(0).reverse()) patch.unpatch();
+    patchedTypes.clear();
     patches.outer?.unpatch();
     patches.inner?.unpatch();
   };
